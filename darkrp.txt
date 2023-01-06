@@ -1,0 +1,7 @@
+"darkrp"
+{
+	"base" 			"helix"
+	"title" 		"DarkRP"
+	"author" 		"Palomino Roleplay"
+	"menusystem"	"1"
+}
