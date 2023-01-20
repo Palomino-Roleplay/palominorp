@@ -93,7 +93,7 @@ function SWEP:PrimaryAttack()
 
     local eDoor = tTrace.Entity
 
-    if pPlayer:GetPos():DistToSqr( tTrace.HitPos ) > 7500 then return end
+    if pPlayer:GetPos():DistToSqr( tTrace.HitPos ) > 10000 then return end
 
     eDoor._lastHit = CurTime()
     self._lastHit = CurTime()
