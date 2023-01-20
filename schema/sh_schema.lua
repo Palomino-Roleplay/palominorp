@@ -13,3 +13,10 @@ ix.util.Include("hooks/sh_hooks.lua")
 
 ix.config.SetDefault( "weaponAlwaysRaised", true )
 ix.config.SetDefault( "intro", false )
+
+-- Removing some of the default commands
+
+ix.command.list["becomeclass"] = nil
+ix.command.list["pm"] = nil
+ix.command.list["reply"] = nil
+ix.command.list["setvoicemail"] = nil
