@@ -4,9 +4,9 @@ local CHAR = ix.meta.character
 function CHAR:Arrest( pArrestor, iTime, sReason )
     self:SetFaction( FACTION_PRISONER )
 
-    local pPrisoner = self:GetPlayer()
+    local pPlayer = self:GetPlayer()
 
-    pPrisoner:StripWeapons()
+    pPlayer:StripWeapons()
 
     self:SetData( "arrest_time", iTime )
 
@@ -16,6 +16,8 @@ function CHAR:Arrest( pArrestor, iTime, sReason )
     timer.Create( "PRP.Arrest." .. self:GetID(), iTime, 1, function()
         self:Unarrest()
     end )
+
+    pPlayer:SetPos( table.Random( PLUGIN.PrisonPositions ) )
 end
 
 function CHAR:Unarrest()
