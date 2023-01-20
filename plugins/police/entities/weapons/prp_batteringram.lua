@@ -3,8 +3,8 @@ SWEP.Author                 = "sil"
 SWEP.Instructions           = "Left click to ram"
 SWEP.Category               = "Palomino: Police"
 
-SWEP.Spawnable = true
-SWEP.AdminOnly = true
+SWEP.Spawnable              = true
+SWEP.AdminOnly              = true
 
 SWEP.Primary.ClipSize		= -1
 SWEP.Primary.DefaultClip	= -1
@@ -88,10 +88,13 @@ function SWEP:PrimaryAttack()
 
     local eDoor = tTrace.Entity
 
-    if pPlayer:GetPos():DistToSqr( eDoor:GetPos() ) > 10000 then return end
+    if pPlayer:GetPos():DistToSqr( tTrace.HitPos ) > 7500 then return end
 
     eDoor._lastHit = CurTime()
     self._lastHit = CurTime()
+
+    pPlayer:SetAnimation( PLAYER_ATTACK1 )
+    self:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
 
     if SERVER then
         pPlayer:ViewPunch( Angle( math.random( -5, -20 ), math.random( -2, 2 ), math.random( -5, 5 ) ) )
