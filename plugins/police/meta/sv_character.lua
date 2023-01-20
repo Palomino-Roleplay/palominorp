@@ -39,4 +39,25 @@ function CHAR:GetArrestTimeRemaining()
     return self._arrestTime - ( CurTime() - self._arrestStart )
 end
 
+function CHAR:Warrant( pOfficer, sReason, iTime )
+    self:SetData( "warrant", sReason )
+
+    timer.Create( "PRP.Warrant." .. self:GetID(), iTime, 1, function()
+        if not self then return end
+        self:Unwarrant( nil, "Warrant expired" )
+    end )
+
+    self:GetPlayer():Notify( "You have been issued a warrant by " .. pOfficer:Name() .. " for " .. sReason .. "." )
+end
+
+function CHAR:Unwarrant( pOfficer, sReason )
+    self:SetData( "warrant", nil )
+
+    self:GetPlayer():Notify( "Your warrant has been lifted: " .. sReason .. "." )
+end
+
+function CHAR:IsWarranted()
+    return self:GetData( "warrant", nil ) ~= nil
+end
+
 -- @TODO: For arrest histories, look into the sv_mysql in the libs/thirdparty folder in helix.
