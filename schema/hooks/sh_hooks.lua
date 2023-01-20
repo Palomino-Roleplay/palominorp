@@ -8,7 +8,9 @@ end
 
 -- Disable some default plugins
 local tDisabledPlugins = {
-    ["recognition"] = true
+    ["recognition"] = true,
+    ["strength"] = true,
+    ["stamina"] = true
 }
 
 function Schema:ShouldLoadPlugin(sPlugin)
