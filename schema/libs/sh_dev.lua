@@ -1,3 +1,5 @@
+-- @TODO: Consider disabling this in release builds
+
 function Print( ... )
     local tArgs = { ... }
 
