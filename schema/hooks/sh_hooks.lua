@@ -5,14 +5,3 @@ end
 function Schema:CanPlayerJoinClass()
     return false
 end
-
--- Disable some default plugins
-local tDisabledPlugins = {
-    ["recognition"] = true,
-    ["strength"] = true,
-    ["stamina"] = true
-}
-
-function Schema:ShouldLoadPlugin(sPlugin)
-    if (tDisabledPlugins[sPlugin]) then return false end
-end
