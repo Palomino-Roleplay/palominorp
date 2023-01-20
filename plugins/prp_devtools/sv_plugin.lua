@@ -33,6 +33,7 @@ net.Receive( "PRP.Devtools.Run", function( _, pPlayer )
     PRP_POS = pPlayer:GetPos()
     PRP_ENT = pPlayer:GetEyeTrace().Entity
     PRP_CHAR = pPlayer:GetCharacter()
+    PRP_BOT = #player.GetBots() ~= 0 and player.GetBots()[ 1 ] or NULL
 
     if fnRunCode then
         local bStatus, xReturn = pcall( fnRunCode )
@@ -51,6 +52,7 @@ net.Receive( "PRP.Devtools.Run", function( _, pPlayer )
     PRP_POS = nil
     PRP_ENT = nil
     PRP_CHAR = nil
+    PRP_BOT = nil
 end )
 
 function PLUGIN.Print( sText, pPlayer )
