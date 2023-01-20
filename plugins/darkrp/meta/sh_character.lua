@@ -7,3 +7,7 @@ end
 function PLY:IsArrested()
     return self:GetCharacter():IsArrested()
 end
+
+function PLY:isArrested()
+    return self:IsArrested()
+end
