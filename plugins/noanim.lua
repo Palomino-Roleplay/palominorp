@@ -15,6 +15,7 @@ function Schema:DoAnimationEvent( pPlayer, event, data )
 end
 
 function Schema:PlayerWeaponChanged( pPlayer, pOldWeapon, pNewWeapon )
+    if CLIENT then return end
     pPlayer:SetWepRaised( true, pNewWeapon )
 end
 
