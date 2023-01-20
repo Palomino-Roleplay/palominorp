@@ -2,6 +2,8 @@ local PLUGIN = PLUGIN
 local CHAR = ix.meta.character
 
 function CHAR:Arrest( pArrestor, iTime, sReason )
+    if self:IsArrested() then return false, "Character is already arrested." end
+
     self:SetFaction( FACTION_PRISONER )
 
     local pPlayer = self:GetPlayer()
@@ -18,9 +20,13 @@ function CHAR:Arrest( pArrestor, iTime, sReason )
     end )
 
     pPlayer:SetPos( table.Random( PLUGIN.PrisonPositions ) )
+
+    return true
 end
 
 function CHAR:Unarrest()
+    if not self:IsArrested() then return false, "Character is not arrested." end
+
     self:SetFaction( FACTION_CITIZEN )
 
     -- @TODO: Setup unarrest positions or something.
@@ -33,6 +39,8 @@ function CHAR:Unarrest()
 
     self._arrestStart = nil
     self._arrestTime = nil
+
+    return true
 end
 
 function CHAR:GetArrestTimeRemaining()

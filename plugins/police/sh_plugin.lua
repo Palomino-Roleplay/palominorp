@@ -26,6 +26,19 @@ ix.command.Add("Arrest", {
         ix.type.text
     },
     OnRun = function( self, pAdmin, target, minutes, reason )
-        target:Arrest( nil, minutes * 60, reason )
+        local bSucceeded, sError = target:Arrest( nil, minutes * 60, reason )
+        return sError or "Sent " .. target:GetName() .. " to jail for " .. minutes .. " minute(s)."
+    end
+} )
+
+ix.command.Add("Unarrest", {
+    description = "Unarrests a character.",
+    adminOnly = true,
+    arguments = {
+        ix.type.character
+    },
+    OnRun = function( self, pAdmin, target )
+        local bSucceeded, sError = target:Unarrest()
+        return sError or "Unarrested " .. target:GetName() .. "."
     end
 } )
