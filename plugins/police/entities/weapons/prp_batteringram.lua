@@ -24,6 +24,11 @@ if SERVER then
     util.AddNetworkString( "PRP.BatteringRam.DoorHit" )
 end
 
+ix.config.Add( "batteringRamResetTime", 30, "How many minutes for a door to reset after being hit by a battering ram.", nil, {
+    data = { min = 1, max = 120 },
+    category = "Doors"
+} )
+
 local tSurfaceHitSounds = {
     ["metal"] = {
         hit = {
@@ -116,7 +121,7 @@ function SWEP:PrimaryAttack()
             eDoor:EmitSound( table.Random( tSurfaceHitSounds[sSurfaceProp].broke ), 100, 100 )
 
             -- @TODO: Make the reset time longer than 30 seconds
-            local eBrokenDoor = eDoor:BlastDoor( pPlayer:GetAimVector() * 400, 30, false )
+            local eBrokenDoor = eDoor:BlastDoor( pPlayer:GetAimVector() * 400, ix.config.Get( "batteringRamResetTime", 30 ), false )
             -- eBrokenDoor:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
         else
             eDoor:EmitSound( table.Random( tSurfaceHitSounds[sSurfaceProp].hit ), 100, 100 )
