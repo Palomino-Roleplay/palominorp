@@ -110,6 +110,7 @@ function SWEP:PrimaryAttack()
 
         eDoor._lastHit = eDoor._lastHit or 0
 
+        -- @TODO: Do this a little better
         -- If it's been more than 6 seconds since the last hit, 0% chance of breaking
         local bBreak = false
         if eDoor._lastHit + 6 > CurTime() then
