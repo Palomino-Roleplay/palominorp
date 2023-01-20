@@ -5,8 +5,8 @@ FACTION.pay = 10
 FACTION.weapons = {"vs_policemod_tablet"}
 FACTION.isGloballyRecognized = true
 
-FACTION.models = {
-	"models/police.mdl"
-}
+-- FACTION.models = {
+-- 	"models/police.mdl"
+-- }
 
 FACTION_POLICE = FACTION.index
