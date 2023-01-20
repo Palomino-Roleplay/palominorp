@@ -130,7 +130,7 @@ function SWEP:PrimaryAttack()
 
         net.Start( "PRP.BatteringRam.DoorHit" )
             net.WriteEntity( eDoor )
-            net.WriteBool( bBreak )
+            -- net.WriteBool( bBreak )
         net.SendPVS( eDoor:GetPos() )
     end
 end
@@ -157,7 +157,7 @@ end
 if CLIENT then
     net.Receive( "PRP.BatteringRam.DoorHit", function()
         local eDoor = net.ReadEntity()
-        local bBreak = net.ReadBool()
+        -- local bBreak = net.ReadBool()
 
         if not IsValid( eDoor ) then return end
 
