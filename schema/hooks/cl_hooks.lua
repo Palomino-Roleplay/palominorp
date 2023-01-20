@@ -6,3 +6,7 @@ end
 hook.Add( "PopulateHelpMenu", "Test.PopulateHelpMenu", function( tTabs )
     tTabs["plugins"] = nil
 end )
+
+function Schema:CanCreateCharacterInfo( tSuppress )
+    tSuppress.attributes = true
+end
