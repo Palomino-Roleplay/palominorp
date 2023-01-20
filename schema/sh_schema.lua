@@ -12,3 +12,4 @@ ix.util.Include("hooks/sh_hooks.lua")
 -- Default config values
 
 ix.config.SetDefault( "weaponAlwaysRaised", true )
+ix.config.SetDefault( "intro", false )
