@@ -36,6 +36,7 @@ function CHAR:Unarrest()
 end
 
 function CHAR:GetArrestTimeRemaining()
+    if not self._arrestStart or not self._arrestTime then return 0 end
     return self._arrestTime - ( CurTime() - self._arrestStart )
 end
 
