@@ -12,6 +12,10 @@ function PRP.Dev.PrettyType( ... )
     for n = 1, #tArgs do
         if istable(tArgs[n]) then
             tArgs[n] = table.ToString( tArgs[n], "Table " .. n .. ":", true )
+        elseif isfunction(tArgs[n]) then
+            local tFunctionInfo = debug.getinfo( tArgs[n] )
+
+            tArgs[n] = "Function " .. n .. ": " .. tFunctionInfo.short_src .. ":" .. tFunctionInfo.linedefined .. "-" .. tFunctionInfo.lastlinedefined .. "\n"
         end
 
         sText = sText .. tostring( tArgs[n] )
