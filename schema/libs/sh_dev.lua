@@ -1,6 +1,9 @@
+PRP = PRP or {}
+PRP.Dev = PRP.Dev or {}
+
 -- @TODO: Consider disabling this in release builds
 
-function Print( ... )
+function PRP.Dev.PrettyType( ... )
     local tArgs = { ... }
 
     if not tArgs then return end
@@ -14,9 +17,13 @@ function Print( ... )
         sText = sText .. tostring( tArgs[n] )
     end
 
+    return sText
+end
+
+function Print( ... )
     MsgC(
         Color( 122, 236, 202),
-        sText,
+        PRP.Dev.PrettyType( ... ),
         "\n"
     )
 end

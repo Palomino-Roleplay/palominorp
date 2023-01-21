@@ -15,11 +15,7 @@ net.Receive( "PRP.Devtools.Run", function( _, pPlayer )
 
     local function HijackRunPrint( ... )
         -- Gotta do it manually to support printing userdata and entities
-        local tArgs = { ... }
-        for i = 1, #tArgs do
-            tArgs[ i ] = tostring( tArgs[ i ] )
-        end
-        local sText = table.concat( tArgs, " " )
+        local sText = PRP.Dev.PrettyType( ... )
 
         net.Start( "PRP.Devtools.Run.Print" )
             net.WriteString( sText )
