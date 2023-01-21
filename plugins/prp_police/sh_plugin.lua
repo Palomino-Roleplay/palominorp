@@ -86,3 +86,23 @@ ix.command.Add("Unarrest", {
         return sError or "Unarrested " .. target:GetName() .. "."
     end
 } )
+
+-- Ticketing
+
+ix.char.RegisterVar("tickets", {
+    default = {},
+    isLocal = true,
+    bNoDisplay = true,
+    field = "tickets",
+    fieldType = ix.type.text
+})
+
+ix.config.Add("MaxTicketPrice", 120, "What's the maximum price for a ticket?", nil, {
+    data = {min = 0, max = 10000, decimals = 0},
+    category = "Police"
+})
+
+ix.config.Add("TicketOverdueTime", 24 * 3, "After how many hours are tickets declared overdue?", nil, {
+    data = {min = 1, max = 24 * 7, decimals = 0},
+    category = "Police"
+})

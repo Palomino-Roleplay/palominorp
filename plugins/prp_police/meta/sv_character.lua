@@ -1,6 +1,8 @@
 local PLUGIN = PLUGIN
 local CHAR = ix.meta.character
 
+-- Arresting
+
 function CHAR:Arrest( pArrestor, iTime, sReason )
     if self:IsArrested() then return false, "Character is already arrested." end
 
@@ -47,6 +49,9 @@ function CHAR:GetArrestTimeRemaining()
     if not self._arrestStart or not self._arrestTime then return 0 end
     return self._arrestTime - ( CurTime() - self._arrestStart )
 end
+-- @TODO: For arrest histories, look into the sv_mysql in the libs/thirdparty folder in helix.
+
+-- Warranting
 
 function CHAR:Warrant( pOfficer, sReason, iTime )
     self:SetData( "warrant", sReason )
@@ -69,4 +74,43 @@ function CHAR:IsWarranted()
     return self:GetData( "warrant", nil ) ~= nil
 end
 
--- @TODO: For arrest histories, look into the sv_mysql in the libs/thirdparty folder in helix.
+-- Ticketing
+
+function CHAR:Ticket( pOfficer, sReason, iAmount )
+    local tTickets = self:GetTickets()
+    tTickets[ os.time() ] = {
+        officer = pOfficer:GetName(),
+        reason = sReason,
+        amount = iAmount,
+        paid = false
+    }
+    self:SetTickets( tTickets )
+end
+
+function CHAR:PayTicket( iID )
+    local tTickets = self:GetTickets()
+    if not tTickets[ iID ] then return false, "Ticket does not exist." end
+    if tTickets[ iID ].paid then return false, "Ticket is already paid." end
+    if not self:HasMoney( tTickets[iID].amount ) then return false, "You do not have enough money to pay this ticket." end
+
+    self:TakeMoney( tTickets[iID].amount )
+    tTickets[ iID ].paid = os.time()
+    self:SetTickets( tTickets )
+
+    return true, "You paid off one of your tickets."
+end
+
+function CHAR:PayAllTickets()
+    local tTickets, iTotalPrice = self:GetUnpaidTickets()
+
+    if not tTickets then return false, "You do not have any unpaid tickets." end
+    if not self:HasMoney( iTotalPrice ) then return false, "You do not have enough money to pay all of your tickets." end
+
+    self:TakeMoney( iTotalPrice )
+    for k, v in pairs( tTickets ) do
+        v.paid = os.time()
+    end
+    self:SetTickets( tTickets )
+
+    return true, "You paid off all of your tickets."
+end
