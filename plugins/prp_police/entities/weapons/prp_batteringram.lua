@@ -26,7 +26,7 @@ end
 
 ix.config.Add( "batteringRamResetTime", 30, "How many minutes for a door to reset after being hit by a battering ram.", nil, {
     data = { min = 1, max = 120 },
-    category = "Doors"
+    category = "Police"
 } )
 
 local tSurfaceHitSounds = {
