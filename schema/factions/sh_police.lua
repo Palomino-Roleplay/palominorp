@@ -5,6 +5,12 @@ FACTION.pay = 10
 FACTION.weapons = {"vs_policemod_tablet"}
 FACTION.isGloballyRecognized = true
 
+FACTION.hasRadio = true
+FACTION._defaultRadioChannel = "Police"
+FACTION.radioChannels = {
+    ["Police"] = true
+}
+
 -- FACTION.models = {
 -- 	"models/police.mdl"
 -- }
