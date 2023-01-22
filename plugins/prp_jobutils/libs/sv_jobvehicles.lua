@@ -43,12 +43,10 @@ function PRP.Vehicle.Spawn( sVehicleID, vPos, aAng )
     return eVehicle
 end
 
-function PRP.Vehicle.SpawnPersonalVehicle()
+function PRP.Vehicle.Remove( vVehicle )
+    if not IsValid( vVehicle ) then return end
 
-end
-
-function PRP.Vehicle.SpawnJobVehicle()
-
+    vVehicle:Remove()
 end
 
 concommand.Add( "prp_dev_spawncopcar", function( pPlayer )
@@ -63,4 +61,10 @@ concommand.Add( "prp_dev_spawncopcar", function( pPlayer )
     undo.Finish()
 
     pPlayer:AddCleanup( "vehicles", vVehicle )
+end )
+
+concommand.Add( "prp_dev_spawnJobVehicle", function( pPlayer )
+    if not pPlayer:IsDeveloper() then return end
+
+    pPlayer:GetCharacter():SpawnJobVehicle()
 end )
