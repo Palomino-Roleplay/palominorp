@@ -14,10 +14,10 @@ function Schema:DoAnimationEvent( pPlayer, event, data )
     return GAMEMODE_BASE:DoAnimationEvent( pPlayer, event, data )
 end
 
-function Schema:PlayerWeaponChanged( pPlayer, pOldWeapon, pNewWeapon )
-    if CLIENT then return end
-    pPlayer:SetWepRaised( true, pNewWeapon )
-end
+-- function Schema:PlayerWeaponChanged( pPlayer, pOldWeapon, pNewWeapon )
+--     if CLIENT then return end
+--     pPlayer:SetWepRaised( true, pNewWeapon )
+-- end
 
 function Schema:PlayerModelChanged()
     return false
