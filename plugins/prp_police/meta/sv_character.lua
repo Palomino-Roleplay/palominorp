@@ -76,6 +76,7 @@ end
 
 -- Ticketing
 
+-- Force a ticket
 function CHAR:Ticket( pOfficer, sReason, iAmount )
     local tTickets = self:GetTickets()
     tTickets[ os.time() ] = {
@@ -85,6 +86,22 @@ function CHAR:Ticket( pOfficer, sReason, iAmount )
         paid = false
     }
     self:SetTickets( tTickets )
+
+    self:GetPlayer():Notify( "You have been issued a ticket by " .. pOfficer:GetName() .. " for " .. sReason .. " for " .. ix.currency.Get( iAmount ) .. "." )
+end
+
+-- Attempt to issue a ticket
+function CHAR:IssueTicket( pVictim, sReason, iAmount )
+    if not self:IsPolice() then return false, "You are not a police officer." end
+    if not pVictim:IsPlayer() then return false, "Invalid player." end
+    if not sReason then return false, "Invalid reason." end
+    if not iAmount then return false, "Invalid amount." end
+    if not pVictim:GetCharacter() then return false, "Victim character is invalid" end
+    -- if pVictim:GetCharacter():IsGovernment() then return false, "You cannot issue a ticket to a government official." end
+
+    pVictim:GetCharacter():Ticket( self, sReason, iAmount )
+
+    return true, "You issued a ticket to " .. pVictim:Name() .. " for " .. sReason .. " for $" .. iAmount .. "."
 end
 
 function CHAR:PayTicket( iID )

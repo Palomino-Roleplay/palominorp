@@ -1,5 +1,10 @@
 local CHAR = ix.meta.character
 
+-- @TODO: Move
+function CHAR:IsGovernment()
+    return self:IsPolice()
+end
+
 -- Arresting
 
 function CHAR:IsArrested()

@@ -43,3 +43,15 @@ end
 function PLUGIN:PlayerSpawnObject( pPlayer )
     if pPlayer:GetCharacter():IsArrested() then return pPlayer:IsAdmin() end
 end
+
+util.AddNetworkString( "PRP.Police.IssueTicket" )
+net.Receive( "PRP.Police.IssueTicket", function( _, pOfficer )
+    local pVictim = net.ReadEntity()
+    local iAmount = net.ReadInt( 32 )
+    local sReason = net.ReadString()
+
+    if not pOfficer:GetCharacter() then return end
+
+    local bSuccess, sMessage = pOfficer:GetCharacter():IssueTicket( pVictim, sReason, iAmount )
+    pOfficer:Notify( sMessage )
+end )
