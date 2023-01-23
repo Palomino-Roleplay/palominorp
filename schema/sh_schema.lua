@@ -15,3 +15,8 @@ ix.util.Include("hooks/cl_hooks.lua")
 -- Default config values
 ix.config.SetDefault( "weaponAlwaysRaised", true )
 ix.config.SetDefault( "intro", false )
+
+-- Config values
+ix.config.Add("DeveloperMode", false, "Enables some things and makes the server slower.", nil, {
+    category = "Palomino"
+})
