@@ -3,7 +3,7 @@ function Schema:BuildBusinessMenu()
 end
 
 -- Can't do Schema:PopulateHelpMenu() because it's run before tTabs["plugins"] is added
-hook.Add( "PopulateHelpMenu", "Test.PopulateHelpMenu", function( tTabs )
+hook.Add( "PopulateHelpMenu", "PRP.Hooks.PopulateHelpMenu", function( tTabs )
     tTabs["helix"] = function(container)
         container:Add("ixCredits")
     end
