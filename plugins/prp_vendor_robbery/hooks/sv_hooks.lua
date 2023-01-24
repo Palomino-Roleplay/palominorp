@@ -58,12 +58,12 @@ function ENT_VENDOR:OnRobberyOver( pPlayer )
     self._lastRobbery = CurTime()
 
     -- @TODO: Do better animations
-    local iGesture = self:AddGesture( ACT_COVER_LOW )
-    timer.Simple( ix.config.Get( "NPCRobberyAlarmTime", 30 ), function()
-        if not IsValid( self ) then return end
-        self:RemoveGesture( iGesture )
-        self:ResetSequence( 4 )
-    end )
+    -- local iGesture = self:AddGesture( ACT_COVER_LOW )
+    -- timer.Simple( ix.config.Get( "NPCRobberyAlarmTime", 30 ), function()
+    --     if not IsValid( self ) then return end
+    --     self:RemoveGesture( iGesture )
+    --     self:ResetSequence( 4 )
+    -- end )
 end
 
 function ENT_VENDOR:OnRobberySuccess( pPlayer )
@@ -72,15 +72,18 @@ function ENT_VENDOR:OnRobberySuccess( pPlayer )
 
     self:OnRobberyOver()
 
+    local iPayout = ix.config.Get( "NPCRobberyPayout", 500 )
+    iPayout = iPayout + math.random( -iPayout * 0.1, iPayout * 0.1 )
+
     if math.Rand( 0, 1 ) < ix.config.Get( "NPCRobberyPoliceChance", 0 ) then
-        pPlayer:Notify( "You've robbed the vendor, but the automatic alarm was triggered!" )
+        pPlayer:Notify( "You've robbed " .. ix.currency.Get( iPayout ) .. " from the vendor, but the automatic alarm was triggered!" )
         self:CallPolice( pPlayer )
     else
-        pPlayer:Notify( "You successfully robbed the vendor!" )
+        pPlayer:Notify( "You successfully robbed " .. ix.currency.Get( iPayout ) .. " from the vendor!" )
     end
 
     -- @TODO: Customize loot
-    pPlayer:GetCharacter():GiveMoney( 500 )
+    pPlayer:GetCharacter():GiveMoney( iPayout )
     -- @TODO: NPC and player cooldowns
 end
 
