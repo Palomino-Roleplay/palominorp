@@ -25,3 +25,8 @@ ix.config.Add("NPCRobberyScreamChance", 0.3, "Chance of the NPC screaming at the
     category = "Vendor Robbery",
     data = {min = 0, max = 1, decimals = 2}
 })
+
+ix.config.Add("NPCRobberyPayout", 500, "What is the payout from NPC robberies? +/- 10%", nil, {
+    category = "Vendor Robbery",
+    data = {min = 100, max = 5000, decimals = 0}
+})
