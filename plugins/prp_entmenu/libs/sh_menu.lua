@@ -65,13 +65,11 @@ if CLIENT then
                 ix.menu.NetworkChoice( eEntity, k, bStatus )
                 ix.menu.panelV2:Remove()
                 ix.menu.panelV2 = nil
-                gui.EnableScreenClicker( false )
             end )
         end
-        gui.EnableScreenClicker( true )
-        ix.menu.panelV2:Open()
 
-        RegisterDermaMenuForClose( ix.menu.panelV2 )
+        ix.menu.panelV2:Open( ScrW() / 2, ScrH() / 2 )
+        input.SetCursorPos( ScrW() / 2, ScrH() / 2 )
 
         return true
     end
