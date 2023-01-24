@@ -4,7 +4,7 @@ PLUGIN.name = "No Animation"
 PLUGIN.author = "sil"
 PLUGIN.description = "Remove's helix's ugly character animations"
 
-local GAMEMODE_BASE = baseclass.Get( "gamemode_base" )
+local GAMEMODE_BASE = baseclass.Get( "gamemode_sandbox" )
 
 function Schema:TranslateActivity( pPlayer, iAct )
     return GAMEMODE_BASE:TranslateActivity( pPlayer, iAct )
