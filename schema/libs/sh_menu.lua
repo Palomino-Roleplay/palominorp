@@ -12,8 +12,6 @@ ix.menu.registered = ix.menu.registered or {}
 -- } )
 
 -- This overrides GetEntityMenu. Don't use it in functions where you use this.
--- @TODO: Actually it might not have to ^
--- @TODO: Investigate why all this only works after autorefresh
 
 function ix.menu.RegisterOption( tEntityTable, sOption, tData )
     ix.menu.registered[tEntityTable.ClassName] = ix.menu.registered[tEntityTable.ClassName] or {}
