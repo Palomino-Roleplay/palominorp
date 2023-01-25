@@ -112,8 +112,12 @@ end
 -- @TODO: Move this to a config file
 PLUGIN.Garages = {
     ["rp_riverden_v1a"] = {
+        -- Police Garage
         2020,
         2023,
+        -- Fire Department
+        3189,
+        3188
     }
 }
 
