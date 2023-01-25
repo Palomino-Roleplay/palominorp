@@ -25,6 +25,38 @@ SWEP.DrawAmmo               = false
 
 -- @TODO: Figure out what the fuck is wrong with these animations
 
+ix.menu.RegisterPlayerOption( "Drag", {
+    OnCanRun = function( pVictim, pPlayer, sOption, tData )
+        -- Which one is returning false?
+
+        Print(
+            pVictim:IsPlayer(),
+            not pVictim:GetNetVar( "draggedBy", false ),
+            pVictim:GetPos():DistToSqr( pPlayer:GetPos() ) <= 8000,
+            pVictim:IsHandcuffed(),
+            not IsValid( pPlayer:GetNetVar( "dragging", NULL ) )
+        )
+
+        return pVictim:IsPlayer()
+            and not pVictim:GetNetVar( "draggedBy", false )
+            and pVictim:GetPos():DistToSqr( pPlayer:GetPos() ) <= 8000
+            and pVictim:IsHandcuffed()
+            -- and not IsValid( pPlayer:GetNetVar( "dragging", NULL ) )
+    end,
+    OnRun = function( pVictim, pPlayer, sOption, tData )
+        Realistic_Police.Drag( pVictim, pPlayer )
+    end
+} )
+
+ix.menu.RegisterPlayerOption( "Stop Dragging", {
+    OnCanRun = function( pVictim, pPlayer, sOption, tData )
+        return pVictim:GetNetVar( "draggedBy", false ) == pPlayer
+    end,
+    OnRun = function( pVictim, pPlayer, sOption, tData )
+        Realistic_Police.Drag( pVictim, pPlayer )
+    end
+} )
+
 function SWEP:Initialize()
     self:SetHoldType( "passive" )
 end
@@ -78,7 +110,7 @@ function SWEP:SecondaryAttack()
     if SERVER then
         -- @TODO Animation?
 
-        pVictim:UnHandcuff()
+        pVictim:Uncuff()
     end
 
     -- @TODO: Consider different sound for uncuffing

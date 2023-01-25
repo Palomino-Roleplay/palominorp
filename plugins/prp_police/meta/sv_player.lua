@@ -30,4 +30,5 @@ function PLY:Uncuff()
     self:StripWeapon( "prp_cuffed" )
 
     Realistic_Police.ResetBonePosition(Realistic_Police.ManipulateBoneCuffed, self)
+    Realistic_Police.StopDrag( self )
 end
