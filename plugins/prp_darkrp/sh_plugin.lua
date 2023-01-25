@@ -7,6 +7,8 @@ PLUGIN.description = "Wrapper for DarkRP addons."
 local PLY = FindMetaTable("Player")
 DarkRP = DarkRP or {}
 
+ix.util.Include("meta/sh_character.lua")
+
 ix.util.Include("modules/sh_entityvars.lua")
 
 ix.util.Include("addons/advanced_police_mod/sv_apm.lua")
