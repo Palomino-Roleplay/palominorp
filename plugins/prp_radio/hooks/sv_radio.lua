@@ -15,6 +15,7 @@ end
 
 function PLUGIN:PlayerButtonDown( pPlayer, iKey )
     if not IsFirstTimePredicted() then return end
+    if not pPlayer:HasRadio() then return end
 
     if iKey == KEY_B then
         pPlayer._bInRadio = true
@@ -25,6 +26,7 @@ end
 
 function PLUGIN:PlayerButtonUp( pPlayer, iKey )
     if not IsFirstTimePredicted() then return end
+    if not pPlayer:HasRadio() then return end
 
     if iKey == KEY_B then
         pPlayer._bInRadio = false
