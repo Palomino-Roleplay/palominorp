@@ -11,9 +11,9 @@ function CHAR:SpawnJobVehicle( sVehicleID )
     self._jobVehicle = vVehicle
 
     -- @TODO: Do this better
-    vVehicle.ownedPlayer = self:GetPlayer()
 
     vVehicle:SetNetVar( "owner", self:GetID() )
+    vVehicle:SetNetVar( "policeVehicle", self:IsPolice() )
     vVehicle:CallOnRemove( "PRP.Vehicle.RemoveJobVehicle", function()
         self._jobVehicle = nil
     end )

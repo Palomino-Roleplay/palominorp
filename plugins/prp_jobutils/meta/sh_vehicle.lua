@@ -1,8 +1,7 @@
 local VEHICLE = FindMetaTable("Vehicle")
 
 function VEHICLE:IsPoliceVehicle()
-    -- @TODO: holy shit make this better
-    return SERVER and self.ownedPlayer and self.ownedPlayer:IsPolice()
+    return self:GetNetVar( "policeVehicle", false )
 end
 
 -- function VEHICLE:CPPIGetOwner()
