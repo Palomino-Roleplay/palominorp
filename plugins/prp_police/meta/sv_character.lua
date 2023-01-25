@@ -5,10 +5,11 @@ local CHAR = ix.meta.character
 
 function CHAR:Arrest( pArrestor, iTime, sReason )
     if self:IsArrested() then return false, "Character is already arrested." end
+    local pPlayer = self:GetPlayer()
 
+    pPlayer:Uncuff()
     self:SetFaction( FACTION_PRISONER )
 
-    local pPlayer = self:GetPlayer()
 
     pPlayer:StripWeapons()
 
