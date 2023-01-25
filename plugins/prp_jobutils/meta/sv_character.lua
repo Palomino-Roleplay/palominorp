@@ -6,9 +6,12 @@ function CHAR:SpawnJobVehicle( sVehicleID )
     end
 
     -- @TODO: Find the parking spaces and al that crap
-    local vVehicle = PRP.Vehicle.Spawn( "07sgmcrownviccvpi", Vector( -8130, 8137, -199 ), Angle( 0, 0, 0 ) )
+    local vVehicle = PRP.Vehicle.Spawn( "07sgmcrownviccvpi", Vector( -8128.567383, 8132.400879, -199.968750 ), Angle( 0, 0, 0 ) )
 
     self._jobVehicle = vVehicle
+
+    -- @TODO: Do this better
+    vVehicle.ownedPlayer = self:GetPlayer()
 
     vVehicle:SetNetVar( "owner", self:GetID() )
     vVehicle:CallOnRemove( "PRP.Vehicle.RemoveJobVehicle", function()

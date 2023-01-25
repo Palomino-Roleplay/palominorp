@@ -87,3 +87,62 @@ function PLUGIN:PlayerLeaveVehicle( pPlayer )
         pDraggedPlayer:ExitVehicle()
     end
 end
+
+-- Police garages
+
+-- @TODO: Move to library
+local function DoorIsOpen( door )
+	local doorClass = door:GetClass()
+
+	if ( doorClass == "func_door" or doorClass == "func_door_rotating" ) then
+
+		return door:GetInternalVariable( "m_toggle_state" ) == 0
+
+	elseif ( doorClass == "prop_door_rotating" ) then
+
+		return door:GetInternalVariable( "m_eDoorState" ) ~= 0
+
+	else
+
+		return false
+
+	end
+end
+
+-- @TODO: Move this to a config file
+PLUGIN.Garages = {
+    ["rp_riverden_v1a"] = {
+        2020,
+        2023,
+    }
+}
+
+function PLUGIN:PlayerButtonDown( pPlayer, iButton )
+    if pPlayer._nextGarageCheck and pPlayer._nextGarageCheck > CurTime() then return end
+    if iButton ~= KEY_LSHIFT then return end
+    if not pPlayer:InVehicle() then return end
+    local vVehicle = pPlayer:GetVehicle()
+    if not vVehicle:IsPoliceVehicle() then return end
+
+    local vPos = vVehicle:GetPos()
+
+    for _, iGarageID in pairs( self.Garages[game.GetMap()] or {} ) do
+        local eGarage = ents.GetMapCreatedEntity( iGarageID )
+        if not IsValid( eGarage ) then continue end
+        if vPos:DistToSqr( eGarage:GetPos() ) > 500000 then continue end
+
+        pPlayer:EmitSound( "buttons/button24.wav" )
+        pPlayer._nextGarageCheck = CurTime() + 2
+
+        local bIsOpen = DoorIsOpen( eGarage )
+        eGarage:Fire( bIsOpen and "Close" or "Open" )
+
+        if not bIsOpen then
+            timer.Simple( 7, function()
+                eGarage:Fire( "Close" )
+            end )
+        end
+
+        break
+    end
+end
