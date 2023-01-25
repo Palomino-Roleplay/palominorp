@@ -19,7 +19,7 @@ local function GetEntityMenu( eEntity )
 
     if ( tRegisteredOptions ) then
         for k, v in pairs( tRegisteredOptions ) do
-            if ( v.OnCanRun and v.OnCanRun( LocalPlayer(), eEntity ) == false ) then continue end
+            if ( v.OnCanRun and v.OnCanRun( eEntity, LocalPlayer() ) == false ) then continue end
             tOptions[k] = v.OnRun
         end
     end
@@ -58,7 +58,7 @@ hook.Add( "CanPlayerInteractEntity", "PRP.EntMenu.CanPlayerInteractEntity", func
         local tOptionData = ix.menu.registered[eEntity:GetClass()][sOption]
 
         -- Allows others to add their own checks.
-        if tOptionData.OnCanRun and tOptionData.OnCanRun( pPlayer, eEntity, tData ) == false then
+        if tOptionData.OnCanRun and tOptionData.OnCanRun( eEntity, pPlayer, eEntity, tData ) == false then
             return false
         end
     end
