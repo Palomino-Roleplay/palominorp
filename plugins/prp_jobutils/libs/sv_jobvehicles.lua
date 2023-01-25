@@ -52,8 +52,8 @@ end
 concommand.Add( "prp_dev_spawncopcar", function( pPlayer )
     if not pPlayer:IsDeveloper() then return end
 
-    local vTestPos = Vector( 3597, 2940, 9 )
-    local vVehicle = PRP.Vehicle.Spawn( "07sgmcrownviccvpi", Vector( 3597, 2940, 9 ), Angle( 0, 0, 0 ) )
+    local vTestPos = Vector( -8128.567383, 8132.400879, -199.968750 )
+    local vVehicle = PRP.Vehicle.Spawn( "07sgmcrownviccvpi", Vector( -8128.567383, 8132.400879, -199.968750 ), Angle( 0, 0, 0 ) )
 
     undo.Create( "Vehicle" )
         undo.SetPlayer( pPlayer )
