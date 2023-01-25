@@ -13,6 +13,20 @@ ix.menu.registered = ix.menu.registered or {}
 
 -- This overrides GetEntityMenu. Don't use it in functions where you use this.
 
+local function GetEntityMenu( eEntity )
+    local tOptions = eEntity:IsPlayer() and {} or ( eEntity._oldGetEntityMenu and eEntity:_oldGetEntityMenu( LocalPlayer() ) or {} )
+    local tRegisteredOptions = ix.menu.registered[eEntity:GetClass()]
+
+    if ( tRegisteredOptions ) then
+        for k, v in pairs( tRegisteredOptions ) do
+            if ( v.OnCanRun and v.OnCanRun( LocalPlayer(), eEntity ) == false ) then continue end
+            tOptions[k] = v.OnRun
+        end
+    end
+
+    return tOptions
+end
+
 function ix.menu.RegisterOption( tEntityTable, sOption, tData )
     ix.menu.registered[tEntityTable.ClassName] = ix.menu.registered[tEntityTable.ClassName] or {}
     ix.menu.registered[tEntityTable.ClassName][sOption] = tData
@@ -20,26 +34,31 @@ function ix.menu.RegisterOption( tEntityTable, sOption, tData )
     tEntityTable["OnSelect"..sOption:gsub("%s", "")] = tData.OnRun
 
     -- Helix is weird. We need these for the hooks to run so we can show the menu in the first place.
-    tEntityTable.GetEntityMenu = tEntityTable.GetEntityMenu or function( self ) return {} end
+    if CLIENT then
+        tEntityTable._oldGetEntityMenu = tEntityTable._oldGetEntityMenu or tEntityTable.GetEntityMenu
+        tEntityTable.GetEntityMenu = tEntityTable.GetEntityMenu or GetEntityMenu
+    end
     tEntityTable.OnOptionSelected = tEntityTable.OnOptionSelected or function() end
 end
 
+local PLY = FindMetaTable( "Player" )
 function ix.menu.RegisterPlayerOption( sOption, tData )
     ix.menu.registered["player"] = ix.menu.registered["player"] or {}
     ix.menu.registered["player"][sOption] = tData
+
+    PLY["OnSelect"..sOption:gsub("%s", "")] = tData.OnRun
 end
+
+hook.Add( "GetPlayerEntityMenu", "PRP.EntMenu.GetPlayerEntityMenu", function( pPlayer, tOptions )
+    table.Merge( tOptions, GetEntityMenu( pPlayer ) )
+end )
 
 hook.Add( "CanPlayerInteractEntity", "PRP.EntMenu.CanPlayerInteractEntity", function( pPlayer, eEntity, sOption, tData )
     if ( ix.menu.registered[eEntity:GetClass()] and ix.menu.registered[eEntity:GetClass()][sOption] ) then
         local tOptionData = ix.menu.registered[eEntity:GetClass()][sOption]
-        local bCanRun = true
-
-        if ( tOptionData.OnCanRun ) then
-            bCanRun = tOptionData.OnCanRun( pPlayer, eEntity, tData )
-        end
 
         -- Allows others to add their own checks.
-        if not bCanRun then
+        if tOptionData.OnCanRun and tOptionData.OnCanRun( pPlayer, eEntity, tData ) == false then
             return false
         end
     end
@@ -70,21 +89,5 @@ if CLIENT then
         input.SetCursorPos( ScrW() / 2, ScrH() / 2 )
 
         return true
-    end
-
-    function Schema:ShowEntityMenu( eEntity )
-        local tOptions = eEntity:GetEntityMenu( LocalPlayer() ) or {}
-        local tRegisteredOptions = ix.menu.registered[eEntity:GetClass()]
-
-        if ( tRegisteredOptions ) then
-            for k, v in pairs( tRegisteredOptions ) do
-                if ( v.OnCanRun and not v.OnCanRun( LocalPlayer(), eEntity ) ) then continue end
-                tOptions[k] = v.OnRun
-            end
-        end
-
-        if (istable(tOptions) and !table.IsEmpty(tOptions)) then
-            ix.menu.Open(tOptions, eEntity)
-        end
     end
 end
