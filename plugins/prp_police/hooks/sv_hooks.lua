@@ -55,3 +55,12 @@ net.Receive( "PRP.Police.IssueTicket", function( _, pOfficer )
     local bSuccess, sMessage = pOfficer:GetCharacter():IssueTicket( pVictim, sReason, iAmount )
     pOfficer:Notify( sMessage )
 end )
+
+-- Handcuffs
+
+function PLUGIN:OnPlayerUnRestricted( pPlayer )
+    if pPlayer._bIsHandcuffed then
+        pPlayer._bIsHandcuffed = false
+        pPlayer:Uncuff()
+    end
+end

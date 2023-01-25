@@ -4,6 +4,7 @@ PLUGIN.name = "Police"
 PLUGIN.author = "sil"
 PLUGIN.description = "Adds basic police functionality."
 
+ix.util.Include( "meta/sv_player.lua" )
 ix.util.Include( "meta/sv_character.lua" )
 ix.util.Include( "meta/sh_character.lua" )
 
