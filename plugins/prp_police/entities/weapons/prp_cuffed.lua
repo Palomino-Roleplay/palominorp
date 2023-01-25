@@ -31,9 +31,20 @@ function SWEP:SecondaryAttack()
 
 end
 
+-- From realistic police mod
 function SWEP:Deploy()
-	self:SetHoldType("passive")
-end
+	local Owner = self:GetOwner()
+	-- Manipulate the Bone of the Player 
+	timer.Simple(0.2, function()
+		for k,v in pairs(Realistic_Police.ManipulateBoneCuffed) do
+			local bone = Owner:LookupBone(k)
+			if bone then
+				Owner:ManipulateBoneAngles(bone, v)
+			end
+		end
+		self:SetHoldType("passive")
+	end ) 
+end 
 
 function SWEP:Holster()
 	return false

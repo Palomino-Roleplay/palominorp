@@ -12,13 +12,6 @@ function PLY:Handcuff()
 
     local wCuffs = self:Give( "prp_cuffed", true )
     self:SelectWeapon( "prp_cuffed" )
-
-	for k,v in pairs(Realistic_Police.ManipulateBoneCuffed) do
-		local bone = self:LookupBone(k)
-		if bone then
-			self:ManipulateBoneAngles(bone, v)
-		end
-	end
 end
 
 function PLY:Uncuff()
