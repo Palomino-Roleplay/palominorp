@@ -24,32 +24,18 @@ SWEP.UseHands               = true
 SWEP.DrawAmmo               = false
 
 function SWEP:PrimaryAttack()
-	
-end 
+
+end
 
 function SWEP:SecondaryAttack()
 
 end
 
 function SWEP:Deploy()
-	-- @TODO: Check out https://github.com/Facepunch/garrysmod-issues/issues/5148
-
-	local pPlayer = self:GetOwner()
-	for k,v in pairs(Realistic_Police.ManipulateBoneCuffed) do
-		local bone = pPlayer:LookupBone(k)
-		if bone then
-			pPlayer:ManipulateBoneAngles(bone, v)
-		end
-	end
-
 	self:SetHoldType("passive")
 end
 
 function SWEP:Holster()
-	if not IsFirstTimePredicted() then return end
-
-	Realistic_Police.ResetBonePosition(Realistic_Police.ManipulateBoneCuffed, self:GetOwner())
-
 	return false
 end
 
