@@ -60,7 +60,7 @@ end
 
 function VEHICLE:GetEntityMenu( pPlayer )
     -- @TODO: Remove the damn ALT+SHIFT thing in helix.
-    return pPlayer:KeyDown( IN_WALK ) and GetEntityMenu( self )
+    return not pPlayer:InVehicle() and pPlayer:KeyDown( IN_WALK ) and GetEntityMenu( self )
 end
 
 hook.Add( "GetPlayerEntityMenu", "PRP.EntMenu.GetPlayerEntityMenu", function( pPlayer, tOptions )
