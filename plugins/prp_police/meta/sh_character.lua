@@ -46,11 +46,3 @@ function CHAR:GetOverdueTickets()
 
     return tOverdue
 end
-
--- @TODO: Move to sh_player.lua
-local PLY = FindMetaTable( "Player" )
-
-function PLY:IsHandcuffed()
-    -- @TODO: Return true only when handcuffed, not tied. (look at weapon maybe)
-    return self:IsRestricted()
-end

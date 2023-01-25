@@ -40,15 +40,17 @@ hook.Add("SetupMove", "RPT:Move", function(ply, data)
             data:RemoveKeys(IN_JUMP)
         end
     end
-
+    
     -- this hook is the hook for drag the player 
-    if IsValid(ply:GetNetVar("draggedBy")) then 
+    if IsValid(ply:GetNetVar("draggedBy")) then
+        -- data:ClearMovement()
         if ply:GetPos():DistToSqr(ply:GetNetVar("draggedBy"):GetPos()) < 40000 then
             if IsValid(ply:GetNetVar("draggedBy")) then
                 local VectorDrag = ply:GetNetVar("draggedBy"):GetPos() - ply:GetPos()
                 data:SetVelocity(Vector(VectorDrag.x*4, VectorDrag.y*4, -100))
             end
         else
+            ply:GetNetVar("draggedBy", NULL):SetNetVar("dragging", NULL)
             ply:SetNetVar("draggedBy", false)
         end
     end

@@ -5,6 +5,7 @@ PLUGIN.author = "sil"
 PLUGIN.description = "Adds basic police functionality."
 
 ix.util.Include( "meta/sv_player.lua" )
+ix.util.Include( "meta/sh_player.lua" )
 ix.util.Include( "meta/sv_character.lua" )
 ix.util.Include( "meta/sh_character.lua" )
 
@@ -107,3 +108,31 @@ ix.config.Add("TicketOverdueTime", 24 * 3, "After how many hours are tickets dec
     data = {min = 1, max = 24 * 7, decimals = 0},
     category = "Police"
 })
+
+-- Dragging
+
+ix.menu.RegisterVehicleOption( "Force Into Vehicle", {
+    OnCanRun = function( eEntity, pPlayer )
+        -- @TODO: Check that it's their own vehicle
+        return pPlayer:IsDragging()
+    end,
+    OnRun = function( eEntity, pPlayer, sOption, tData )
+        -- Print( pPlayer:GetDragged() )
+        pPlayer:GetDragging():ForceIntoVehicle( eEntity )
+    end,
+} )
+
+ix.menu.RegisterVehicleOption( "Force Out of Vehicle", {
+    OnCanRun = function( eEntity, pPlayer )
+        -- @TODO: Check that it's their own vehicle or something idk do some checks
+        -- This is serverside only. Find another way:
+        -- return not table.IsEmpty( eEntity:VC_getPlayers() )
+        return true
+    end,
+    OnRun = function( eEntity, pPlayer, sOption, tData )
+        -- Print( pPlayer:GetDragged() )
+        -- pPlayer:GetDragging():ForceIntoVehicle( eEntity )
+        -- @TODO: all the checks and that good shit.
+        eEntity:VC_clearSeats()
+    end,
+} )

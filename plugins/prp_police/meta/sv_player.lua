@@ -32,3 +32,19 @@ function PLY:Uncuff()
     Realistic_Police.ResetBonePosition(Realistic_Police.ManipulateBoneCuffed, self)
     Realistic_Police.StopDrag( self )
 end
+
+-- Dragging
+
+function PLY:ForceIntoVehicle( vVehicle, pOfficer )
+    local tSeats = vVehicle:VC_getSeatsAvailable()
+    pOfficer = pOfficer or self:GetDragged()
+
+    if #tSeats == 0 then
+        pOfficer:Notify( "The vehicle is full!" )
+        return false
+    end
+
+    self:EnterVehicle( tSeats[#tSeats] )
+
+    Realistic_Police.StopDrag( self )
+end

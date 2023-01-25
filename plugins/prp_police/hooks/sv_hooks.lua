@@ -64,3 +64,26 @@ function PLUGIN:OnPlayerUnRestricted( pPlayer )
         pPlayer:Uncuff()
     end
 end
+
+-- Dragging
+
+function PLUGIN:CanPlayerEnterVehicle( pPlayer, vVehicle, iSeat )
+    -- if IsValid( pPlayer:GetNetVar( "draggedBy", NULL ) ) then return false end
+    return true
+end
+
+function PLUGIN:PlayerEnteredVehicle( pPlayer, vVehicle, iSeat )
+    local pDraggedPlayer = pPlayer:GetDragging()
+    if IsValid( pDraggedPlayer ) then
+
+        -- @TODO: Check that VCMod hasn't shat itself
+        pDraggedPlayer:ForceIntoVehicle( vVehicle )
+    end
+end
+
+function PLUGIN:PlayerLeaveVehicle( pPlayer )
+    local pDraggedPlayer = pPlayer:GetDragging()
+    if IsValid( pDraggedPlayer ) then
+        pDraggedPlayer:ExitVehicle()
+    end
+end
