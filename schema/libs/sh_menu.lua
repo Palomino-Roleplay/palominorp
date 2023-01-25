@@ -15,7 +15,7 @@ ix.menu.registered = ix.menu.registered or {}
 
 local function GetEntityMenu( eEntity )
     local tOptions = eEntity:IsPlayer() and {} or ( eEntity._oldGetEntityMenu and eEntity:_oldGetEntityMenu( LocalPlayer() ) or {} )
-    local tRegisteredOptions = ix.menu.registered[eEntity:GetClass()]
+    local tRegisteredOptions = ix.menu.registered[eEntity:IsVehicle() and "vehicle" or eEntity:GetClass()]
 
     if ( tRegisteredOptions ) then
         for k, v in pairs( tRegisteredOptions ) do
@@ -49,8 +49,34 @@ function ix.menu.RegisterPlayerOption( sOption, tData )
     PLY["OnSelect"..sOption:gsub("%s", "")] = tData.OnRun
 end
 
+local VEHICLE = FindMetaTable( "Vehicle" )
+function ix.menu.RegisterVehicleOption( sOption, tData )
+    -- @TODO: Maybe another table for vehicles?
+    ix.menu.registered["vehicle"] = ix.menu.registered["vehicle"] or {}
+    ix.menu.registered["vehicle"][sOption] = tData
+
+    VEHICLE["OnSelect"..sOption:gsub("%s", "")] = tData.OnRun
+end
+
+function VEHICLE:GetEntityMenu( pPlayer )
+    -- @TODO: Remove the damn ALT+SHIFT thing in helix.
+    return pPlayer:KeyDown( IN_WALK ) and GetEntityMenu( self )
+end
+
 hook.Add( "GetPlayerEntityMenu", "PRP.EntMenu.GetPlayerEntityMenu", function( pPlayer, tOptions )
     table.Merge( tOptions, GetEntityMenu( pPlayer ) )
+end )
+
+hook.Add( "PlayerUse", "PRP.EntMenu.PlayerUse", function( pPlayer, eEntity )
+    if eEntity:IsVehicle() and pPlayer:KeyDown( IN_WALK ) then
+        return false
+    end
+end )
+
+hook.Add( "VC_canEnterPassengerSeat", "PRP.EntMenu.VC_canEnterPassengerSeat", function( pPlayer, eEntity, iSeat )
+    if pPlayer:KeyDown( IN_WALK ) then
+        return false
+    end
 end )
 
 hook.Add( "CanPlayerInteractEntity", "PRP.EntMenu.CanPlayerInteractEntity", function( pPlayer, eEntity, sOption, tData )
