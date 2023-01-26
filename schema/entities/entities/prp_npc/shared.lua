@@ -6,6 +6,9 @@ ENT.Author = "sil"
 ENT.Spawnable = true
 ENT.AdminOnly = true
 
+ENT.PhysgunDisable = true
+ENT.PhysgunDisabled = true
+
 ENT.Sequence = "idle_all_02"
 
 -- Good ones:
