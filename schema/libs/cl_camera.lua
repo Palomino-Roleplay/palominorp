@@ -560,35 +560,35 @@ hook.Add( "HUDPaint", "BSplinePointExample", function()
 end )
 
 
-hook.Add( "PostDrawTranslucentRenderables", "tsetjhsoeifjosidfj", function()
-    for iIndex, tData in ipairs( PRP.Scene.ParamTest ) do
-        render.DrawWireframeSphere( tData[ 1 ], 10, 10, 10, Color( 255, 0, 0 ), false )
-        if iIndex ~= 1 then
-            if tData.controlPoints then
-                for _, vPos in ipairs( tData.controlPoints ) do
-                    render.DrawWireframeSphere( vPos, 10, 10, 10, Color( 0, 255, 0 ), false )
-                end
+-- hook.Add( "PostDrawTranslucentRenderables", "tsetjhsoeifjosidfj", function()
+--     for iIndex, tData in ipairs( PRP.Scene.ParamTest ) do
+--         render.DrawWireframeSphere( tData[ 1 ], 10, 10, 10, Color( 255, 0, 0 ), false )
+--         if iIndex ~= 1 then
+--             if tData.controlPoints then
+--                 for _, vPos in ipairs( tData.controlPoints ) do
+--                     render.DrawWireframeSphere( vPos, 10, 10, 10, Color( 0, 255, 0 ), false )
+--                 end
 
-                local iDetail = 10
-                local tPoints = table.Copy( tData.controlPoints )
-                table.insert( tPoints, 1, PRP.Scene.ParamTest[ iIndex - 1 ][ 1 ] )
-                table.insert( tPoints, tData[ 1 ] )
+--                 local iDetail = 10
+--                 local tPoints = table.Copy( tData.controlPoints )
+--                 table.insert( tPoints, 1, PRP.Scene.ParamTest[ iIndex - 1 ][ 1 ] )
+--                 table.insert( tPoints, tData[ 1 ] )
 
-                -- Print( tPoints )
+--                 -- Print( tPoints )
 
-                local vLastSpline = tPoints[ 1 ]
-                for i=1, iDetail do
-                    -- Print( tPoints )
-                    local vSpline = CalculateBezierFromBSplinePoint( i / iDetail, tPoints, 1 )
-                    render.DrawLine( vLastSpline, vSpline, Color( 255, 100, 0 ), false )
-                    vLastSpline = vSpline
-                end
-            else
-                render.DrawLine( tData[ 1 ], PRP.Scene.ParamTest[ iIndex - 1 ][ 1 ], Color( 255, 0, 0 ), false )
-            end
-        end
-    end
-end )
+--                 local vLastSpline = tPoints[ 1 ]
+--                 for i=1, iDetail do
+--                     -- Print( tPoints )
+--                     local vSpline = CalculateBezierFromBSplinePoint( i / iDetail, tPoints, 1 )
+--                     render.DrawLine( vLastSpline, vSpline, Color( 255, 100, 0 ), false )
+--                     vLastSpline = vSpline
+--                 end
+--             else
+--                 render.DrawLine( tData[ 1 ], PRP.Scene.ParamTest[ iIndex - 1 ][ 1 ], Color( 255, 0, 0 ), false )
+--             end
+--         end
+--     end
+-- end )
 
 function CalculateBezierCurve( p0, p1, p2, p3, t )
     local u = 1 - t
