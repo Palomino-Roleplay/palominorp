@@ -204,6 +204,7 @@ PLUGIN.lockerItems = { -- sorry for fov, vec, and angles, I was not content with
 
 }
 
+PLUGIN.weaponItems = {}
 -- @TODO: Remove and fix the bottom mess.
 PLUGIN.weaponItems["weapon_pistol"] = {
     name = "Five Seven",
@@ -281,7 +282,7 @@ function PLUGIN:InitializedPlugins()
     PLUGIN.attachmentTable = {}
     PLUGIN.attachPlugin = ix.plugin.list["cw2attachments"]
     local weaponsTable = weapons.GetList()
-    -- PLUGIN.weaponItems = {}
+    -- PLUGIN.weaponItems = PLUGIN.weaponItems or {}
     PLUGIN.errorm = "An error has occurred!"
 
     -- for class, _ in pairs(guns) do 
