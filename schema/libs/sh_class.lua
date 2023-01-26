@@ -11,8 +11,6 @@ function ix.class.GetByFaction( faction )
         end
     end
 
-    Print(ix.class.list, faction)
-
     return tReturns
 end 
 
