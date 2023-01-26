@@ -318,7 +318,7 @@ function CAMERA_CONSTANT:CalcView( pPlayer, vOrigin, aAngles, iFOV, iZNear, iZFa
     local tReturnTable = {
         origin = self:GetPathValue( "origin" ),
         angles = self:GetPathValue( "angles" ),
-        fov = self:GetValue( "fov" ),
+        fov = 60 or self:GetValue( "fov" ),
         znear = self:GetValue( "znear" ),
         zfar = self:GetValue( "zfar" ),
         drawviewer = self:GetValue( "drawviewer" )
