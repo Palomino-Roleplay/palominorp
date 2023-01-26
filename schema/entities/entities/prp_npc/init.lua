@@ -1,39 +1,44 @@
---[[
-	Chessnut's NPC System
-	Do not re-distribute without author's permission.
-
-	Revision 161a9721c14b8ee18ef98bcc99d6c30fe9c195fa2d8e415f3cde1d1c4bdc012d
---]]
-
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
 function ENT:Initialize()
-	self:SetModel("models/mossman.mdl")
+	self:SetModel( "models/player/breen.mdl" )
 	self:SetUseType(SIMPLE_USE)
 	self:SetMoveType(MOVETYPE_NONE)
-	self:DrawShadow(true)
+	self:DrawShadow(false)
 	self:SetSolid(SOLID_BBOX)
 	self:PhysicsInit(SOLID_BBOX)
 
+	-- @TODO: Fix NPCs slightly floating
 	local physObj = self:GetPhysicsObject()
+	self:DropToFloor()
 
 	if (IsValid(physObj)) then
 		physObj:EnableMotion(false)
 		physObj:Sleep()
 	end
 
-    self:DropToFloor()
+    self:ResetSequence( self.Sequence )
 end
 
 function ENT:Think()
-    local sSequence = "LineIdle03"
-    self:ResetSequence( sSequence )
-    self:SetSequence( sSequence )
-    self:NextThink( CurTime() + self:SequenceDuration() )
+    -- self:ResetSequence( sSequence )
+    -- self:SetSequence( sSequence )
+    -- self:NextThink( CurTime() + self:SequenceDuration() )
 
-    print("think!")
     return true
+end
+
+function ENT:Use( pPlayer )
+	if self:GetNPC() then
+		self:GetNPC():Use( pPlayer )
+
+		if self:GetNPC().networkUse then
+			net.Start( "PRP.NPC.Use" )
+				net.WriteEntity( self )
+			net.Send( pPlayer )
+		end
+	end
 end
