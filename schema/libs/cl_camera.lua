@@ -456,7 +456,7 @@ PRP.Scene.ParamTest = {
         Angle( 26.532043, -83.072632, 0.000000 ),
     },
     {
-        Vector( -8058.126953, 10743.914063, 248.207550 ),
+        Vector( -7933.537598, 11055.622070, 501.927368 ),
         Angle( -6.335949, -140.624832, 0.000000 ),
         controlPoints = {
             Vector( -9122.620117, 12450.714844, 384.818909 ),
@@ -474,7 +474,11 @@ PRP.Scene.ParamTest = {
     },
     {
         Vector( -13683.786133, 8521.658203, -117.900970 ),
-        Angle( 2.904051, 173.042465, 0.000000 )
+        Angle( 2.904051, 173.042465, 0.000000 ),
+        controlPoints = {
+            Vector( -14639.407227, 9623.210938, 418.308868 ),
+            Vector( -12820.377930, 8504.253906, 53.799564 )
+        }
     }
 }
 
@@ -489,7 +493,6 @@ hook.Add( "HUDPaint", "BSplinePointExample", function()
 	-- Draw the spline
 	local pos = math.BSplinePoint( ( math.cos( CurTime() ) + 1 ) / 2, points, 1 )
 	draw.RoundedBox( 0, pos.x - 2, pos.y - 2, 4, 4, Color( 0, 0, 0 ) )
-    Print( pos )
 end )
 
 
