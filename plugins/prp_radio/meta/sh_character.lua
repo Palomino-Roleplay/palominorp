@@ -13,6 +13,7 @@ function CHAR:GetRadioChannel()
         return self._defaultRadioChannel
     end
 
+    -- @TODO: (HIGH PRIORITY) Use net vars and player metatable instead.
     return self:GetData( "radioChannel", "100.0" )
 end
 
