@@ -23,3 +23,17 @@ ix.option.Add( "speakInRadio", ix.type.number, KEY_B, {
     max = KEY_LAST,
     decimals = 0
 } )
+
+ix.command.Add("SetChannel", {
+    description = "Sets your frequency",
+    aliases = {"SetFreq"},
+    adminOnly = true,
+    arguments = {
+        ix.type.text
+    },
+    OnRun = function( self, pAdmin, sChannel )
+        pAdmin:GetCharacter():SetData( "radioChannel", sChannel )
+
+        pAdmin:Notify( "You have set your radio channel to " .. pAdmin:GetCharacter():GetRadioChannel() )
+    end
+} )
