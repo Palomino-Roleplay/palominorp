@@ -136,7 +136,7 @@ function PRP.Scene.RegisterLayer( sType, tTable, sBase )
     tTable._type = sType
 
     PRP.Scene.LayerFactory[sType] = tTable
-    baseclass.Set(  "PRP.Scene.Layer." .. sType, tTable )
+    baseclass.Set( "PRP.Scene.Layer." .. sType, tTable )
 
     local tMetatable = {}
 
