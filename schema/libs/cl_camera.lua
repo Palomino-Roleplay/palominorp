@@ -548,16 +548,16 @@ PRP.Scene.ParamTest = {
 
 local points = { Vector( 100, 100, 0 ), Vector( 200, 200, 0 ), Vector( 300, 100, 0 ), Vector( 400, 200, 0 ) }
 
-hook.Add( "HUDPaint", "BSplinePointExample", function()
-	-- Draw the points
-	for _, p in ipairs( points ) do
-		draw.RoundedBox( 0, p.x - 2, p.y - 2, 4, 4, color_white )
-	end
+-- hook.Add( "HUDPaint", "BSplinePointExample", function()
+-- 	-- Draw the points
+-- 	for _, p in ipairs( points ) do
+-- 		draw.RoundedBox( 0, p.x - 2, p.y - 2, 4, 4, color_white )
+-- 	end
 
-	-- Draw the spline
-	local pos = math.BSplinePoint( ( math.cos( CurTime() ) + 1 ) / 2, points, 1 )
-	draw.RoundedBox( 0, pos.x - 2, pos.y - 2, 4, 4, Color( 0, 0, 0 ) )
-end )
+-- 	-- Draw the spline
+-- 	local pos = math.BSplinePoint( ( math.cos( CurTime() ) + 1 ) / 2, points, 1 )
+-- 	draw.RoundedBox( 0, pos.x - 2, pos.y - 2, 4, 4, Color( 0, 0, 0 ) )
+-- end )
 
 
 -- hook.Add( "PostDrawTranslucentRenderables", "tsetjhsoeifjosidfj", function()
