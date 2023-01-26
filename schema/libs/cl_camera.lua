@@ -279,6 +279,10 @@ function CAMERA_CONSTANT:GetPathValueAt( sProperty, iTimestamp )
             -- @TODO: Weird af
             local iFrac = ( iCurrentDistance - tPrevKeyframe.distanceEnd ) / tKeyframe.distanceFromLast
 
+            if sProperty == "angles" then
+                iFrac = math.ease.InOutSine( iFrac )
+            end
+
             -- Print( "iFrac calculation: ( " .. iCurrentDistance .. " - " .. tPrevKeyframe.distanceEnd .. " ) / " .. tKeyframe.distanceFromLast )
 
             -- Print( "New frame:" )
@@ -479,6 +483,66 @@ PRP.Scene.ParamTest = {
             Vector( -14639.407227, 9623.210938, 418.308868 ),
             Vector( -12820.377930, 8504.253906, 53.799564 )
         }
+    },
+    {
+        Vector( -14551.575195, 9656.244141, 692.191833 ),
+        Angle( 22.868050, -34.476765, 0.000000 ),
+        controlPoints = {
+            Vector( -14712.918945, 8547.171875, -312.994141 ),
+            Vector( -13687.024414, 10280.100586, 631.372742 )
+        }
+    },
+    {
+        Vector( -12925.424805, 10890.608398, 1700.462158 ),
+        Angle( -41.811935, -65.760735, 0.000000 ),
+        controlPoints = {
+            Vector( -15313.848633, 9103.367188, 763.346924 ),
+            Vector( -14794.770508, 10995.667969, 1684.759399 )
+        }
+    },
+    {
+        Vector( -10582.880859, 10330.970703, 981.961670 ),
+        Angle( 3.992058, -94.800461, 0.000000 ),
+        controlPoints = {
+            Vector( -11389.326172, 10801.477539, 1712.655884 ),
+            Vector( -11214.162109, 10862.300781, 1007.207397 )
+        }
+    },
+    {
+        Vector( -9592.422852, 9511.152344, 334.069458 ),
+        Angle( -17.523907, 91.091286, 0.000000 )
+    },
+    {
+        Vector( -9059.455078, 10630.475586, 213.304214 ),
+        Angle( 2.144090, -0.252699, 0.000000 ),
+        controlPoints = {
+            Vector( -8929.914063, 9487.555664, 215.558350 ),
+            Vector( -9795.203125, 10679.911133, 639.058853 )
+        }
+    },
+    {
+        Vector( -4956.271973, 10430.616211, 400.524170 ),
+        Angle( 15.608089, -135.456268, 0.000000 ),
+        controlPoints = {
+            Vector( -8951.448242, 10667.985352, -330.970459 ),
+            Vector( -4739.313965, 11127.822266, 500.424072 )
+        }
+    },
+    {
+        Vector( -5583.189453, 8433.306641, 101.042458 ),
+        Angle( 3.464097, -91.764191, 0.000000 ),
+        controlPoints = {
+            Vector( -5136.088379, 9910.834961, 361.150238 ),
+            Vector( -5895.925293, 9097.495117, 109.876915 )
+        }
+    },
+    {
+        Vector( -4935.776855, 3337.165771, -108.900574 ),
+        Angle( -0.099901, -169.907761, 0.000000 ),
+        controlPoints = {
+            Vector( -5351.652344, 7931.601074, 95.111252 ),
+            Vector( -4352.577637, 5849.111328, -2.957237 )
+        }
     }
 }
 
@@ -553,7 +617,7 @@ concommand.Add( "prp_testcamera_constant", function()
 
     local oCameraLayer
     PRP.Scene.Active, oCameraLayer = PRP.Scene.Create( {}, "CameraConstant" )
-    PRP.Scene.Active:SetDuration( 10 )
+    PRP.Scene.Active:SetDuration( 30 )
     -- oCameraLayer:AddToPath( Vector( -8909.469727, 14065.680664, 492.507507 ), Angle( 26.532043, -83.072632, 0.000000 ) )
     -- oCameraLayer:AddToPath( Vector( -8058.126953, 10743.914063, 248.207550 ), Angle( -6.335949, -140.624832, 0.000000 ) )
     -- oCameraLayer:AddToPath( Vector( -13420.223633, 10661.609375, 405.661041 ), Angle( 8.184049, -28.821218, 0.000000 ) )
