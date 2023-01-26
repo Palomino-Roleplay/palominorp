@@ -14,3 +14,8 @@ ENT.AdminOnly = true
 
 ENT.PhysgunDisable = true
 ENT.PhysgunDisabled = true
+
+function ENT:SetupDataTables()
+	self:NetworkVar("String", 0, "Label")
+	self:NetworkVar("Color", 0, "Vector")
+end
