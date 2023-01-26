@@ -5,6 +5,8 @@ FACTION.pay = 10
 FACTION.weapons = {"vs_policemod_tablet"}
 FACTION.isGloballyRecognized = true
 
+FACTION.equipmentLockerAccess = true
+
 FACTION.hasRadio = true
 FACTION._defaultRadioChannel = "Police"
 FACTION.radioChannels = {
