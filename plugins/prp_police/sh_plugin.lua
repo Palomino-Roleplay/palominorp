@@ -136,3 +136,17 @@ ix.menu.RegisterVehicleOption( "Force Out of Vehicle", {
         eEntity:VC_clearSeats()
     end,
 } )
+
+ix.menu.RegisterPlayerOption( "Search", {
+    OnCanRun = function( pVictim, pPlayer, sOption, tData )
+        -- @TODO: Do distance check in the RegisterPlayerOption function
+        -- @TODO: Verify these checks. Is "IsPlayer" even necessary?
+        return pVictim:IsPlayer()
+            and pVictim:GetPos():DistToSqr( pPlayer:GetPos() ) <= 8000
+            and pVictim:IsHandcuffed()
+    end,
+    OnRun = function( pVictim, pPlayer, sOption, tData )
+        -- Realistic_Police.Drag( pVictim, pPlayer )
+        
+    end
+} )
