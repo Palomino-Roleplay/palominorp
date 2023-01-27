@@ -1,6 +1,7 @@
-CLASS.name = "Police Recruit"
+CLASS.name = "Police Cadet"
 CLASS.faction = FACTION_POLICE
 CLASS.isDefault = true
+CLASS.classLevel = 0
 CLASS.lockerWeapons_ = {
     ["weapon_pistol"] = {
         name = "Five Seven",
@@ -13,5 +14,6 @@ CLASS.lockerWeapons_ = {
         model = "models/weapons/w_pistol.mdl",
     },
 }
+CLASS.bodygroups = "0000201"
 
-CLASS_POLICE_RECRUIT = CLASS.index
+CLASS_POLICE_CADET = CLASS.index

@@ -13,6 +13,8 @@ FACTION.radioChannels = {
     ["Police"] = true
 }
 
+FACTION.modelBase = "models/player/icpd/cops/%s_shortsleeved.mdl"
+
 -- FACTION.models = {
 -- 	"models/police.mdl"
 -- }
