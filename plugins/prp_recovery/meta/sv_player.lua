@@ -34,7 +34,8 @@ function PLUGIN:InitializedPlugins()
 
     timer.Create( "PRP.Recovery.Timer", iTimerDelta, 0, function()
         for k, v in pairs( tRecoveringPlayers ) do
-            Print( v )
+            if not v:IsInHospital() then continue end
+
             if not IsValid( v ) then
                 table.remove( tRecoveringPlayers, k )
                 continue
