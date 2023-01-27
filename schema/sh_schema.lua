@@ -1,6 +1,7 @@
-Schema.name = "Palomino Roleplay"
-Schema.author = "Palomino Roleplay"
-Schema.description = "A player-first roleplay experience."
+Schema.name = "PRP"
+Schema.author = "sil"
+Schema.description = "Closed Pre-Alpha. Nothing seen here is final."
+Schema.version = "Closed Pre-Alpha"
 
 ix.util.Include("cl_schema.lua")
 
