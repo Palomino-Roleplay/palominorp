@@ -64,4 +64,8 @@ if CLIENT then
 
         Print( "Angle( " .. math.Round( tr.HitNormal:Angle().p ) .. ", " .. math.Round( tr.HitNormal:Angle().y ) .. ", " .. math.Round( tr.HitNormal:Angle().r ) .. " )" )
     end )
+
+    concommand.Add( "prp_getbodygroups_trace", function( pPlayer )
+        Print( pPlayer:GetEyeTrace().Entity:GetBodyGroupsString() )
+    end )
 end
