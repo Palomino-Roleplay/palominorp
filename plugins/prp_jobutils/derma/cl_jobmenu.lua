@@ -371,7 +371,7 @@ end
 
 function PANEL:PopulateTabs()
     local default
-	for k, v in pairs(self.classes) do
+	for k, v in SortedPairsByMemberValue(self.classes, "classLevel", true) do
 		local bDefault, button = self:SetupTab(v.name, function( dContainer )
             local dClass = dContainer:Add( "PRP.Job.Menu.Class" )
             dClass:SetFaction( self.faction )
@@ -425,9 +425,18 @@ function PANEL:Populate()
     self.model:SetLookAng( Angle( 0, 200, 0 ) )
     self.model:SetCamPos( Vector( 50, 20, 53 ) )
 
-    -- @TODO: Draw actual model
-    self.model:SetModel( LocalPlayer():GetModel() )
-    function self.model:LayoutEntity() return end
+    -- @TODO: Fix those eyes.
+	Print( self.class:GetModel( LocalPlayer() ) )
+    self.model:SetModel( self.class:GetModel( LocalPlayer() ) )
+	self.model.bInitLayout = true
+	self.model.LayoutEntity = function( this, eEntity )
+		if self.model.bInitLayout then
+			self.model.bInitLayout = false
+		end
+
+		Print( self.class.bodygroups )
+		eEntity:SetBodyGroups( self.class.bodygroups )
+	end
 
     -- self:GetParent():GetParent():AddManuallyPaintedChild( self.model )
 
@@ -505,7 +514,7 @@ function PANEL:Populate()
     self.playerXPLabel:Dock( BOTTOM )
 
     self.playerXPBar = self.left:Add( "ixLabel" )
-    self.playerXPBar:SetText( "Player XP:" )
+    self.playerXPBar:SetText( "Player Level:" )
     self.playerXPBar:SetFont( "ixMenuButtonFont" )
     self.playerXPBar:SetContentAlignment( 4 )
     self.playerXPBar:SetTextColor( Color( 255, 255, 255, 255 ) )
@@ -525,7 +534,7 @@ function PANEL:Populate()
     self.classXPLabel:Dock( BOTTOM )
 
     self.classXPBar = self.left:Add( "ixLabel" )
-    self.classXPBar:SetText( "Job XP:" )
+    self.classXPBar:SetText( "Job Level:" )
     self.classXPBar:SetFont( "ixMenuButtonFont" )
     self.classXPBar:SetContentAlignment( 4 )
     self.classXPBar:SetTextColor( Color( 255, 255, 255, 255 ) )
