@@ -12,6 +12,6 @@ function ix.class.GetByFaction( faction )
     end
 
     return tReturns
-end 
+end
 
 -- @TODO: Remove the weird TDM car hooks
