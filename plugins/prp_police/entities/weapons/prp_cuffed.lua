@@ -22,6 +22,7 @@ SWEP.ViewModelFOV           = 80
 SWEP.UseHands               = true
 
 SWEP.DrawAmmo               = false
+SWEP.HoldType			   = "passive"
 
 function SWEP:PrimaryAttack()
 
@@ -42,7 +43,6 @@ function SWEP:Deploy()
 				Owner:ManipulateBoneAngles(bone, v)
 			end
 		end
-		self:SetHoldType("passive")
 	end ) 
 end 
 
