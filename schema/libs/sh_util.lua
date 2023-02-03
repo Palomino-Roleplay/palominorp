@@ -11,6 +11,12 @@ function PLY:GetModelBase()
     return PRP.Util.GetModelBase( self:GetModel() )
 end
 
+function PLY:GetSex()
+    return ( string.match( self:GetModel(), "female_%d%d" ) and "female" )
+        or ( string.match( self:GetModel(), "male_%d%d" ) and "male" )
+        or "unknown"
+end
+
 function PRP.Util.ApplyModelBase( sModel, pPlayer )
     return string.format( sModel, PRP.Util.GetModelBase( pPlayer:GetModel() ) )
 end
