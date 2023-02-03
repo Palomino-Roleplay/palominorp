@@ -44,6 +44,7 @@ net.Receive( "PRP.Job.Select", function( _, pPlayer )
     --     end
     -- end
 
+
     if iFaction ~= cCharacter:GetFaction() then
         cCharacter.vars.faction = tFaction.uniqueID
         cCharacter:SetFaction(tFaction.index)
@@ -55,6 +56,9 @@ net.Receive( "PRP.Job.Select", function( _, pPlayer )
 
     cCharacter:SetClass( iClass )
 
+    pPlayer:SetModel( ix.class.Get( iClass ):GetModel( pPlayer ) )
+    pPlayer:SetBodyGroups( ix.class.Get( iClass ).bodygroups or "" )
+
     pPlayer:Notify( "You have become a " .. tClass.name .. "!" )
 end )
 
@@ -62,6 +66,7 @@ util.AddNetworkString( "PRP.Job.Quit" )
 net.Receive( "PRP.Job.Quit", function( _, pPlayer )
     -- @TODO: Check distance from NPC, whether they can actually quit a job, all that stuff.
 
+    -- @TODO: Consider putting this shit in a helper (joining too)
     local cCharacter = pPlayer:GetCharacter()
 
     if not cCharacter then return end
@@ -76,6 +81,8 @@ net.Receive( "PRP.Job.Quit", function( _, pPlayer )
 
     cCharacter.vars.faction = tFaction.uniqueID
     cCharacter:SetFaction(tFaction.index)
+
+    pPlayer:SetModel( pPlayer:GetCharacter():GetModel() )
 
     if (tFaction.OnTransferred) then
         tFaction:OnTransferred( cCharacter )

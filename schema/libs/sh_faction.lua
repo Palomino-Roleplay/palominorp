@@ -2,7 +2,7 @@ ix.faction = ix.faction or {}
 ix.faction.teams = ix.faction.teams or {}
 ix.faction.indices = ix.faction.indices or {}
 
-function Schema:InitializedPlugins()
+hook.Add( "InitializedPlugins", "PRP.InitializedPlugins", function()
     -- @TODO: ICKY
 
     -- @TODO: Have inheritance for bodygroups as well as models.
@@ -33,7 +33,7 @@ function Schema:InitializedPlugins()
             return ix.faction.indices[ self.faction ]:GetModel( pPlayer )
         end
     end
-end
+end )
 
 -- @TODO: Move
 local ENT = FindMetaTable( "Entity" )
