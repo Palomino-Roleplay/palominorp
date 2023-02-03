@@ -63,17 +63,29 @@ end
 
 function SWEP:Deploy()
     self:SendWeaponAnim(ACT_VM_DRAW)
-    self.Weapon:EmitSound("rpthandcuffdeploy.mp3")
+    self:EmitSound("rpthandcuffdeploy.mp3")
 end
 
 function SWEP:CanCuff( pVictim )
     local pOfficer = self:GetOwner()
 
-    if not pVictim:IsPlayer() then return false end
-    if not pVictim:GetCharacter() or not pOfficer:GetCharacter() then return false end
-    if pVictim:GetPos():DistToSqr( pOfficer:GetPos() ) > 8000 then return false end
+    if pVictim:GetPos():DistToSqr( pOfficer:GetPos() ) > 8000 then return false, false end
+    if not pOfficer:GetCharacter() then return false, false end
+    if pVictim:GetClass() == "prop_ragdoll" and pVictim:GetNetVar( "player", NULL ) and pVictim:GetNetVar( "player", NULL ):GetNetVar( "tazed", false ) then
+        if pVictim.ixIgnoreDelete then
+            self:GetOwner():Notify( "A dead body doesn't need to be handcuffed." )
+            Print("wtf???????????")
+            return false, true
+        end
 
-    return true
+        print("uwu desune")
+
+        return true, true
+    end
+    if not pVictim:IsPlayer() then return false, false end
+    if not pVictim:GetCharacter() then return false, false end
+
+    return true, false
 end
 
 function SWEP:PrimaryAttack()
@@ -81,9 +93,45 @@ function SWEP:PrimaryAttack()
     local pOfficer = self:GetOwner()
     local pVictim = pOfficer:GetEyeTrace().Entity
 
-    self:SetNextPrimaryFire( CurTime() + 0.5 )
+    self:SetNextPrimaryFire( CurTime() + 1 )
 
-    if not self:CanCuff( pVictim ) then return end
+    local bCanCuff, bIsRagdoll = self:CanCuff( pVictim )
+
+    if not bCanCuff then return end
+
+    if bIsRagdoll then
+        self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
+        self:EmitSound("rpthandcuffleftclick.mp3")
+
+        if CLIENT then return end
+
+        local pVictimPlayer = pVictim:GetNetVar( "player", NULL )
+        if not IsValid( pVictimPlayer ) then return end
+
+        if pVictimPlayer:IsHandcuffed() then
+            self:GetOwner():Notify( "This body isn't handcuffed." )
+            return
+        end
+
+        self:GetOwner():Notify( "You've hancuffed the body." )
+
+        local cVictimCharacter = pVictimPlayer:GetCharacter()
+        if not cVictimCharacter then return end
+
+        -- pVictimPlayer:SetNetVar( "handcuffed", true )
+        pVictimPlayer:Handcuff()
+
+        pVictim:CallOnRemove( "handcuff", function()
+            if not IsValid( pVictimPlayer ) then return end
+            if not cVictimCharacter then return end
+            if pVictimPlayer:GetCharacter() ~= cVictimCharacter then return end
+
+            pVictimPlayer:Handcuff()
+        end )
+
+        return
+    end
+
     if pVictim:IsHandcuffed() then return end
 
     if SERVER then
@@ -91,10 +139,11 @@ function SWEP:PrimaryAttack()
         self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 
         pVictim:Handcuff()
+        -- @TODO: Check if other players can hear this
+        self:EmitSound("rpthandcuffleftclick.mp3")
     end
 
-    -- @TODO: Check if other players can hear this
-    self.Weapon:EmitSound("rpthandcuffleftclick.mp3")
+    self:SetNextPrimaryFire( CurTime() + 3 )
 end
 
 function SWEP:SecondaryAttack()
@@ -102,17 +151,62 @@ function SWEP:SecondaryAttack()
     local pOfficer = self:GetOwner()
     local pVictim = pOfficer:GetEyeTrace().Entity
 
+    if not IsValid( pVictim ) then return end
+
     self:SetNextSecondaryFire( CurTime() + 0.5 )
 
-    if not self:CanCuff( pVictim ) then return end
+    local bCanCuff, bIsRagdoll = self:CanCuff( pVictim )
+    if not bCanCuff then return end
+
+    if bIsRagdoll then
+        if CLIENT then return end
+
+        local pVictimPlayer = pVictim:GetNetVar( "player", NULL )
+
+        if not IsValid( pVictimPlayer ) then return end
+
+        if not pVictimPlayer:IsHandcuffed() then
+            self:GetOwner():Notify( "This body isn't handcuffed." )
+            return
+        end
+
+        -- pVictimPlayer:SetNetVar( "handcuffed", false )
+        local cVictimCharacter = pVictimPlayer:GetCharacter()
+        if not cVictimCharacter then return end
+
+        pVictimPlayer:Uncuff()
+
+        pVictim:RemoveCallOnRemove( "handcuff" )
+        pVictim:CallOnRemove( "handcuff", function()
+            if not IsValid( pVictimPlayer ) then return end
+            if pVictimPlayer:GetCharacter() ~= cVictimCharacter then return end
+
+            pVictimPlayer:Uncuff()
+        end )
+
+        self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
+        self:EmitSound("rpthandcuffleftclick.mp3")
+
+        self:GetOwner():Notify( "You've unhancuffed the body." )
+
+        return
+    end
+
+    Print( "bIsRagdoll!!!!" )
+    Print( pVictim:IsHandcuffed() )
     if not pVictim:IsHandcuffed() then return end
+    Print( "kill me")
 
     if SERVER then
         -- @TODO Animation?
 
+        -- pVictim:SetNetVar( "handcuffed", false )
         pVictim:Uncuff()
+
+        self:EmitSound("rpthandcuffleftclick.mp3")
     end
 
+    self:SetNextSecondaryFire( CurTime() + 3 )
+
     -- @TODO: Consider different sound for uncuffing
-    self.Weapon:EmitSound("rpthandcuffleftclick.mp3")
 end
