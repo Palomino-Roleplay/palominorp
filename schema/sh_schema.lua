@@ -1,6 +1,6 @@
 Schema.name = "PRP"
 Schema.author = "sil"
-Schema.description = "Closed Pre-Alpha. Nothing seen here is final."
+Schema.description = ""
 Schema.version = "Closed Pre-Alpha"
 
 ix.util.Include("cl_schema.lua")

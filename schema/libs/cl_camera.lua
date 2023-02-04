@@ -201,6 +201,10 @@ function CAMERA_LAYER:CalcView( pPlayer, vOrigin, aAngles, iFOV, iZNear, iZFar )
         drawviewer = self:GetValue( "drawviewer" )
     }
 
+    if self.OnCalcView then
+        self:OnCalcView( tReturnTable )
+    end
+
     return tReturnTable
 end
 
@@ -693,4 +697,173 @@ concommand.Add( "prp_printkeyframe", function()
     print( "\t\tvalue = " .. tostring( LocalPlayer():GetFOV() ) .. "," )
     print( "\t}," )
     print( "} )" )
+end )
+
+soundIntro = soundIntro or nil
+concommand.Add( "prp_intro_start", function()
+    soundIntro = CreateSound( game.GetWorld(), "prp/music/intro.wav" )
+    soundIntro:SetSoundLevel( 0 )
+    print("tset")
+    soundIntro:Play()
+
+    timer.Simple( 11.85, function()
+        if IsValid( ix.gui.characterMenu ) then
+            ix.gui.characterMenu:Show()
+        else
+            print("INVALID characterMenu PANEL: RECREATING")
+            vgui.Create( "ixCharMenu" )
+        end
+    end )
+
+    if PRP.Scene.Active then
+        PRP.Scene.Active:Stop()
+        PRP.Scene.Active = nil
+    end
+
+    local oCameraLayer
+    PRP.Scene.Active, oCameraLayer = PRP.Scene.Create( {}, "Camera" )
+    PRP.Scene.Active:SetDuration( 120 )
+    oCameraLayer:AddKeyframesAt( 0, {
+        ["origin"] = {
+            value = Vector( -13220.767578, 9798.965820, 448.454285 + 16 ),
+        },
+        ["angles"] = {
+            value = Angle( -80.090, -54.959, 0.000 ),
+        },
+        ["fov"] = {
+            value = 72.972991943359,
+        },
+    } )
+
+    oCameraLayer:AddKeyframesAt( 1.749, {
+        ["origin"] = {
+            value = Vector( -13220.767578, 9798.965820, 448.454285 + 16 ),
+        },
+        ["angles"] = {
+            value = Angle( -80.090, -54.959, 0.000 ),
+        },
+        ["fov"] = {
+            value = 72.972991943359,
+        },
+    } )
+
+    -- Fire Department Scene
+    oCameraLayer:AddKeyframesAt( 1.749, {
+        ["origin"] = {
+            value = Vector( -12784.682617, 2912.708740, -257.108002 + 16 ),
+        },
+        ["angles"] = {
+            value = Angle( -20.787, -60.525, 0.000 ),
+        },
+        ["fov"] = {
+            value = 47.133995056152,
+        },
+    } )
+
+    oCameraLayer:AddKeyframesAt( 6.789, {
+        ["origin"] = {
+            value = Vector( -12466.835938, 3063.326416, -257.108002 + 16 ),
+        },
+        ["angles"] = {
+            value = Angle( -20.787, -72.268, 0.000 ),
+        },
+        ["fov"] = {
+            value = 47.133995056152,
+        },
+    } )
+
+    -- Campsite Scene
+    oCameraLayer:AddKeyframesAt( 6.789, {
+        ["origin"] = {
+            value = Vector( 12110.833008, -7432.143066, 766.845215 + 128 ),
+        },
+        ["angles"] = {
+            value = Angle( 6.295, 105.953, 5.000 ),
+        },
+        ["fov"] = {
+            value = 30,
+        },
+    } )
+
+    oCameraLayer:AddKeyframesAt( 11.85, {
+        ["origin"] = {
+            value = Vector( 11936.484375, -7476.523438, 766.845215 + 128 ),
+        },
+        ["angles"] = {
+            value = Angle( 6.437, 98.045, 5.000 ),
+        },
+        ["fov"] = {
+            value = 30,
+        },
+    } )
+
+    -- Main menu scene
+    oCameraLayer:AddKeyframesAt( 11.85, {
+        ["origin"] = {
+            value = Vector( -3844.596680, -923.985046, -236.163177 + 20 ),
+        },
+        ["angles"] = {
+            value = Angle( -13.532, -26.323, 0.000 ),
+        },
+        ["fov"] = {
+            value = 70.002952575684,
+        },
+    } )
+
+    oCameraLayer:AddKeyframesAt( 11.85 + 3, {
+        ["origin"] = {
+            value = Vector( -4006.680664, -843.790710, -279.687073 + 28 ),
+            ease = math.ease.OutCubic,
+        },
+        ["angles"] = {
+            value = Angle( -14.633, -25.883, 0.000 ),
+            ease = math.ease.OutCubic,
+        },
+        ["fov"] = {
+            value = 44.460952758789,
+            ease = math.ease.OutCubic,
+        },
+    } )
+
+    oCameraLayer:AddKeyframesAt( 120, {
+        ["origin"] = {
+            value = Vector( -4006.680664, -843.790710, -279.687073 + 28 ),
+        },
+        ["angles"] = {
+            value = Angle( -14.633, -25.883, 0.000 ),
+        },
+        ["fov"] = {
+            value = 44.460952758789,
+        },
+    } )
+
+    oCameraLayer.OnCalcView = function( oLayer, oView )
+        -- if oLayer:GetScene():GetTimestamp() < 11.85 then return end
+
+        local iNoiseP = PRP.Math.GetPerlinNoise(1, CurTime()) * 2 - 1
+        local iNoiseSlowP = PRP.Math.GetPerlinNoise(1, CurTime() * 0.25 + 100) * 2 - 1
+
+        local iNoiseY = PRP.Math.GetPerlinNoise(1, CurTime() + 7) * 2 - 1
+        local iNoiseSlowY = PRP.Math.GetPerlinNoise(1, CurTime() * 0.25 + 25) * 2 - 1
+
+        local iNoiseR = PRP.Math.GetPerlinNoise(1, CurTime() + 14) * 2 - 1
+        local iNoiseSlowR = PRP.Math.GetPerlinNoise(1, CurTime() * 0.25 + 57) * 2 - 1
+
+        oView.angles = oView.angles + Angle(
+            ( iNoiseSlowP * 0.5 ) + ( iNoiseP * 0.1 ),
+            ( iNoiseSlowY * 0.5 ) + ( iNoiseY * 0.1 ),
+            ( iNoiseSlowR * 1 ) + ( iNoiseR * 0.1 )
+        )
+    end
+
+    PRP.Scene.Active:Start()
+end )
+
+concommand.Add( "prp_intro_stop", function()
+    RunConsoleCommand( "prp_testcamera_stop" )
+    soundIntro:FadeOut( 5 )
+end )
+
+hook.Add( "CharacterLoaded", "PRP.Camera.CharacterLoaded", function()
+    RunConsoleCommand( "prp_intro_stop" )
 end )
