@@ -810,7 +810,7 @@ concommand.Add( "prp_intro_start", function()
         },
     } )
 
-    oCameraLayer:AddKeyframesAt( 11.85 + 3, {
+    oCameraLayer:AddKeyframesAt( 11.85 + 2, {
         ["origin"] = {
             value = Vector( -4006.680664, -843.790710, -279.687073 + 28 ),
             ease = math.ease.OutCubic,
