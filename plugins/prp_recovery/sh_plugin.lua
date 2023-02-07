@@ -8,8 +8,8 @@ PLUGIN.spawns = {
 
 -- @TODO: Use property system.
 PLUGIN.hospital = {
-    Vector( -5696, 2880, -256 ),
-    Vector( -7146, 1023, 259 )
+    Vector( 8128, 4352, -56 ),
+    Vector( 6208, 5760, 736 )
 }
 
 ix.util.Include( "hooks/sv_hooks.lua" )
