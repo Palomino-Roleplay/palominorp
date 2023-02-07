@@ -2,7 +2,7 @@ FACTION.name = "Police"
 FACTION.description = "Very angry policemen that have a tendency to injure people."
 FACTION.color = Color(20, 120, 185)
 FACTION.pay = 10
-FACTION.weapons = {"vs_policemod_tablet"}
+FACTION.weapons = {"prp_handcuffs", "prp_tazer"}
 FACTION.isGloballyRecognized = true
 
 FACTION.equipmentLockerAccess = true
