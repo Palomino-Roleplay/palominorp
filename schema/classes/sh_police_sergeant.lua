@@ -3,6 +3,7 @@ CLASS.faction = FACTION_POLICE
 CLASS.isDefault = false
 CLASS.classLevel = 15
 CLASS.bodygroups = "001000200"
+CLASS.weapons = {"prp_batteringram", "prp_ticketbook"}
 CLASS.lockerWeapons_ = {
     ["weapon_pistol"] = {
         name = "Five Seven",
