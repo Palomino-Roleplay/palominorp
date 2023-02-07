@@ -1,7 +1,7 @@
 SWEP.PrintName              = "Restrained"
 SWEP.Author                 = "Kobralost & sil"
 SWEP.Instructions           = "You can't break those cuffs."
-SWEP.Category               = "Palomino: Police"
+SWEP.Category               = "Palomino: Development"
 
 SWEP.Spawnable              = true
 SWEP.AdminOnly              = true
