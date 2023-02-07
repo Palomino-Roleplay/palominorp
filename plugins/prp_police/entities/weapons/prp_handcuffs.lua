@@ -27,16 +27,6 @@ SWEP.DrawAmmo               = false
 
 ix.menu.RegisterPlayerOption( "Drag", {
     OnCanRun = function( pVictim, pPlayer, sOption, tData )
-        -- Which one is returning false?
-
-        Print(
-            pVictim:IsPlayer(),
-            not pVictim:GetNetVar( "draggedBy", false ),
-            pVictim:GetPos():DistToSqr( pPlayer:GetPos() ) <= 8000,
-            pVictim:IsHandcuffed(),
-            not IsValid( pPlayer:GetNetVar( "dragging", NULL ) )
-        )
-
         return pVictim:IsPlayer()
             and not pVictim:GetNetVar( "draggedBy", false )
             and pVictim:GetPos():DistToSqr( pPlayer:GetPos() ) <= 8000
@@ -74,11 +64,8 @@ function SWEP:CanCuff( pVictim )
     if pVictim:GetClass() == "prop_ragdoll" and pVictim:GetNetVar( "player", NULL ) and pVictim:GetNetVar( "player", NULL ):GetNetVar( "tazed", false ) then
         if pVictim.ixIgnoreDelete then
             self:GetOwner():Notify( "A dead body doesn't need to be handcuffed." )
-            Print("wtf???????????")
             return false, true
         end
-
-        print("uwu desune")
 
         return true, true
     end
@@ -192,10 +179,7 @@ function SWEP:SecondaryAttack()
         return
     end
 
-    Print( "bIsRagdoll!!!!" )
-    Print( pVictim:IsHandcuffed() )
     if not pVictim:IsHandcuffed() then return end
-    Print( "kill me")
 
     if SERVER then
         -- @TODO Animation?
