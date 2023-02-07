@@ -27,6 +27,11 @@ net.Receive( "PRP.Job.Select", function( _, pPlayer )
     local cCharacter = pPlayer:GetCharacter()
     if not cCharacter then return end
 
+    if cCharacter:GetFaction() == FACTION_PRISONER then
+        pPlayer:Notify( "You cannot join a job while in prison." )
+        return
+    end
+
     local tFaction = ix.faction.Get( iFaction )
     if not tFaction then return end
 
