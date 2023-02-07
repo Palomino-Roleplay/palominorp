@@ -17,7 +17,7 @@ end
 function PLUGIN:PlayerStartVoice( pPlayer )
     if pPlayer == LocalPlayer() then return end
 
-    if LocalPlayer():GetCharacter():OnSameChannel( pPlayer:GetCharacter() ) then
+    if LocalPlayer():OnSameChannel( pPlayer ) then
         pPlayer._bInRadio = true
     end
 end
@@ -25,5 +25,5 @@ end
 function PLUGIN:PlayerEndVoice( pPlayer )
     if pPlayer == LocalPlayer() then return end
 
-    pListener:GetCharacter():OnSameChannel( pTalker:GetCharacter() )
+    pListener:OnSameChannel( pTalker )
 end

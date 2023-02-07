@@ -5,10 +5,10 @@ function PLUGIN:PlayerCanHearPlayersVoice( pListener, pTalker )
     if not pListener:GetCharacter() or not pTalker:GetCharacter() then return end
     if not pListener:IsValid() or not pTalker:IsValid() then return end
     if not pListener:Alive() or not pTalker:Alive() then return end
-    if not pListener:GetCharacter():HasRadio() or not pTalker:GetCharacter():HasRadio() then return end
+    if not pListener:HasRadio() or not pTalker:HasRadio() then return end
 
     -- @TODO: Optimize. Cache it instead of checking every time.
-    if pListener:GetCharacter():OnSameChannel( pTalker:GetCharacter() ) then
+    if pListener:OnSameChannel( pTalker ) then
         return true, false
     end
 end

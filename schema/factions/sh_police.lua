@@ -8,7 +8,7 @@ FACTION.isGloballyRecognized = true
 FACTION.equipmentLockerAccess = true
 
 FACTION.hasRadio = true
-FACTION._defaultRadioChannel = "Police"
+FACTION.defaultRadioChannel = "Police"
 FACTION.radioChannels = {
     ["Police"] = true
 }

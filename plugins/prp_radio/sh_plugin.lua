@@ -32,8 +32,8 @@ ix.command.Add("SetChannel", {
         ix.type.text
     },
     OnRun = function( self, pAdmin, sChannel )
-        pAdmin:GetCharacter():SetData( "radioChannel", sChannel )
+        pAdmin:SetNetVar( "radioChannel", sChannel )
 
-        pAdmin:Notify( "You have set your radio channel to " .. pAdmin:GetCharacter():GetRadioChannel() )
+        pAdmin:Notify( "You have set your radio channel to " .. pAdmin:GetRadioChannel() )
     end
 } )
