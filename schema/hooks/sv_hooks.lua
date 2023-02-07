@@ -36,5 +36,19 @@ function Schema:PlayerUse(client, entity)
 	return true
 end
 
+function Schema:PlayerJoinedClass( pPlayer, iNewClass, iOldClass )
+    local tOldClass = ix.class.Get( iOldClass )
+    local tNewClass = ix.class.Get( iNewClass )
+
+    -- @TODO: Ew.
+    for _, sWeapon in pairs( tOldClass.weapons or {} ) do
+        pPlayer:StripWeapon( sWeapon )
+    end
+
+    for _, sWeapon in pairs( tNewClass.weapons or {} ) do
+        pPlayer:Give( sWeapon )
+    end
+end
+
 local HELIX = baseclass.Get( "gamemode_helix" )
 HELIX.PlayerUse = nil
