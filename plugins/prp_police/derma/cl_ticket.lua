@@ -1,12 +1,12 @@
 local PANEL = {}
 
+AccessorFunc( PANEL, "m_eTarget", "Target" )
+
 function PANEL:Init()
     self:SetSize( 500, 300 )
     self:SetTitle( "Ticket Menu" )
     self:Center()
     self:MakePopup()
-
-    self.player = LocalPlayer()
 
     self.canvas = vgui.Create( "DPanel", self )
     self.canvas:Dock( FILL )
@@ -46,13 +46,13 @@ function PANEL:Init()
             return
         end
 
-        if not self.player or not self.player:IsValid() then
+        if not self:GetTarget() or not self:GetTarget():IsValid() then
             LocalPlayer():Notify( "Player is no longer valid." )
             return
         end
 
         net.Start( "PRP.Police.IssueTicket" )
-            net.WriteEntity( self.player )
+            net.WriteEntity( self:GetTarget() )
             net.WriteUInt( self.amount:GetValue(), 32 )
             net.WriteString( self.reason:GetValue() )
         net.SendToServer()
