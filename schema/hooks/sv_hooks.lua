@@ -22,6 +22,12 @@ function Schema:InitializedPlugins()
     end
 end
 
+function Schema:PlayerCanHearPlayersVoice( pListener, pTalker )
+    if not pTalker:Alive() or not pListener:Alive() then
+        return false, false
+    end
+end
+
 function Schema:PlayerUse(client, entity)
 	if (client:IsRestricted() or (isfunction(entity.GetEntityMenu) and entity:GetClass() != "ix_item" and not entity:IsVehicle())) then
 		return false
