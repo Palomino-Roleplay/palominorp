@@ -157,6 +157,16 @@ concommand.Add( "prp_devpreview", function()
 
         RunConsoleCommand( "prp_intro_start" )
     end
+    pDevPreviewButton.DoRightClick = function()
+        surface.PlaySound( "prp/ui/click.wav" )
+        pDevPreview:Remove()
+
+        if IsValid( ix.gui.characterMenu ) then
+            ix.gui.characterMenu:Show()
+        end
+
+        easedFrac = 0
+    end
 
     easedFrac = 1
 end )
