@@ -50,20 +50,3 @@ function PRP.Vehicle.Remove( vVehicle )
 
     vVehicle:Remove()
 end
-
-concommand.Add( "prp_dev_spawnjobvehicle", function( pPlayer )
-    if not pPlayer:IsDeveloper() then return end
-
-    local vVehicle, sMessage = pPlayer:SpawnJobVehicle( "07sgmcrownviccvpi" )
-    if not vVehicle then
-        pPlayer:Notify( sMessage )
-        return
-    end
-
-    undo.Create( "Vehicle" )
-        undo.SetPlayer( pPlayer )
-        undo.AddEntity( vVehicle )
-    undo.Finish()
-
-    pPlayer:AddCleanup( "vehicles", vVehicle )
-end )
