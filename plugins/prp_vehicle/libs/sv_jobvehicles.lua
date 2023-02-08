@@ -36,6 +36,8 @@ function PRP.Vehicle.Spawn( sVehicleID, vPos, aAng )
     eVehicle:Spawn()
     eVehicle:Activate()
 
+    eVehicle:DropToFloor()
+
     if ( tVehicleData && tVehicleData.ColGroup ) then Ent:SetCollisionGroup( tVehicleData.ColGroup ) end
 
     eVehicle.VehicleTable = tVehicleData
@@ -52,8 +54,15 @@ end
 concommand.Add( "prp_dev_spawncopcar", function( pPlayer )
     if not pPlayer:IsDeveloper() then return end
 
-    local vTestPos = Vector( -8128.567383, 8132.400879, -199.968750 )
-    local vVehicle = PRP.Vehicle.Spawn( "07sgmcrownviccvpi", Vector( -8128.567383, 8132.400879, -199.968750 ), Angle( 0, 0, 0 ) )
+    local tSpots = PRP.Vehicle.Parking.GetAvailable( "police_garage" )
+    Print( tSpots )
+    if not tSpots then
+        pPlayer:Notify( "Could not find free parking spot." )
+        return
+    end
+
+    local tTestPos = tSpots
+    local vVehicle = PRP.Vehicle.Spawn( "07sgmcrownviccvpi", tTestPos.midpoint, tTestPos.ang )
 
     undo.Create( "Vehicle" )
         undo.SetPlayer( pPlayer )
