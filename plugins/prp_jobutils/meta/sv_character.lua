@@ -6,7 +6,7 @@ function CHAR:SpawnJobVehicle( sVehicleID )
     end
 
     -- @TODO: Find the parking spaces and al that crap
-    local vVehicle = PRP.Vehicle.Spawn( "07sgmcrownviccvpi", Vector( -8128.567383, 8132.400879, -199.968750 ), Angle( 0, 0, 0 ) )
+    local vVehicle = PRP.Vehicle.Spawn( "07sgmcrownviccvpi", Vector( 7882, 8175, -128 ), Angle( 0, -90, 0 ) )
 
     self._jobVehicle = vVehicle
 
