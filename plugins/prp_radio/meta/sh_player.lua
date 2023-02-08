@@ -5,7 +5,7 @@ function PLY:HasRadioFaction()
 end
 
 function PLY:HasRadio()
-    return self:HasRadioFaction() or self:GetCharacter():GetInventory():HasItem( "handheld_radio" )
+    return self:GetCharacter() and ( self:HasRadioFaction() or self:GetCharacter():GetInventory():HasItem( "handheld_radio" ) )
 end
 
 function PLY:GetRadioChannel()
