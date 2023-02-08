@@ -85,53 +85,57 @@ function TOOL:Reload( tTrace )
     return true
 end
 
-if CLIENT then
-    function TOOL:Deploy()
-        -- We define the hook function inside TOOL:Deploy so we have access to the TOOL object (self)
-        hook.Add( "PostDrawTranslucentRenderables", "PRP.Devtools.STools.AreaTool", function( bDrawingDepth, bDrawingSkybox, bDrawing3DSkybox )
-            render.SetColorMaterial()
+function TOOL:Think()
 
-            if not self.Area or not self.Area[1] then return end
-            if self:GetStage() < 2 then
-                local tTrace = util.TraceLine( {
-                    start = LocalPlayer():EyePos(),
-                    endpos = LocalPlayer():EyePos() + LocalPlayer():EyeAngles():Forward() * 500,
-                    filter = LocalPlayer()
-                } )
+end
 
-                self.Area[2] = {
-                    pos = tTrace.HitPos
-                }
+function TOOL:Deploy()
+    if not CLIENT then return end
+    -- We define the hook function inside TOOL:Deploy so we have access to the TOOL object (self)
+    hook.Add( "PostDrawTranslucentRenderables", "PRP.Devtools.STools.AreaTool", function( bDrawingDepth, bDrawingSkybox, bDrawing3DSkybox )
+        render.SetColorMaterial()
+
+        if not self.Area or not self.Area[1] then return end
+        if self:GetStage() < 2 then
+            local tTrace = util.TraceLine( {
+                start = LocalPlayer():EyePos(),
+                endpos = LocalPlayer():EyePos() + LocalPlayer():EyeAngles():Forward() * 500,
+                filter = LocalPlayer()
+            } )
+
+            self.Area[2] = {
+                pos = tTrace.HitPos
+            }
+        end
+
+        if self.Move then
+            local tTrace = util.TraceLine( {
+                start = LocalPlayer():EyePos(),
+                endpos = LocalPlayer():EyePos() + LocalPlayer():EyeAngles():Forward() * 500,
+                filter = LocalPlayer()
+            } )
+
+            if self.Move == 1 then
+                self.Area[1].pos = tTrace.HitPos
+                self.Area[2].pos = self.Area[2].pos + ( tTrace.HitPos - self.Area[1].pos )
+            elseif self.Move == 2 then
+                self.Area[2].pos = tTrace.HitPos
             end
+        end
 
-            if self.Move then
-                local tTrace = util.TraceLine( {
-                    start = LocalPlayer():EyePos(),
-                    endpos = LocalPlayer():EyePos() + LocalPlayer():EyeAngles():Forward() * 500,
-                    filter = LocalPlayer()
-                } )
+        render.DrawBox( self.Area[1].pos, Angle( 0, 0, 0 ), Vector( 0, 0, 0 ), self.Area[2].pos - self.Area[1].pos, Color( 255, 255, 255, 10 ) )
+        render.DrawWireframeBox( self.Area[1].pos, Angle( 0, 0, 0 ), Vector( 0, 0, 0 ), self.Area[2].pos - self.Area[1].pos, Color( 255, 255, 255, 255 ), true )
 
-                if self.Move == 1 then
-                    self.Area[1].pos = tTrace.HitPos
-                    self.Area[2].pos = self.Area[2].pos + ( tTrace.HitPos - self.Area[1].pos )
-                elseif self.Move == 2 then
-                    self.Area[2].pos = tTrace.HitPos
-                end
-            end
+        cam.IgnoreZ( true )
 
-            render.DrawBox( self.Area[1].pos, Angle( 0, 0, 0 ), Vector( 0, 0, 0 ), self.Area[2].pos - self.Area[1].pos, Color( 255, 255, 255, 10 ) )
-            render.DrawWireframeBox( self.Area[1].pos, Angle( 0, 0, 0 ), Vector( 0, 0, 0 ), self.Area[2].pos - self.Area[1].pos, Color( 255, 255, 255, 255 ), true )
+        render.DrawBox( self.Area[1].pos, Angle( 0, 0, 0 ), Vector( 0, 0, 0 ), self.Area[2].pos - self.Area[1].pos, Color( 255, 255, 255, 3 ) )
+        render.DrawWireframeBox( self.Area[1].pos, Angle( 0, 0, 0 ), Vector( 0, 0, 0 ), self.Area[2].pos - self.Area[1].pos, Color( 255, 255, 255, 30 ) )
 
-            cam.IgnoreZ( true )
+        cam.IgnoreZ( false )
+    end )
+end
 
-            render.DrawBox( self.Area[1].pos, Angle( 0, 0, 0 ), Vector( 0, 0, 0 ), self.Area[2].pos - self.Area[1].pos, Color( 255, 255, 255, 3 ) )
-            render.DrawWireframeBox( self.Area[1].pos, Angle( 0, 0, 0 ), Vector( 0, 0, 0 ), self.Area[2].pos - self.Area[1].pos, Color( 255, 255, 255, 30 ) )
-
-            cam.IgnoreZ( false )
-        end )
-    end
-
-    function TOOL:Holster()
-        hook.Remove( "PostDrawTranslucentRenderables", "PRP.Devtools.STools.AreaTool" )
-    end
+function TOOL:Holster()
+    if not CLIENT then return end
+    hook.Remove( "PostDrawTranslucentRenderables", "PRP.Devtools.STools.AreaTool" )
 end
