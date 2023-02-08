@@ -6,7 +6,8 @@ function CHAR:SpawnJobVehicle( sVehicleID )
     end
 
     -- @TODO: Find the parking spaces and al that crap
-    local vVehicle = PRP.Vehicle.Parking.Spawn( "police_garage", "07sgmcrownviccvpi" )
+    -- @TODO: Check the PRP.Vehicle.Job.List table for overrides & permissions
+    local vVehicle = PRP.Vehicle.Parking.Spawn( "police_garage", sVehicleID )
 
     self._jobVehicle = vVehicle
 
