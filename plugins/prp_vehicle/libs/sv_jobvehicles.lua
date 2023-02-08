@@ -51,18 +51,14 @@ function PRP.Vehicle.Remove( vVehicle )
     vVehicle:Remove()
 end
 
-concommand.Add( "prp_dev_spawncopcar", function( pPlayer )
+concommand.Add( "prp_dev_spawnjobvehicle", function( pPlayer )
     if not pPlayer:IsDeveloper() then return end
 
-    local tSpots = PRP.Vehicle.Parking.GetAvailable( "police_garage" )
-    Print( tSpots )
-    if not tSpots then
-        pPlayer:Notify( "Could not find free parking spot." )
+    local vVehicle, sMessage = pPlayer:SpawnJobVehicle( "07sgmcrownviccvpi" )
+    if not vVehicle then
+        pPlayer:Notify( sMessage )
         return
     end
-
-    local tTestPos = tSpots
-    local vVehicle = PRP.Vehicle.Spawn( "07sgmcrownviccvpi", tTestPos.midpoint, tTestPos.ang )
 
     undo.Create( "Vehicle" )
         undo.SetPlayer( pPlayer )
@@ -70,10 +66,4 @@ concommand.Add( "prp_dev_spawncopcar", function( pPlayer )
     undo.Finish()
 
     pPlayer:AddCleanup( "vehicles", vVehicle )
-end )
-
-concommand.Add( "prp_dev_spawnJobVehicle", function( pPlayer )
-    if not pPlayer:IsDeveloper() then return end
-
-    pPlayer:GetCharacter():SpawnJobVehicle()
 end )

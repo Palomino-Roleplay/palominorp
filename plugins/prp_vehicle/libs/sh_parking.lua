@@ -55,3 +55,19 @@ function PRP.Vehicle.Parking.GetAvailable( sParkingLot )
 
     return tSpots[1]
 end
+
+-- Spawn vehicle helper with parking spots
+-- @TODO: Move to serverside
+function PRP.Vehicle.Parking.Spawn( sParkingLot, sVehicle )
+    local tSpot = PRP.Vehicle.Parking.GetAvailable( sParkingLot )
+    if not tSpot then
+        return false, "There's no available parking spots!"
+    end
+
+    local eVehicle = PRP.Vehicle.Spawn( sVehicle, tSpot.midpoint, tSpot.ang )
+    if not eVehicle then
+        return false, "Failed to spawn vehicle!"
+    end
+
+    return eVehicle
+end
