@@ -13,9 +13,11 @@ PROPERTY:SetBounds(
         }
     }
 )
-Print( FACTION_POLICE )
-
-print("testicle")
+PROPERTY:SetLockOnStart( true )
+PROPERTY:SetPublicDoors( {
+    [2926] = true,
+    [2927] = true,
+} )
 
 PRP.Property.Register( PROPERTY )
 PROPERTY:Init()
