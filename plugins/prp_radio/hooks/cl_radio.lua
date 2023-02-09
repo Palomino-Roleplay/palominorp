@@ -14,16 +14,17 @@ function PLUGIN:PlayerButtonUp( pPlayer, iKey )
     end
 end
 
+-- TODO: Add noise that players are talking in radio.
 function PLUGIN:PlayerStartVoice( pPlayer )
-    if pPlayer == LocalPlayer() then return end
+    -- if pPlayer == LocalPlayer() then return end
 
-    if LocalPlayer():GetCharacter():OnSameChannel( pPlayer:GetCharacter() ) then
-        pPlayer._bInRadio = true
-    end
+    -- if LocalPlayer():OnSameChannel( pPlayer ) then
+    --     pPlayer._bInRadio = true
+    -- end
 end
 
 function PLUGIN:PlayerEndVoice( pPlayer )
-    if pPlayer == LocalPlayer() then return end
+    -- if pPlayer == LocalPlayer() then return end
 
-    pListener:GetCharacter():OnSameChannel( pTalker:GetCharacter() )
+    -- pListener:OnSameChannel( pTalker )
 end

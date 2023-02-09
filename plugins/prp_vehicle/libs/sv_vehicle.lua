@@ -36,6 +36,8 @@ function PRP.Vehicle.Spawn( sVehicleID, vPos, aAng )
     eVehicle:Spawn()
     eVehicle:Activate()
 
+    eVehicle:DropToFloor()
+
     if ( tVehicleData && tVehicleData.ColGroup ) then Ent:SetCollisionGroup( tVehicleData.ColGroup ) end
 
     eVehicle.VehicleTable = tVehicleData
@@ -49,11 +51,16 @@ function PRP.Vehicle.Remove( vVehicle )
     vVehicle:Remove()
 end
 
-concommand.Add( "prp_dev_spawncopcar", function( pPlayer )
+concommand.Add( "prp_dev_spawnjobvehicle", function( pPlayer )
     if not pPlayer:IsDeveloper() then return end
+    if CLIENT then return end
 
-    local vTestPos = Vector( -8128.567383, 8132.400879, -199.968750 )
-    local vVehicle = PRP.Vehicle.Spawn( "07sgmcrownviccvpi", Vector( -8128.567383, 8132.400879, -199.968750 ), Angle( 0, 0, 0 ) )
+
+    local vVehicle, sMessage = pPlayer:SpawnJobVehicle( "07sgmcrownviccvpi" )
+    if not vVehicle then
+        pPlayer:Notify( sMessage )
+        return
+    end
 
     undo.Create( "Vehicle" )
         undo.SetPlayer( pPlayer )
@@ -61,10 +68,4 @@ concommand.Add( "prp_dev_spawncopcar", function( pPlayer )
     undo.Finish()
 
     pPlayer:AddCleanup( "vehicles", vVehicle )
-end )
-
-concommand.Add( "prp_dev_spawnJobVehicle", function( pPlayer )
-    if not pPlayer:IsDeveloper() then return end
-
-    pPlayer:GetCharacter():SpawnJobVehicle()
 end )

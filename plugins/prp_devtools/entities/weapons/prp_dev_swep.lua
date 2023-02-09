@@ -1,7 +1,7 @@
 SWEP.PrintName              = "Dev Weapon"
 SWEP.Author                 = "sil"
 SWEP.Instructions           = "Left click to find out"
-SWEP.Category               = "Palomino"
+SWEP.Category               = "Palomino: Development"
 
 SWEP.Spawnable              = true
 SWEP.AdminOnly              = true

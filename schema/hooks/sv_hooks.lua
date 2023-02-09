@@ -22,12 +22,32 @@ function Schema:InitializedPlugins()
     end
 end
 
+function Schema:PlayerCanHearPlayersVoice( pListener, pTalker )
+    if not pTalker:Alive() or not pListener:Alive() then
+        return false, false
+    end
+end
+
 function Schema:PlayerUse(client, entity)
 	if (client:IsRestricted() or (isfunction(entity.GetEntityMenu) and entity:GetClass() != "ix_item" and not entity:IsVehicle())) then
 		return false
 	end
 
 	return true
+end
+
+function Schema:PlayerJoinedClass( pPlayer, iNewClass, iOldClass )
+    local tOldClass = ix.class.Get( iOldClass )
+    local tNewClass = ix.class.Get( iNewClass )
+
+    -- @TODO: Ew.
+    for _, sWeapon in pairs( tOldClass.weapons or {} ) do
+        pPlayer:StripWeapon( sWeapon )
+    end
+
+    for _, sWeapon in pairs( tNewClass.weapons or {} ) do
+        pPlayer:Give( sWeapon )
+    end
 end
 
 local HELIX = baseclass.Get( "gamemode_helix" )

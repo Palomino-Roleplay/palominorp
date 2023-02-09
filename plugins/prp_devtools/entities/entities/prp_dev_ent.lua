@@ -3,7 +3,7 @@ ENT.Base            = "base_gmodentity"
 
 ENT.PrintName		= "Dev Entity"
 ENT.Author			= "sil"
-ENT.Category        = "Palomino"
+ENT.Category        = "Palomino: Development"
 ENT.Purpose			= "Testbench"
 ENT.Instructions	= "Use with care. Always handle with gloves."
 

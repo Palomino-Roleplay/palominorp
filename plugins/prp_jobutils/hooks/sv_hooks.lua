@@ -1,22 +1,5 @@
 local PLUGIN = PLUGIN
 
-function PLUGIN:PlayerChangedTeam( pPlayer, iOldTeam, iNewTeam )
-    local cCharacter = pPlayer:GetCharacter()
-    if not cCharacter then return end
-
-    if cCharacter:HasJobVehicle() then
-        cCharacter:RemoveJobVehicle()
-    end
-end
-
--- @TODO: Remove on character/player change too.
-
-function PLUGIN:PlayerSpawnedVehicle( pPlayer, vVehicle )
-    if pPlayer:IsPolice() then
-        vVehicle:SetNetVar( "policeVehicle", true )
-    end
-end
-
 util.AddNetworkString( "PRP.Job.Select" )
 net.Receive( "PRP.Job.Select", function( _, pPlayer )
     -- @TODO: Check distance from NPC, whether they can actually select a job, all that stuff.
@@ -26,6 +9,11 @@ net.Receive( "PRP.Job.Select", function( _, pPlayer )
 
     local cCharacter = pPlayer:GetCharacter()
     if not cCharacter then return end
+
+    if cCharacter:GetFaction() == FACTION_PRISONER then
+        pPlayer:Notify( "You cannot join a job while in prison." )
+        return
+    end
 
     local tFaction = ix.faction.Get( iFaction )
     if not tFaction then return end

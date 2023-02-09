@@ -725,115 +725,115 @@ concommand.Add( "prp_intro_start", function()
     PRP.Scene.Active:SetDuration( 120 )
     oCameraLayer:AddKeyframesAt( 0, {
         ["origin"] = {
-            value = Vector( -13220.767578, 9798.965820, 448.454285 + 16 ),
+            value = Vector( 4844.553711, 3787.858154, 319.442963 ),
         },
         ["angles"] = {
-            value = Angle( -80.090, -54.959, 0.000 ),
+            value = Angle( 9.745, 115.881, 0.000 ),
         },
         ["fov"] = {
-            value = 72.972991943359,
+            value = 57.528999328613,
         },
     } )
 
     oCameraLayer:AddKeyframesAt( 1.749, {
         ["origin"] = {
-            value = Vector( -13220.767578, 9798.965820, 448.454285 + 16 ),
+            value = Vector( 4844.553711, 3787.858154, 319.442963 ),
         },
         ["angles"] = {
-            value = Angle( -80.090, -54.959, 0.000 ),
+            value = Angle( 9.745, 115.881, 0.000 ),
         },
         ["fov"] = {
-            value = 72.972991943359,
+            value = 57.528999328613,
         },
     } )
 
-    -- Fire Department Scene
+    -- Town Hall Scene
     oCameraLayer:AddKeyframesAt( 1.749, {
         ["origin"] = {
-            value = Vector( -12784.682617, 2912.708740, -257.108002 + 16 ),
+            value = Vector( 4844.553711, 3787.858154, 319.442963 ),
         },
         ["angles"] = {
-            value = Angle( -20.787, -60.525, 0.000 ),
+            value = Angle( 9.745, 115.881, 0.000 ),
         },
         ["fov"] = {
-            value = 47.133995056152,
+            value = 57.528999328613,
         },
     } )
 
     oCameraLayer:AddKeyframesAt( 6.789, {
         ["origin"] = {
-            value = Vector( -12466.835938, 3063.326416, -257.108002 + 16 ),
+            value = Vector( 3576.289063, 4064.288818, 882.850403 ),
         },
         ["angles"] = {
-            value = Angle( -20.787, -72.268, 0.000 ),
+            value = Angle( 33.951, 59.496, 0.000 ),
         },
         ["fov"] = {
-            value = 47.133995056152,
+            value = 57.528999328613,
         },
     } )
 
-    -- Campsite Scene
+    -- 2nd Scene
     oCameraLayer:AddKeyframesAt( 6.789, {
         ["origin"] = {
-            value = Vector( 12110.833008, -7432.143066, 766.845215 + 128 ),
+            value = Vector( 5828.634766, 425.616821, 733.374634 ),
         },
         ["angles"] = {
-            value = Angle( 6.295, 105.953, 5.000 ),
+            value = Angle( 20.512, -69.932, 0.000 ),
         },
         ["fov"] = {
-            value = 30,
+            value = 46.539970397949,
         },
     } )
 
     oCameraLayer:AddKeyframesAt( 11.85, {
         ["origin"] = {
-            value = Vector( 11936.484375, -7476.523438, 766.845215 + 128 ),
+            value = Vector( 5881.332520, 547.302368, 254.859848 + 64 ),
         },
         ["angles"] = {
-            value = Angle( 6.437, 98.045, 5.000 ),
+            value = Angle( -7.824, -79.301, 0.000 ),
         },
         ["fov"] = {
-            value = 30,
+            value = 46.539970397949,
         },
     } )
 
     -- Main menu scene
     oCameraLayer:AddKeyframesAt( 11.85, {
         ["origin"] = {
-            value = Vector( -3844.596680, -923.985046, -236.163177 + 20 ),
+            value = Vector( 1264.394653, -164.328842, 350.462677+32 ),
         },
         ["angles"] = {
-            value = Angle( -13.532, -26.323, 0.000 ),
+            value = Angle( -6.983, -64.039, 0.000 ),
         },
         ["fov"] = {
-            value = 70.002952575684,
+            value = 47.232997894287,
         },
     } )
 
     oCameraLayer:AddKeyframesAt( 11.85 + 3, {
         ["origin"] = {
-            value = Vector( -4006.680664, -843.790710, -279.687073 + 28 ),
-            ease = math.ease.OutCubic,
+            value = Vector( 1124.571655, 122.807968, 311.343658+32 ),
+            ease = math.ease.OutCubic
         },
         ["angles"] = {
-            value = Angle( -14.633, -25.883, 0.000 ),
-            ease = math.ease.OutCubic,
+            value = Angle( -6.983, -64.039, 0.000 ),
+            ease = math.ease.OutCubic
         },
         ["fov"] = {
-            value = 44.460952758789,
-            ease = math.ease.OutCubic,
+            value = 33.273956298828,
+            ease = math.ease.OutCubic
         },
     } )
 
     oCameraLayer:AddKeyframesAt( 120, {
         ["origin"] = {
-            value = Vector( -4006.680664, -843.790710, -279.687073 + 28 ),
+            value = Vector( 1124.571655, 122.807968, 311.343658+32 ),
         },
         ["angles"] = {
-            value = Angle( -14.633, -25.883, 0.000 ),
+            value = Angle( -6.983, -64.039, 0.000 ),
         },
         ["fov"] = {
-            value = 44.460952758789,
+            value = 33.273956298828,
         },
     } )
 
@@ -866,4 +866,34 @@ end )
 
 hook.Add( "CharacterLoaded", "PRP.Camera.CharacterLoaded", function()
     RunConsoleCommand( "prp_intro_stop" )
+end )
+
+local matBG = Material( "prp/InventoryBG.png" )
+
+-- @TODO: Redo, but holy shit this is cool
+hook.Add( "PostDrawOpaqueRenderables", "AAAAAHOLYSHIT", function()
+    -- if PRP.Scene.Active then
+        cam.Start3D2D( Vector( 1666, -1124, 621 ), Angle( 0, 180, 90 ), 0.8 )
+            surface.SetDrawColor( 0, 0, 0, 255 )
+            surface.DrawRect( 0, 0, 450, 240 )
+
+            draw.NoTexture()
+            surface.SetDrawColor( 255, 255, 255, 128 )
+            surface.SetMaterial( matBG )
+            surface.DrawTexturedRect( 0, 0, 450, 240 )
+
+            surface.SetTextColor( 255, 255, 255 )
+            surface.SetFont( "ixMenuButtonHugeFont" )
+
+            local sTitle = "palomino.life"
+            local iW, iH = surface.GetTextSize( sTitle )
+
+            surface.SetTextPos( 225 - iW / 2, 120 - iH / 2 )
+            surface.DrawText( "palomino.life" )
+
+            -- surface.SetFont( "ixMenuButtonLabelFont" )
+            -- surface.SetTextPos( 50, 60 )
+            -- surface.DrawText( "welcome to..." )
+        cam.End3D2D()
+    -- end
 end )

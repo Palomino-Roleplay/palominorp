@@ -1,6 +1,6 @@
 ENT.Type = "ai"
 ENT.PrintName = "Armory Locker"
-ENT.Category = "PalominoRP"
+ENT.Category = "Palomino: Police"
 ENT.AdminSpawnable = true
 ENT.PopulateEntityInfo = true
 

@@ -60,10 +60,9 @@ if CLIENT then
 
     function SWEP:PrimaryAttack()
         if not IsFirstTimePredicted() then return end
+        local pTarget = LocalPlayer():GetEyeTrace().Entity
 
-        if not dTicketPanel then
-            dTicketPanel = vgui.Create( "PRP.Police.TicketMenu" )
-        end
+        self:OpenMenu( pTarget )
 
         -- local pPlayer = self:GetOwner()
 
@@ -73,9 +72,15 @@ if CLIENT then
         -- print("test3")
     end
 
-    function SWEP:OpenMenu()
+    function SWEP:SecondaryAttack()
+        if not IsFirstTimePredicted() then return end
+        self:CloseMenu()
+    end
+
+    function SWEP:OpenMenu( pTarget )
         if dTicketPanel then return end
         dTicketPanel = vgui.Create( "PRP.Police.TicketMenu" )
+        dTicketPanel:SetTarget( pTarget )
     end
 
     function SWEP:CloseMenu()
@@ -83,19 +88,19 @@ if CLIENT then
         dTicketPanel = nil
     end
 elseif SERVER then
-    -- function SWEP:PrimaryAttack()
-    --     if not IsFirstTimePredicted() then return end
+    function SWEP:PrimaryAttack()
+        if not IsFirstTimePredicted() then return end
 
-    --     local pPlayer = self:GetOwner()
+        local pPlayer = self:GetOwner()
 
-    --     self:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
-    --     self:SetNextPrimaryFire( CurTime() + self:SequenceDuration() )
-    -- end
-end
+        -- @TODO: Maybe send only when the ticket is issued?
+        self:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
+        self:SetNextPrimaryFire( CurTime() + self:SequenceDuration() )
+    end
 
-
-function SWEP:SecondaryAttack()
-    self:CloseMenu()
+    function SWEP:SecondaryAttack()
+        if not IsFirstTimePredicted() then return end
+    end
 end
 
 function SWEP:Reload()

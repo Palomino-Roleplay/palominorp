@@ -4,12 +4,8 @@ PLUGIN.name = "Radio"
 PLUGIN.author = "sil"
 PLUGIN.description = "Adds a 2-way radio"
 
-ix.util.Include( "meta/sv_character.lua" )
-ix.util.Include( "meta/sh_character.lua" )
-ix.util.Include( "meta/cl_character.lua" )
-
 ix.util.Include( "meta/sh_player.lua" )
-
+ix.util.Include( "meta/cl_player.lua" )
 
 ix.util.Include( "hooks/sv_radio.lua" )
 ix.util.Include( "hooks/sh_radio.lua" )
@@ -32,8 +28,8 @@ ix.command.Add("SetChannel", {
         ix.type.text
     },
     OnRun = function( self, pAdmin, sChannel )
-        pAdmin:GetCharacter():SetData( "radioChannel", sChannel )
+        pAdmin:SetNetVar( "radioChannel", sChannel )
 
-        pAdmin:Notify( "You have set your radio channel to " .. pAdmin:GetCharacter():GetRadioChannel() )
+        pAdmin:Notify( "You have set your radio channel to " .. pAdmin:GetRadioChannel() )
     end
 } )

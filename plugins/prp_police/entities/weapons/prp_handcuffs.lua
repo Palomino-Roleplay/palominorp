@@ -27,16 +27,6 @@ SWEP.DrawAmmo               = false
 
 ix.menu.RegisterPlayerOption( "Drag", {
     OnCanRun = function( pVictim, pPlayer, sOption, tData )
-        -- Which one is returning false?
-
-        Print(
-            pVictim:IsPlayer(),
-            not pVictim:GetNetVar( "draggedBy", false ),
-            pVictim:GetPos():DistToSqr( pPlayer:GetPos() ) <= 8000,
-            pVictim:IsHandcuffed(),
-            not IsValid( pPlayer:GetNetVar( "dragging", NULL ) )
-        )
-
         return pVictim:IsPlayer()
             and not pVictim:GetNetVar( "draggedBy", false )
             and pVictim:GetPos():DistToSqr( pPlayer:GetPos() ) <= 8000
@@ -69,18 +59,25 @@ end
 function SWEP:CanCuff( pVictim )
     local pOfficer = self:GetOwner()
 
+    -- @TODO: Holy shit simplify this.
     if pVictim:GetPos():DistToSqr( pOfficer:GetPos() ) > 8000 then return false, false end
     if not pOfficer:GetCharacter() then return false, false end
     if pVictim:GetClass() == "prop_ragdoll" and pVictim:GetNetVar( "player", NULL ) and pVictim:GetNetVar( "player", NULL ):GetNetVar( "tazed", false ) then
-        if pVictim.ixIgnoreDelete then
-            self:GetOwner():Notify( "A dead body doesn't need to be handcuffed." )
-            Print("wtf???????????")
+        if pVictim:GetNetVar( "player", NULL ):GetCharacter():IsGovernment() then
+            self:GetOwner():Notify( "You can't handcuff a government official." )
             return false, true
         end
 
-        print("uwu desune")
+        if pVictim.ixIgnoreDelete then
+            self:GetOwner():Notify( "A dead body doesn't need to be handcuffed." )
+            return false, true
+        end
 
         return true, true
+    end
+    if pVictim:GetCharacter() and pVictim:GetCharacter():IsGovernment() then
+        self:GetOwner():Notify( "You can't handcuff a government official." )
+        return false, false
     end
     if not pVictim:IsPlayer() then return false, false end
     if not pVictim:GetCharacter() then return false, false end
@@ -192,10 +189,7 @@ function SWEP:SecondaryAttack()
         return
     end
 
-    Print( "bIsRagdoll!!!!" )
-    Print( pVictim:IsHandcuffed() )
     if not pVictim:IsHandcuffed() then return end
-    Print( "kill me")
 
     if SERVER then
         -- @TODO Animation?

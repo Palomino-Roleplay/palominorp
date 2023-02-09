@@ -9,6 +9,8 @@ function PLY:DeathSpawn()
     self:SetPos( table.Random( PLUGIN.spawns ) )
     self:SetHealth( 1 )
     self:StartRecovery( 30 )
+
+    self:Uncuff()
 end
 
 local tRecoveringPlayers = {}

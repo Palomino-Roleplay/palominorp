@@ -1,7 +1,7 @@
 SWEP.PrintName              = "Restrained"
 SWEP.Author                 = "Kobralost & sil"
 SWEP.Instructions           = "You can't break those cuffs."
-SWEP.Category               = "Palomino: Police"
+SWEP.Category               = "Palomino: Development"
 
 SWEP.Spawnable              = true
 SWEP.AdminOnly              = true
@@ -34,21 +34,69 @@ end
 
 -- From realistic police mod
 function SWEP:Deploy()
-	local Owner = self:GetOwner()
-	-- Manipulate the Bone of the Player 
-	timer.Simple(0.2, function()
+	self:SetHoldType( self.HoldType )
+
+	local pPlayer = self:GetOwner()
+
+	if not IsFirstTimePredicted() then return end
+	if SERVER then return end
+	timer.Simple( 0, function()
 		for k,v in pairs(Realistic_Police.ManipulateBoneCuffed) do
-			local bone = Owner:LookupBone(k)
+		local bone = pPlayer:LookupBone(k)
 			if bone then
-				Owner:ManipulateBoneAngles(bone, v)
+				print("bonez")
+				print(bone, v)
+				pPlayer:ManipulateBoneAngles(bone, v)
 			end
 		end
-	end ) 
+	end )
+	pPlayer._bCuffedBones = true
+
+	return false
 end 
 
 function SWEP:Holster()
-	return false
+	return true
 end
+
+function SWEP:OnRemove()
+	if SERVER then return end
+
+	local pPlayer = self:GetOwner()
+	timer.Simple( 0, function()
+		if not IsValid( pPlayer ) then return end
+		if not pPlayer._bCuffedBones then return end
+
+		Realistic_Police.ResetBonePosition(Realistic_Police.ManipulateBoneCuffed, pPlayer )
+	end )
+end
+
+-- Can't do on Holster because we return false to prevent holstering
+hook.Add( "PlayerWeaponChanged", "PRP.Police.Cuffed.PlayerWeaponChanged", function( pPlayer, wNewWeapon )
+	if SERVER then return end
+
+	if pPlayer._bCuffedBones and ( not IsValid( wNewWeapon ) or wNewWeapon:GetClass() ~= "prp_cuffed" ) then
+		Realistic_Police.ResetBonePosition(Realistic_Police.ManipulateBoneCuffed, pPlayer)
+		pPlayer._bCuffedBones = false
+	elseif not pPlayer._bCuffedBones and IsValid( wNewWeapon ) and wNewWeapon:GetClass() == "prp_cuffed" then
+		timer.Simple(0, function()
+			if not IsValid( pPlayer ) then return end
+			if pPlayer._bCuffedBones then return end
+
+			-- @TODO: Consolidate into a function
+			for k,v in pairs(Realistic_Police.ManipulateBoneCuffed) do
+				local bone = pPlayer:LookupBone(k)
+				if bone then
+					pPlayer:ManipulateBoneAngles(bone, v, true)
+				end
+			end
+
+			wNewWeapon:SetHoldType( "passive" )
+
+			pPlayer._bCuffedBones = true
+		end )
+	end
+end )
 
 if CLIENT then
 	local WorldModel = ClientsideModel(SWEP.WorldModel)
