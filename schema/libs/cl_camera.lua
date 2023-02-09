@@ -885,11 +885,11 @@ hook.Add( "PostDrawOpaqueRenderables", "AAAAAHOLYSHIT", function()
             surface.SetTextColor( 255, 255, 255 )
             surface.SetFont( "ixMenuButtonHugeFont" )
 
-            local sTitle = "palomino.life"
+            local sTitle = "Palomino"
             local iW, iH = surface.GetTextSize( sTitle )
 
             surface.SetTextPos( 225 - iW / 2, 120 - iH / 2 )
-            surface.DrawText( "palomino.life" )
+            surface.DrawText( "Palomino" )
 
             -- surface.SetFont( "ixMenuButtonLabelFont" )
             -- surface.SetTextPos( 50, 60 )
