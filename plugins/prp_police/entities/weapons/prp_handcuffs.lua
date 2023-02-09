@@ -62,17 +62,22 @@ function SWEP:CanCuff( pVictim )
     -- @TODO: Holy shit simplify this.
     if pVictim:GetPos():DistToSqr( pOfficer:GetPos() ) > 8000 then return false, false end
     if not pOfficer:GetCharacter() then return false, false end
-    if pVictim:GetCharacter() and pVictim:GetCharacter():IsGovernment() then
-        self:GetOwner():Notify( "You can't handcuff a government official." )
-        return false, false
-    end
     if pVictim:GetClass() == "prop_ragdoll" and pVictim:GetNetVar( "player", NULL ) and pVictim:GetNetVar( "player", NULL ):GetNetVar( "tazed", false ) then
+        if pVictim:GetNetVar( "player", NULL ):GetCharacter():IsGovernment() then
+            self:GetOwner():Notify( "You can't handcuff a government official." )
+            return false, true
+        end
+
         if pVictim.ixIgnoreDelete then
             self:GetOwner():Notify( "A dead body doesn't need to be handcuffed." )
             return false, true
         end
 
         return true, true
+    end
+    if pVictim:GetCharacter() and pVictim:GetCharacter():IsGovernment() then
+        self:GetOwner():Notify( "You can't handcuff a government official." )
+        return false, false
     end
     if not pVictim:IsPlayer() then return false, false end
     if not pVictim:GetCharacter() then return false, false end

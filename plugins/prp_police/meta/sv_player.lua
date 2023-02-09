@@ -10,8 +10,11 @@ function PLY:Handcuff()
     self:SetRestricted( true, true )
     self:SetNetVar( "handcuffed", true )
 
-    self:Give( "prp_cuffed", true )
-    self:SelectWeapon( "prp_cuffed" )
+    -- Because tazers. This is a hacky fix, but it works.
+    timer.Simple( 0, function()
+        self:Give( "prp_cuffed", true )
+        self:SelectWeapon( "prp_cuffed" )
+    end )
 end
 
 function PLY:Uncuff()
@@ -22,7 +25,7 @@ function PLY:Uncuff()
 
     self:StripWeapon( "prp_cuffed" )
 
-    Realistic_Police.ResetBonePosition(Realistic_Police.ManipulateBoneCuffed, self)
+    -- Realistic_Police.ResetBonePosition(Realistic_Police.ManipulateBoneCuffed, self)
     Realistic_Police.StopDrag( self )
 end
 
@@ -76,6 +79,8 @@ hook.Add( "OnCharacterFallover", "PRP.Police.OnCharacterFallover", function( pPl
     if pPlayer:IsHandcuffed() then
         eRagdoll:CallOnRemove( "handcuff", function()
             if not IsValid( pPlayer ) then return end
+
+            print("still run")
 
             pPlayer:Handcuff()
         end )

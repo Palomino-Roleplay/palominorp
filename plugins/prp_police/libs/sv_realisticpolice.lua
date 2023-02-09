@@ -33,25 +33,25 @@ function Realistic_Police.StopDrag(ply)
     ply:SetNetVar("draggedBy", false)
 end
 
-hook.Add("SetupMove", "RPT:Move", function(ply, data)
-    if ply:IsHandcuffed() then 
-        data:SetMaxClientSpeed( 80 )
-        if data:KeyDown(IN_JUMP) then
-            data:RemoveKeys(IN_JUMP)
+hook.Add("SetupMove", "RPT:Move", function(pPlayer, tMoveData, tUserCmd)
+    if pPlayer:IsHandcuffed() then 
+        tMoveData:SetMaxClientSpeed( 80 )
+        if tUserCmd:KeyDown(IN_JUMP) then
+            tUserCmd:RemoveKey(IN_JUMP)
         end
     end
     
     -- this hook is the hook for drag the player 
-    if IsValid(ply:GetNetVar("draggedBy")) then
+    if IsValid(pPlayer:GetNetVar("draggedBy")) then
         -- data:ClearMovement()
-        if ply:GetPos():DistToSqr(ply:GetNetVar("draggedBy"):GetPos()) < 40000 then
-            if IsValid(ply:GetNetVar("draggedBy")) then
-                local VectorDrag = ply:GetNetVar("draggedBy"):GetPos() - ply:GetPos()
-                data:SetVelocity(Vector(VectorDrag.x*4, VectorDrag.y*4, -100))
+        if pPlayer:GetPos():DistToSqr(ply:GetNetVar("draggedBy"):GetPos()) < 40000 then
+            if IsValid(pPlayer:GetNetVar("draggedBy")) then
+                local VectorDrag = pPlayer:GetNetVar("draggedBy"):GetPos() - pPlayer:GetPos()
+                tMoveData:SetVelocity(Vector(VectorDrag.x*4, VectorDrag.y*4, -100))
             end
         else
-            ply:GetNetVar("draggedBy", NULL):SetNetVar("dragging", NULL)
-            ply:SetNetVar("draggedBy", false)
+            pPlayer:GetNetVar("draggedBy", NULL):SetNetVar("dragging", NULL)
+            pPlayer:SetNetVar("draggedBy", false)
         end
     end
 end)
