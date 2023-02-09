@@ -14,7 +14,7 @@ function PLY:GetRadioChannel()
     end
 
     -- @TODO: (HIGH PRIORITY) Use net vars and player metatable instead.
-    return self:GetNetVar( "radioChannel", "100.0" )
+    return self:GetNetVar( "radioChannel", "100.00" )
 end
 
 -- Radio channels are a string. Civilian stations are 100.00-199.99. Government ones are titled "Police" and etc.
