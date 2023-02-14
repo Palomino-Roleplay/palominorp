@@ -16,6 +16,7 @@ PLUGIN.config = {
     }
 }
 
+ix.util.Include( "meta/cl_spawnmenu.lua" )
 ix.util.Include( "meta/sh_entity.lua" )
 ix.util.Include( "meta/sh_property.lua" )
 ix.util.Include( "meta/sh_character.lua" )
