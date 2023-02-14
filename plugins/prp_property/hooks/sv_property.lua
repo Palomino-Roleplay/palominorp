@@ -46,3 +46,43 @@ hook.Add( "InitializedPlugins", "PRP.Property.InitializedPlugins", function()
         end
     end )
 end )
+
+function PLUGIN:PlayerLoadedCharacter( pPlayer, cCurrent, cPrevious )
+    if cPrevious then
+        for _, oProperty in pairs( cPrevious:GetRentedProperties() ) do
+            oProperty:UnRent( true )
+        end
+    end
+end
+
+function PLUGIN:PlayerDisconnected( pPlayer )
+    if not pPlayer:GetCharacter() then return end
+
+    for _, oProperty in pairs( pPlayer:GetCharacter():GetRentedProperties() ) do
+        oProperty:UnRent( true )
+    end
+end
+
+-- F2 hook
+function PLUGIN:ShowTeam( pPlayer )
+    if not pPlayer:GetCharacter() then return end
+
+    local tTrace = util.TraceLine( {
+        start = pPlayer:GetShootPos(),
+        endpos = pPlayer:GetShootPos() + pPlayer:GetAimVector() * 96,
+        filter = pPlayer
+    } )
+
+    local eEntity = tTrace.Entity
+    if not IsValid( eEntity ) or not eEntity:IsDoor() then return end
+
+    local oProperty = eEntity:GetProperty()
+    if not oProperty then return end
+
+    if oProperty:GetRenter() then
+        -- @TODO: Open property menu
+    else
+        -- Attempt to rent the property.
+        oProperty:Rent( pPlayer )
+    end
+end

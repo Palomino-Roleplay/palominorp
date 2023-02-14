@@ -124,11 +124,14 @@ if SERVER then
         pPlayer:Notify( "You have rented " .. self:GetName() .. "!" )
     end
 
-    function PROPERTY:UnRent()
+    function PROPERTY:UnRent( bSuppressNotification )
         -- @TODO: Make sure this works as intended (switching characters shouldn't send you the notification)
         if self:GetRenter() then
             self:GetRenter():RemoveRentedProperty( self )
-            self:GetRenter():GetPlayer():Notify( "Your rent agreement for " .. self:GetName() .. " has been terminated." )
+
+            if not bSuppressNotification then
+                self:GetRenter():GetPlayer():Notify( "Your rent agreement for " .. self:GetName() .. " has been terminated." )
+            end
         end
 
         self:SetRenter( nil )
