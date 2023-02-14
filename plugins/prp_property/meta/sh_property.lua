@@ -5,11 +5,11 @@ AccessorFunc( PROPERTY, "m_sName", "Name", FORCE_STRING )
 AccessorFunc( PROPERTY, "m_sDescription", "Description", FORCE_STRING )
 
 AccessorFunc( PROPERTY, "m_bOwnable", "Ownable", FORCE_BOOL )
-AccessorFunc( PROPERTY, "m_pOwner", "Owner" )
+AccessorFunc( PROPERTY, "m_cOwner", "Owner" )
 
 AccessorFunc( PROPERTY, "m_bRentable", "Rentable", FORCE_BOOL )
 AccessorFunc( PROPERTY, "m_iRent", "Rent", FORCE_NUMBER )
-AccessorFunc( PROPERTY, "m_pRenter", "Renter" )
+AccessorFunc( PROPERTY, "m_cRenter", "Renter" )
 
 AccessorFunc( PROPERTY, "m_tFactions", "Factions" )
 AccessorFunc( PROPERTY, "m_tClasses", "Classes" )
@@ -65,8 +65,8 @@ function PROPERTY:HasAccess( pPlayer )
         if self:GetClasses()[ pPlayer:GetClass() ] then return true end
     end
 
-    if self:GetOwner() == pPlayer then return true end
-    if self:GetRenter() == pPlayer then return true end
+    if self:GetOwner() == pPlayer:GetCharacter() then return true end
+    if self:GetRenter() == pPlayer:GetCharacter() then return true end
 
     return false
 end
