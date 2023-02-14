@@ -43,8 +43,6 @@ function PLUGIN:InitializedPlugins()
     PRP.Property.Register( PROPERTY )
     -- PROPERTY:Init()
 
-    print("test")
-
     -- Leprechauns Winklepicker (Bar)
     PROPERTY = setmetatable( {}, { __index = PRP.Property.Meta } )
 
