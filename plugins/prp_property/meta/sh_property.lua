@@ -1,7 +1,10 @@
+local PLUGIN = PLUGIN
+
 local PROPERTY = {}
 
 AccessorFunc( PROPERTY, "m_sID", "ID", FORCE_STRING )
 AccessorFunc( PROPERTY, "m_sName", "Name", FORCE_STRING )
+AccessorFunc( PROPERTY, "m_sCategory", "Category", FORCE_STRING )
 AccessorFunc( PROPERTY, "m_sDescription", "Description", FORCE_STRING )
 
 AccessorFunc( PROPERTY, "m_bOwnable", "Ownable", FORCE_BOOL )
@@ -58,6 +61,25 @@ function PROPERTY:HasAccess( pPlayer )
     return false
 end
 
+function PROPERTY:CanRent( pPlayer )
+    if not pPlayer:GetCharacter() then return false, "You do not have a character." end
+    if not self:GetRentable() then return false, "This property is not rentable." end
+    if self:GetRenter() then return false, "This property is already rented." end
+
+    -- Checking limits
+    -- @TODO: These definitely need to be done differently in the future.
+    -- @TODO: Test this
+    if #pPlayer:GetCharacter():GetRentedProperties() >= PLUGIN.config.limits.total then
+        return false, "You have reached the maximum amount of properties you can rent."
+    end
+
+    if self:GetCategory() and #pPlayer:GetCharacter():GetRentedPropertiesByCategory( self:GetCategory() ) >= PLUGIN.config.limits.category[ self:GetCategory() ] then
+        return false, "You have reached the maximum amount of properties you can rent of this category."
+    end
+
+    return true
+end
+
 if SERVER then
     function PROPERTY:SetupDoor( eEntity )
         -- @TODO: Ugly. Have it support multiple factions.
@@ -90,14 +112,27 @@ if SERVER then
         -- @TODO: Check if IsValid check works as intended with offline/unloaded characters
         if IsValid( self:GetRenter() ) then return end
 
+        local bCanRent, sReason = self:CanRent( pPlayer )
+        if not bCanRent then
+            pPlayer:Notify( sReason )
+            return
+        end
+
         self:SetRenter( pPlayer:GetCharacter() )
 
         -- @TODO: Add rent amount & interval to notification
         pPlayer:Notify( "You have rented " .. self:GetName() .. "!" )
     end
+
+    function PROPERTY:UnRent()
+        -- @TODO: Make sure this works as intended (switching characters shouldn't send you the notification)
+        if IsValid( self:GetRenter() ) then
+            self:GetRenter():GetPlayer():Notify( "Your rent agreement for " .. self:GetName() .. " has been terminated." )
+        end
+    end
 elseif CLIENT then
     function PROPERTY:Rent()
-        
+
     end
 end
 

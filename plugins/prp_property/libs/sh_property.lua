@@ -14,6 +14,8 @@ function PRP.Property.Register( oProperty )
     if ix.config.Get("DeveloperMode", false) then
         oProperty:Init()
     end
+
+    -- @TODO: Refuse to register properties that don't have required data (name, id, category, etc.)
 end
 
 function PRP.Property.Get( sProperty )

@@ -2,7 +2,7 @@ local PLUGIN = PLUGIN
 
 function PLUGIN:InitializedPlugins()
     local PROPERTY = setmetatable( {}, { __index = PRP.Property.Meta } )
-    
+
     -- Police Department
     PROPERTY:SetID( "pd" )
     PROPERTY:SetName( "Police Department" )
@@ -22,15 +22,15 @@ function PLUGIN:InitializedPlugins()
         -- PD Front doors
         [2926] = true,
         [2927] = true,
-    
+
         -- PD gate doors,
         [2953] = true,
         [2957] = true,
-    
+
         -- Elevator doors
         [3026] = true,
         [3027] = true,
-    
+
         -- Elevator outside doors
         [2949] = true,
         [2950] = true,
@@ -39,7 +39,7 @@ function PLUGIN:InitializedPlugins()
         [2951] = true,
         [2952] = true,
     } )
-    
+
     PRP.Property.Register( PROPERTY )
     -- PROPERTY:Init()
 
