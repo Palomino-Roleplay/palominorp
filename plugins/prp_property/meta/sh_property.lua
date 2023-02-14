@@ -64,17 +64,24 @@ end
 function PROPERTY:CanRent( pPlayer )
     if not pPlayer:GetCharacter() then return false, "You do not have a character." end
     if not self:GetRentable() then return false, "This property is not rentable." end
+    -- @TODO: Check if this check works as intended with offline/unloaded characters
     if self:GetRenter() then return false, "This property is already rented." end
+
+    local cCharacter = pPlayer:GetCharacter()
 
     -- Checking limits
     -- @TODO: These definitely need to be done differently in the future.
     -- @TODO: Test this
-    if #pPlayer:GetCharacter():GetRentedProperties() >= PLUGIN.config.limits.total then
+    if table.Count( cCharacter:GetRentedProperties() ) >= PLUGIN.config.limits.total then
         return false, "You have reached the maximum amount of properties you can rent."
     end
 
-    if self:GetCategory() and #pPlayer:GetCharacter():GetRentedPropertiesByCategory( self:GetCategory() ) >= PLUGIN.config.limits.category[ self:GetCategory() ] then
+    if self:GetCategory() and table.Count( cCharacter:GetRentedPropertiesByCategory( self:GetCategory() ) ) >= PLUGIN.config.limits.category[ self:GetCategory() ] then
         return false, "You have reached the maximum amount of properties you can rent of this category."
+    end
+
+    if cCharacter:GetMoney() < self:GetRent() then
+        return false, "You do not have enough money to rent this property."
     end
 
     return true
@@ -109,9 +116,6 @@ if SERVER then
     end
 
     function PROPERTY:Rent( pPlayer )
-        -- @TODO: Check if IsValid check works as intended with offline/unloaded characters
-        if IsValid( self:GetRenter() ) then return end
-
         local bCanRent, sReason = self:CanRent( pPlayer )
         if not bCanRent then
             pPlayer:Notify( sReason )
@@ -119,6 +123,7 @@ if SERVER then
         end
 
         self:SetRenter( pPlayer:GetCharacter() )
+        pPlayer:GetCharacter():AddRentedProperty( self )
 
         -- @TODO: Add rent amount & interval to notification
         pPlayer:Notify( "You have rented " .. self:GetName() .. "!" )
@@ -126,12 +131,24 @@ if SERVER then
 
     function PROPERTY:UnRent()
         -- @TODO: Make sure this works as intended (switching characters shouldn't send you the notification)
-        if IsValid( self:GetRenter() ) then
+        if self:GetRenter() then
+            self:GetRenter():RemoveRentedProperty( self )
             self:GetRenter():GetPlayer():Notify( "Your rent agreement for " .. self:GetName() .. " has been terminated." )
+        end
+
+        self:SetRenter( nil )
+
+        -- Don't leave them stuck!
+        for _, eEntity in ipairs( self:GetDoors() ) do
+            eEntity:Fire( "unlock" )
         end
     end
 elseif CLIENT then
     function PROPERTY:Rent()
+
+    end
+
+    function PROPERTY:UnRent()
 
     end
 end

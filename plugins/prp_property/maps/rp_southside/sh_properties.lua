@@ -49,7 +49,8 @@ function PLUGIN:InitializedPlugins()
     PROPERTY:SetID( "bar" )
     PROPERTY:SetName( "Leprechauns Winklepicker" )
     PROPERTY:SetRentable( true )
-    PROPERTY:SetLockOnStart( true )
+    PROPERTY:SetLockOnStart( false )
+    PROPERTY:SetRent( 10 )
 
     PROPERTY:SetBounds(
         {
