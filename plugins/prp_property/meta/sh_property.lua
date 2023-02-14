@@ -33,22 +33,7 @@ function PROPERTY:Init()
             if eEntity:IsDoor() then
                 table.insert( self:GetDoors(), eEntity )
 
-                -- @TODO: Ugly. Have it support multiple factions.
-                if SERVER and self:GetFactions() then
-                    if self:GetPublicDoors() and eEntity:CreatedByMap() and self:GetPublicDoors()[eEntity:MapCreationID()] then
-                        eEntity:Fire("unlock")
-                        continue
-                    end
-
-                    eEntity.ixFactionID = self:GetFactions()[1]
-                    eEntity:SetNetVar("faction", self:GetFactions()[1])
-                    eEntity:SetNetVar("visible", true)
-                    eEntity:SetNetVar("name", self:GetName())
-
-                    if self:GetLockOnStart() then
-                        eEntity:Fire("lock")
-                    end
-                end
+                if SERVER then self:SetupDoor( eEntity ) end
             end
 
             eEntity:SetProperty( self )
@@ -69,6 +54,35 @@ function PROPERTY:HasAccess( pPlayer )
     if self:GetRenter() == pPlayer:GetCharacter() then return true end
 
     return false
+end
+
+if SERVER then
+    function PROPERTY:SetupDoor( eEntity )
+        -- @TODO: Ugly. Have it support multiple factions.
+        if self:GetFactions() then
+            if self:GetPublicDoors() and eEntity:CreatedByMap() and self:GetPublicDoors()[eEntity:MapCreationID()] then
+                eEntity:Fire("unlock")
+                return
+            end
+
+            eEntity.ixFactionID = self:GetFactions()[1]
+            eEntity:SetNetVar("faction", self:GetFactions()[1])
+            eEntity:SetNetVar("visible", true)
+            eEntity:SetNetVar("name", self:GetName())
+
+            if self:GetLockOnStart() then
+                eEntity:Fire("lock")
+            end
+        elseif self:GetRentable() then
+            eEntity:SetNetVar("visible", true)
+            eEntity:SetNetVar("name", self:GetName())
+            eEntity:SetNetVar("ownable", true)
+
+            if self:GetLockOnStart() then
+                eEntity:Fire("lock")
+            end
+        end
+    end
 end
 
 PRP.Property = PRP.Property or {}
