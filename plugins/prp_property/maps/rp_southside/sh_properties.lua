@@ -3,6 +3,7 @@ local PLUGIN = PLUGIN
 function PLUGIN:InitializedPlugins()
     local PROPERTY = setmetatable( {}, { __index = PRP.Property.Meta } )
     
+    -- Police Department
     PROPERTY:SetID( "pd" )
     PROPERTY:SetName( "Police Department" )
     PROPERTY:SetFactions( {
@@ -40,5 +41,24 @@ function PLUGIN:InitializedPlugins()
     } )
     
     PRP.Property.Register( PROPERTY )
+    PROPERTY:Init()
+
+    print("test")
+
+    -- Leprechauns Winklepicker (Bar)
+    PROPERTY = setmetatable( {}, { __index = PRP.Property.Meta } )
+
+    PROPERTY:SetID( "bar" )
+    PROPERTY:SetName( "Leprechauns Winklepicker" )
+
+    PROPERTY:SetBounds(
+        {
+            {
+                Vector(5329.5654296875,8657.2353515625,327.04516601563),
+                Vector(4479.96875,7104.12109375,129.42752075195),
+            }
+        }
+    )
+
     PROPERTY:Init()
 end
