@@ -41,7 +41,7 @@ function PLUGIN:InitializedPlugins()
     } )
     
     PRP.Property.Register( PROPERTY )
-    PROPERTY:Init()
+    -- PROPERTY:Init()
 
     print("test")
 
@@ -50,6 +50,7 @@ function PLUGIN:InitializedPlugins()
 
     PROPERTY:SetID( "bar" )
     PROPERTY:SetName( "Leprechauns Winklepicker" )
+    PROPERTY:SetRentable( true )
 
     PROPERTY:SetBounds(
         {
@@ -60,5 +61,6 @@ function PLUGIN:InitializedPlugins()
         }
     )
 
-    PROPERTY:Init()
+    PRP.Property.Register( PROPERTY )
+    -- PROPERTY:Init()
 end
