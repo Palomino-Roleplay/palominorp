@@ -50,8 +50,8 @@ function PROPERTY:HasAccess( pPlayer )
         if self:GetClasses()[ pPlayer:GetClass() ] then return true end
     end
 
-    if self:GetOwner() == pPlayer:GetCharacter() then return true end
     if self:GetRenter() == pPlayer:GetCharacter() then return true end
+    if self:GetOwner() == pPlayer:GetCharacter() then return true end
 
     return false
 end
@@ -82,6 +82,21 @@ if SERVER then
                 eEntity:Fire("lock")
             end
         end
+    end
+
+    function PROPERTY:Rent( pPlayer )
+        -- @TODO: Check if IsValid check works as intended with offline/unloaded characters
+        if IsValid( self:GetRenter() ) then return end
+
+        self:SetRenter( pPlayer:GetCharacter() )
+
+        for _, eEntity in ipairs( self:GetDoors() ) do
+            eEntity:Fire("unlock")
+        end
+    end
+elseif CLIENT then
+    function PROPERTY:Rent()
+        
     end
 end
 
