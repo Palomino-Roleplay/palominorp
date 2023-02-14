@@ -53,6 +53,8 @@ function PROPERTY:HasAccess( pPlayer )
     if self:GetRenter() == pPlayer:GetCharacter() then return true end
     if self:GetOwner() == pPlayer:GetCharacter() then return true end
 
+    -- @TODO: Add support for giving access to other players
+
     return false
 end
 
@@ -90,9 +92,8 @@ if SERVER then
 
         self:SetRenter( pPlayer:GetCharacter() )
 
-        for _, eEntity in ipairs( self:GetDoors() ) do
-            eEntity:Fire("unlock")
-        end
+        -- @TODO: Add rent amount & interval to notification
+        pPlayer:Notify( "You have rented " .. self:GetName() .. "!" )
     end
 elseif CLIENT then
     function PROPERTY:Rent()
