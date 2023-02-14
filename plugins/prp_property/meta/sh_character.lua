@@ -1,6 +1,6 @@
 local PLUGIN = PLUGIN
 
--- We're using character metatable because we want properties to clear when players change characters.
+-- We're using character metatable because properties clear when changing characters.
 local CHAR = ix.meta.character
 
 function CHAR:GetRentedProperties()
