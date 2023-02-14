@@ -2,8 +2,9 @@ local PLUGIN = PLUGIN
 
 -- @TODO: Find a better hook for this.
 hook.Add( "InitializedPlugins", "PRP.Property.InitializedPlugins", function()
-    -- @TODO: Config option for rent payment interval.
-    timer.Create( "PRP.Property.RentPayments", 10, 0, function()
+    local iRentInterval = ix.config.Get( "propertyRentPaymentInterval", 15 ) * 60
+
+    timer.Create( "PRP.Property.RentPayments", iRentInterval, 0, function()
         print( "Processing rent payments..." )
 
         for _, pPlayer in ipairs( player.GetAll() ) do

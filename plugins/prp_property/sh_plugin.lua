@@ -22,3 +22,8 @@ ix.util.Include( "meta/sh_character.lua" )
 
 ix.util.Include( "hooks/sh_property.lua" )
 ix.util.Include( "hooks/sv_property.lua" )
+
+ix.config.Add("propertyRentPaymentInterval", 15, "How many minutes are there between the rent payments? (Needs map change to update)", nil, {
+    data = {min = 1, max = 60, decimals = 0},
+    category = "Palomino: Property"
+})
