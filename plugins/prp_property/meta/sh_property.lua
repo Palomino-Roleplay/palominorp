@@ -45,13 +45,8 @@ function PROPERTY:Init()
 end
 
 function PROPERTY:HasAccess( pPlayer )
-    if self:GetFactions() then
-        if self:GetFactions()[ pPlayer:GetFaction() ] then return true end
-    end
-
-    if self:GetClasses() then
-        if self:GetClasses()[ pPlayer:GetClass() ] then return true end
-    end
+    if self:GetFactions() and self:GetFactions()[ pPlayer:GetFaction() ] then return true end
+    if self:GetClasses() and self:GetClasses()[ pPlayer:GetClass() ] then return true end
 
     if self:GetRenter() == pPlayer:GetCharacter() then return true end
     if self:GetOwner() == pPlayer:GetCharacter() then return true end
