@@ -11,7 +11,9 @@ function PRP.Property.Register( oProperty )
         PRP.Property.Rentable[oProperty:GetID()] = oProperty
     end
 
-    oProperty:Init()
+    if ix.config.Get("DeveloperMode", false) then
+        oProperty:Init()
+    end
 end
 
 function PRP.Property.Get( sProperty )
