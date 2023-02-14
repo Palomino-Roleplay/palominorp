@@ -82,6 +82,16 @@ function PROPERTY:CanRent( pPlayer )
     return true
 end
 
+function PROPERTY:Contains( vPosition )
+    for _, tBound in ipairs( self:GetBounds() ) do
+        if vPosition:WithinAABox( tBound[ 1 ], tBound[ 2 ] ) then
+            return true
+        end
+    end
+
+    return false
+end
+
 if SERVER then
     function PROPERTY:SetupDoor( eEntity )
         -- @TODO: Ugly. Have it support multiple factions.

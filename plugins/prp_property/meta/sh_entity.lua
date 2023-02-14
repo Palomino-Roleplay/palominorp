@@ -4,4 +4,5 @@ local ENTITY = FindMetaTable( "Entity" )
 
 -- end
 
-AccessorFunc( ENTITY, "m_oProperty", "Property"  )
+AccessorFunc( ENTITY, "m_oProperty", "Property" )
+AccessorFunc( ENTITY, "m_pSpawner", "Spawner" )
