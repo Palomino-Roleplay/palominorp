@@ -7,7 +7,7 @@ dCreationMenu.Populate = function( self )
     local tabs = spawnmenu.GetCreationTabs()
 
     for k, v in SortedPairsByMemberValue( tabs, "Order" ) do
-        if not LocalPlayer():IsAdmin() and k ~= "#spawnmenu.content_tab" then continue end
+        -- if not LocalPlayer():IsAdmin() and k ~= "#spawnmenu.content_tab" then continue end
 
         local pnl = vgui.Create( "Panel" )
 
@@ -21,20 +21,20 @@ dCreationMenu.Populate = function( self )
 	end
 end
 
-local dToolMenu = vgui.GetControlTable( "ToolMenu" )
-dToolMenu.LoadTools = function( self )
+-- local dToolMenu = vgui.GetControlTable( "ToolMenu" )
+-- dToolMenu.LoadTools = function( self )
 
-	local tools = spawnmenu.GetTools()
+-- 	local tools = spawnmenu.GetTools()
 
-	for strName, pTable in pairs( tools ) do
-        -- Nice one, garry.
-        if not LocalPlayer():IsAdmin() and pTable.Name ~= "AAAAAAA_Main" then continue end
+-- 	for strName, pTable in pairs( tools ) do
+--         -- Nice one, garry.
+--         -- if not LocalPlayer():IsAdmin() and pTable.Name ~= "AAAAAAA_Main" then continue end
 
-		self:AddToolPanel( strName, pTable )
+-- 		self:AddToolPanel( strName, pTable )
 
-	end
+-- 	end
 
-end
+-- end
 
 -- @TODO: Apparently spawnmenu.ClearToolMenus exists. Maybe the above can be done with those functions and more if they exist? PopulateMenuBar, perhaps too.
 
@@ -86,9 +86,9 @@ function PLUGIN:PopulateContent( dContent, dTree, dNode)
 		dPalominoNode.pnlContent:SwitchPanel( dViewPanel )
 	end
 
-    if not LocalPlayer():IsAdmin() then
-        return false
-    end
+    -- if not LocalPlayer():IsAdmin() then
+    --     return false
+    -- end
 end
 
 -- @TODO: Yucky, and lags client on autorefresh. Maybe only do it once? (See: SpawnMenuCreated)
