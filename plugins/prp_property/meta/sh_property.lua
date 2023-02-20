@@ -121,6 +121,7 @@ if SERVER then
     end
 
     function PROPERTY:Rent( pPlayer )
+        -- @TODO: Make sure players aren't renting/unrenting super fast (add a cooldown)
         local bCanRent, sReason = self:CanRent( pPlayer )
         if not bCanRent then
             pPlayer:Notify( sReason )
@@ -132,9 +133,12 @@ if SERVER then
 
         -- @TODO: Add rent amount & interval to notification
         pPlayer:Notify( "You have rented " .. self:GetName() .. "!" )
+
+        self:Network()
     end
 
     function PROPERTY:UnRent( bSuppressNotification )
+        -- @TODO: Make sure players aren't renting/unrenting super fast (add a cooldown)
         -- @TODO: Make sure this works as intended (switching characters shouldn't send you the notification)
         if self:GetRenter() then
             self:GetRenter():RemoveRentedProperty( self )
@@ -150,6 +154,22 @@ if SERVER then
         for _, eEntity in ipairs( self:GetDoors() ) do
             eEntity:Fire( "unlock" )
         end
+
+        self:Network()
+    end
+
+    function PROPERTY:Network( pPlayer )
+        -- Don't update to individual players if the property isn't rented.
+        if not self:GetRenter() and pPlayer then return end
+
+        -- @TODO: Network this to newly joined players
+        net.Start( "PRP.Property.Update" )
+            net.WriteString( self:GetID() )
+
+            -- @TODO: Perhaps send the character instead of the player?
+            -- @TODO: Actually, maybe we shouldn't even tell the client who the renter is.
+            net.WriteEntity( self:GetRenter() and self:GetRenter():GetPlayer() or NULL )
+        if pPlayer then net.Send( pPlayer ) else net.Broadcast() end
     end
 elseif CLIENT then
     function PROPERTY:Rent()

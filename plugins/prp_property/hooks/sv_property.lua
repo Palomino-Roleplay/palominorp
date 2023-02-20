@@ -64,6 +64,13 @@ function PLUGIN:PlayerDisconnected( pPlayer )
     end
 end
 
+function PLUGIN:PlayerInitialSpawn( pPlayer )
+    -- @TODO: God can we please make this one net message?
+    for _, oProperty in pairs( PRP.Property.GetAll() ) do
+        oProperty:Network( pPlayer )
+    end
+end
+
 -- F2 hook
 function PLUGIN:ShowTeam( pPlayer )
     if not pPlayer:GetCharacter() then return end
@@ -82,6 +89,7 @@ function PLUGIN:ShowTeam( pPlayer )
 
     if oProperty:GetRenter() then
         -- @TODO: Open property menu
+        oProperty:UnRent()
     else
         -- Attempt to rent the property.
         oProperty:Rent( pPlayer )
