@@ -33,7 +33,7 @@ concommand.Add( "prp_uitest", function()
 
                 print("data")
                 file.Write(fileName, data)
-                callback(Material("data/" .. fileName, "noclamp smooth"))
+                callback(Material("data/" .. fileName, ""))
             end
         end, function(error)
             print("error")
@@ -56,6 +56,8 @@ concommand.Add( "prp_uitest", function()
                 local imgWidth, imgHeight = screenW * 1, screenH * 1
                 local imgX, imgY = (screenW - imgWidth) * 1, (screenH - imgHeight) * 1
                 
+                print( imgX, imgY, imgWidth, imgHeight )
+
                 -- Draw the image on the HUD
                 surface.SetMaterial(material)
                 surface.SetDrawColor(255, 255, 255, 245)
