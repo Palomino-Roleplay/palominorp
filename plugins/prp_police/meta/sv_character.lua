@@ -95,6 +95,7 @@ end
 function CHAR:IssueTicket( pVictim, sReason, iAmount )
     if not self:IsPolice() then return false, "You are not a police officer." end
     if not pVictim:IsPlayer() then return false, "Invalid player." end
+    if pVictim:IsPolice() then return false, "You cannot ticket other police." end
     if not sReason then return false, "Invalid reason." end
     if not iAmount then return false, "Invalid amount." end
     if not pVictim:GetCharacter() then return false, "Victim character is invalid" end
