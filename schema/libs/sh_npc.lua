@@ -95,9 +95,9 @@ end
 function PRP_NPC:OnSpawn()
 end
 
-function PRP_NPC:Use()
+function PRP_NPC:Use( eEntity )
     Print("use!")
-    self:OnUse()
+    self:OnUse( eEntity )
 end
 
 function PRP_NPC:OnUse()
@@ -207,6 +207,6 @@ if CLIENT then
 
         Print("using!")
 
-        oNPC:Use()
+        oNPC:Use( eNPC )
     end )
 end

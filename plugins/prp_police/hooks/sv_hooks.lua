@@ -56,7 +56,7 @@ net.Receive( "PRP.Police.IssueTicket", function( _, pOfficer )
     if not pOfficer:GetCharacter():IsPolice() then return end
     -- @TODO: Get that catch-all function (if they're restrained, not alive, etc.)
     if not pOfficer:Alive() then return end
-    -- @TODO: Not the best strategy. Any player can just run away and avoid a ticket.
+    -- @TODO: Not the best strategy. Any player can just run away and avoid a ticket. (Fake TODO)
     if pOfficer:GetPos():DistToSqr( pVictim:GetPos() ) >= 100000 then return end
 
     local bSuccess, sMessage = pOfficer:GetCharacter():IssueTicket( pVictim, sReason, iAmount )
