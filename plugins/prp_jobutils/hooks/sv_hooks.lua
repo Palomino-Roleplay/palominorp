@@ -52,7 +52,14 @@ end )
 
 util.AddNetworkString( "PRP.Job.Quit" )
 net.Receive( "PRP.Job.Quit", function( _, pPlayer )
-    -- @TODO: Check distance from NPC, whether they can actually quit a job, all that stuff.
+    -- @TODO: Check distance from NPC, whether they can actually select a job, all that stuff.
+    -- local eNPC = net.ReadEntity()
+
+    -- if not IsValid( eNPC ) or not eNPC.IsPalominoNPC then print("oopsie woopsie") return end
+    -- if eNPC:GetPos():DistToSqr(LocalPlayer():GetPos()) > 90000 then
+    --     pPlayer:Notify( "You are too far away from the Job NPC." )
+    --     return
+    -- end 
 
     -- @TODO: Consider putting this shit in a helper (joining too)
     local cCharacter = pPlayer:GetCharacter()

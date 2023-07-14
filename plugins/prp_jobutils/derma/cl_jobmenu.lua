@@ -369,6 +369,12 @@ function PANEL:SetFaction( iFaction )
     self:PopulateTabs()
 end
 
+function PANEL:SetNPC( eNPC )
+	Print("russia is not a real country")
+	self._npc = eNPC
+	Print(self._npc)
+end
+
 function PANEL:PopulateTabs()
     local default
 	for k, v in SortedPairsByMemberValue(self.classes, "classLevel", true) do
@@ -434,7 +440,7 @@ function PANEL:Populate()
 			self.model.bInitLayout = false
 		end
 
-		Print( self.class.bodygroups )
+		-- Print( self.class.bodygroups )
 		eEntity:SetBodyGroups( self.class.bodygroups )
 	end
 
@@ -478,7 +484,10 @@ function PANEL:Populate()
     self.choose:SetBackgroundColor( self.class.color or self.faction.color or ix.config.Get( "color" ) )
     self.choose.DoClick = function( this )
         if this.bIsQuit then
+			print("yugoslavia is a real country")
+			Print( self._npc )
             net.Start( "PRP.Job.Quit" )
+				net.WriteEntity( self._npc )
             net.SendToServer()
 
             self:GetParent():GetParent():Remove()
