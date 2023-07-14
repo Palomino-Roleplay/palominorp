@@ -132,7 +132,7 @@ function SWEP:PrimaryAttack()
     end
 
     if pTarget:GetCharacter():IsPolice() then
-        if SERVER then self:GetOwner():Notify( "You can't taze government officials!" ) end
+        if SERVER then self:GetOwner():Notify( "You can't taze other police officers!" ) end
         return
     end
 
