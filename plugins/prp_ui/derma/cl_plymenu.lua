@@ -17,7 +17,7 @@ end )
 print("why!!?")
 
 concommand.Add( "prp_uitest", function()
-    local imgURL = "http://loopback.gmod:3000/ui/bg/plymenu/" .. ScrW() .. "/" .. ScrH() -- Replace with your image URL
+    local imgURL = "http://loopback.gmod:3000/ui/plymenu/bg/" .. ScrW() .. "/" .. ScrH() -- Replace with your image URL
 
     -- Download the image and create a material
     local function DownloadImage(url, callback)
@@ -60,7 +60,7 @@ concommand.Add( "prp_uitest", function()
 
                 -- Draw the image on the HUD
                 surface.SetMaterial(material)
-                surface.SetDrawColor(255, 255, 255, 245)
+                surface.SetDrawColor(255, 255, 255, 200)
                 surface.DrawTexturedRect(imgX, imgY, imgWidth, imgHeight)
             end )
         end
