@@ -87,7 +87,9 @@ function PANEL:Init()
 
     -- Header Panel
     self.m_pnlTabPanel = vgui.Create( "PRP.TabMenu", self )
-    self.m_pnlTabPanel:AddTab( "CHARACTER" )
+    self.m_pnlTabSettings = self.m_pnlTabPanel:AddTab( "SETTINGS" )
+    self.m_pnlTabCharacter = self.m_pnlTabPanel:AddTab( "CHARACTER" )
+    self.m_pnlTabHelp = self.m_pnlTabPanel:AddTab( "HELP" )
     -- self.m_pnlHeader:SetPos( 0, 0 )
     -- self.m_pnlHeader:SetSize( ScrW(), 100 )
 
