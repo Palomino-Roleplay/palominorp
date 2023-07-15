@@ -1,0 +1,39 @@
+PRP = PRP or {}
+PRP.UI = PRP.UI or {}
+
+local oMaterial = Material( "gui/gradient_up" )
+
+local PANEL = {}
+
+surface.CreateFont( "PRP_TabMenu_Tab", {
+    font = "Inter SemiBold",
+    size = 24 * PRP.UI.ScaleFactor,
+    weight = 24,
+    antialias = true,
+    shadow = false
+} )
+
+function PANEL:Init()
+    -- self.m_pnlCanvas = vgui.Create( "Panel", self )
+    self:SetWide( 250 * PRP.UI.ScaleFactor )
+    self:SetTall( 50 * PRP.UI.ScaleFactor )
+end
+
+function PANEL:SetName( sName )
+    self.m_strName = sName
+end
+
+function PANEL:Paint(w, h)
+    local iLowerBarHeight = (2 * PRP.UI.ScaleFactor)
+    draw.RoundedBox( 0, 0, h - iLowerBarHeight, w, iLowerBarHeight, Color( 43, 195, 140, 255 ) )
+    surface.SetDrawColor( 39, 150, 110, 128 )
+    surface.SetMaterial( oMaterial )
+    surface.DrawTexturedRect( 0, 0, w, h - iLowerBarHeight )
+
+    draw.SimpleText( self.m_strName, "PRP_TabMenu_Tab", w / 2, h / 2 + (5 * PRP.UI.ScaleFactor), Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+end
+
+function PANEL:OnRemove()
+end
+
+vgui.Register( "PRP.TabMenu.Tab", PANEL, "DPanel" )
