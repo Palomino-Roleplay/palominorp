@@ -20,7 +20,19 @@ function PANEL:Init()
     self._iCurrentTab = self._iCurrentTab or 1
     self._iTabSwitchTime = 0
 
+    self._iPanelPosEased = 0
+
     self:SetSize( ScrW(), ScrH() )
+
+    self.m_pnlContent = vgui.Create( "DIconLayout", self )
+    self.m_pnlContent:SetPos( 0, 100 * PRP.UI.ScaleFactor )
+    self.m_pnlContent:SetSize( ScrW(), ScrH() - ( 100 * PRP.UI.ScaleFactor ) )
+    self.m_pnlContent:SetSpaceX( 0 )
+    self.m_pnlContent:SetSpaceY( 0 )
+    -- self.m_pnlContent:SetLayoutDir( TOP )
+    self.m_pnlContent.Paint = function( _, intW, intH )
+        -- draw.RoundedBox( 0, 0, 0, intW, intH, Color( 0, 255, 0, 50 ) )
+    end
 end
 
 function PANEL:AddTab( sName )
@@ -39,11 +51,21 @@ function PANEL:AddTab( sName )
         currentPos = currentPos + tab:GetWide()
     end
 
+    self.m_pnlContent:SetWide( ScrW() * #self._tabs )
+
+    dTab.m_pnlContent = self.m_pnlContent:Add( "Panel" )
+    dTab.m_pnlContent:SetSize( ScrW(), self.m_pnlContent:GetTall() )
+    dTab.m_pnlContent.Paint = function()
+        draw.SimpleText( "Tab " .. iID, "Trebuchet24", 0, 24, Color( 255, 255, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
+        draw.SimpleText( dTab.m_strName, "Trebuchet24", 0, 48, Color( 255, 255, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
+    end
+
     self._iCursorPosEased = self.iStartingPos
+
 
     self:UpdateActiveTab()
 
-    return dTab
+    return dTab, dTab.m_pnlContent
 end
 
 function PANEL:SetActiveTab( iID )
@@ -83,8 +105,12 @@ function PANEL:Paint(w, h)
     local iLowerBarHeight = (2 * PRP.UI.ScaleFactor)
 
     local iCursorPos = self.iStartingPos
+    local iPanelPos = 0
 
     self._iCursorPosEased = Lerp( FrameTime() * 20, self._iCursorPosEased, iCursorPos + ( self._iCurrentTab * iTabWidth ) )
+    self._iPanelPosEased = Lerp( FrameTime() * 20, self._iPanelPosEased, iPanelPos + ( self._iCurrentTab * ScrW() ) )
+
+    self.m_pnlContent:SetPos( -self._iPanelPosEased, 100 * PRP.UI.ScaleFactor )
 
     -- draw.RoundedBox( 0, iCursorPos, 0, iTabWidth, iTabHeight, Color( 255, 0, 0, 1 ) )
 
