@@ -50,5 +50,27 @@ function Schema:PlayerJoinedClass( pPlayer, iNewClass, iOldClass )
     end
 end
 
+-- @TODO: Somewhere in the gamemode we're changing the hitgroup scales, but I can't find where.
+-- For now, the left number sets the damage to the base damage, and the right number is our multiplier.
+
+-- TLDR: Don't touch the left number.
+local tHitgroupsScale = {
+    [HITGROUP_GENERIC] = 1 * 1,
+    [HITGROUP_HEAD] = 0.5 * 2,
+    [HITGROUP_CHEST] = 1 * 1,
+    [HITGROUP_STOMACH] = 1 * 1,
+    [HITGROUP_LEFTARM] = 4 * 1,
+    [HITGROUP_RIGHTARM] = 4 * 1,
+    [HITGROUP_LEFTLEG] = 4 * 0.5,
+    [HITGROUP_RIGHTLEG] = 4 * 0.5,
+    [HITGROUP_GEAR] = 1
+}
+
+function Schema:ScalePlayerDamage( pPlayer, iHitGroup, tDamageInfo )
+    local iScale = tHitgroupsScale[ iHitGroup ] or 1
+
+    tDamageInfo:ScaleDamage( iScale )
+end
+
 local HELIX = baseclass.Get( "gamemode_helix" )
 HELIX.PlayerUse = nil
