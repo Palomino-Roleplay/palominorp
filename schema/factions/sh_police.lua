@@ -6,8 +6,6 @@ FACTION.weapons = {"prp_handcuffs", "prp_tazer"}
 FACTION.attachments = {"md_rmr", "md_insight_x2", "md_eotech"}
 FACTION.isGloballyRecognized = true
 
-FACTION.equipmentLockerAccess = true
-
 FACTION.hasRadio = true
 FACTION.defaultRadioChannel = "Police"
 FACTION.radioChannels = {
