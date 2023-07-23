@@ -20,3 +20,8 @@ ix.config.SetDefault( "intro", false )
 ix.config.Add("DeveloperMode", false, "Enables some things and makes the server slower.", nil, {
     category = "Palomino"
 })
+
+-- CustomizableWeaponry 2 Configs
+CustomizableWeaponry.canOpenInteractionMenu = true
+CustomizableWeaponry.customizationEnabled = true
+CustomizableWeaponry.giveAllAttachmentsOnSpawn = 0
