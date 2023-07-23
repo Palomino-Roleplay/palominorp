@@ -20,6 +20,11 @@ function Schema:InitializedPlugins()
         -- Give a second for the data file to update.
         timer.Simple( 1, function() RunConsoleCommand("changelevel", game.GetMap()) end )
     end
+
+    -- Disable giving CW 2.0 attachments on spawn
+    for key, attData in ipairs(CustomizableWeaponry.registeredAttachments) do
+		game.ConsoleCommand(attData.cvar .. " 0\n")
+	end
 end
 
 function Schema:PlayerCanHearPlayersVoice( pListener, pTalker )

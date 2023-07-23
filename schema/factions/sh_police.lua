@@ -3,6 +3,7 @@ FACTION.description = "Very angry policemen that have a tendency to injure peopl
 FACTION.color = Color(20, 120, 185)
 FACTION.pay = 10
 FACTION.weapons = {"prp_handcuffs", "prp_tazer"}
+FACTION.attachments = {"md_rmr", "md_insight_x2", "md_eotech"}
 FACTION.isGloballyRecognized = true
 
 FACTION.equipmentLockerAccess = true
