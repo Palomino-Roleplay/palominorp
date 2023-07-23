@@ -14,7 +14,14 @@ ix.util.Include( "hooks/sh_hooks.lua" )
 ix.util.Include( "hooks/cl_hooks.lua" )
 
 PLUGIN.PrisonPositions = {
-    Vector( -8438.446289, 9241.693359, 64.031250 + 16 ),
+    Vector( 9157, 8429, 200 ),
+    Vector( 9158, 8366, 200 ),
+    Vector( 9052, 8364, 200 ),
+    Vector( 9051, 8445, 200 ),
+    Vector( 9287, 8442, 200 ),
+    Vector( 9415, 8443, 200 ),
+    Vector( 9415, 8360, 200 ),
+    Vector( 9285, 8359, 200 ),
 }
 
 -- 911
