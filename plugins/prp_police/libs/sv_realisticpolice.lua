@@ -2,35 +2,35 @@
 
 Realistic_Police = Realistic_Police or {}
 
-function Realistic_Police.Drag(ply, officer)
-    if not IsValid(ply) or not IsValid(officer) then return end 
-    if ply:GetPos():DistToSqr(officer:GetPos()) > 15625 then return end
+function Realistic_Police.Drag(pPlayer, officer)
+    if not IsValid(pPlayer) or not IsValid(officer) then return end 
+    if pPlayer:GetPos():DistToSqr(officer:GetPos()) > 15625 then return end
 
-    ply.WeaponRPT = ply.WeaponRPT or {}
+    pPlayer.WeaponRPT = pPlayer.WeaponRPT or {}
 
-    if not IsValid(ply:GetNetVar("draggedBy", NULL)) then 
-        ply:SetNetVar("draggedBy", officer)
+    if not IsValid(pPlayer:GetNetVar("draggedBy", NULL)) then 
+        pPlayer:SetNetVar("draggedBy", officer)
 
         if IsValid( officer:GetNetVar("dragging", NULL) ) then
             officer:GetNetVar("dragging"):SetNetVar("draggedBy", NULL)
         end
 
-        officer:SetNetVar("dragging", ply)
+        officer:SetNetVar("dragging", pPlayer)
     else 
-        ply:SetNetVar("draggedBy", false)
+        pPlayer:SetNetVar("draggedBy", false)
         officer:SetNetVar("dragging", NULL)
     end 
 end
 
 -- Not a function from Realistic Police addon
-function Realistic_Police.StopDrag(ply)
-    if not IsValid(ply) then return end
+function Realistic_Police.StopDrag(pPlayer)
+    if not IsValid(pPlayer) then return end
 
-    ply:SetNetVar("dragging", NULL)
-    if IsValid( ply:GetNetVar( "draggedBy", false ) ) then
-        ply:GetNetVar( "draggedBy" ):SetNetVar( "dragging", NULL )
+    pPlayer:SetNetVar("dragging", NULL)
+    if IsValid( pPlayer:GetNetVar( "draggedBy", false ) ) then
+        pPlayer:GetNetVar( "draggedBy" ):SetNetVar( "dragging", NULL )
     end
-    ply:SetNetVar("draggedBy", false)
+    pPlayer:SetNetVar("draggedBy", false)
 end
 
 hook.Add("SetupMove", "RPT:Move", function(pPlayer, tMoveData, tUserCmd)
@@ -44,7 +44,7 @@ hook.Add("SetupMove", "RPT:Move", function(pPlayer, tMoveData, tUserCmd)
     -- this hook is the hook for drag the player 
     if IsValid(pPlayer:GetNetVar("draggedBy")) then
         -- data:ClearMovement()
-        if pPlayer:GetPos():DistToSqr(ply:GetNetVar("draggedBy"):GetPos()) < 40000 then
+        if pPlayer:GetPos():DistToSqr(pPlayer:GetNetVar("draggedBy"):GetPos()) < 40000 then
             if IsValid(pPlayer:GetNetVar("draggedBy")) then
                 local VectorDrag = pPlayer:GetNetVar("draggedBy"):GetPos() - pPlayer:GetPos()
                 tMoveData:SetVelocity(Vector(VectorDrag.x*4, VectorDrag.y*4, -100))
