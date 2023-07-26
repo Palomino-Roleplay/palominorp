@@ -22,7 +22,7 @@ function CHAR:Arrest( pArrestor, iTime, sReason )
         self:Unarrest()
     end )
 
-    pPlayer:SetPos( table.Random( PLUGIN.PrisonPositions ) )
+    pPlayer:SetPos( PRP.Vehicle.Parking.GetAvailable( "prison" ).pos )
 
     return true
 end
