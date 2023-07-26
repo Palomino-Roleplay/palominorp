@@ -13,10 +13,6 @@ ix.util.Include( "hooks/sv_hooks.lua" )
 ix.util.Include( "hooks/sh_hooks.lua" )
 ix.util.Include( "hooks/cl_hooks.lua" )
 
-PLUGIN.PrisonPositions = {
-    Vector( -8438.446289, 9241.693359, 64.031250 + 16 ),
-}
-
 -- 911
 
 ix.chat.Register("911", {
@@ -147,6 +143,9 @@ ix.menu.RegisterPlayerOption( "Search", {
     end,
     OnRun = function( pVictim, pPlayer, sOption, tData )
         -- Realistic_Police.Drag( pVictim, pPlayer )
-        
+        pPlayer:SetAction( "Searching...", 3 )
+        pPlayer:DoStaredAction( pVictim, function()
+            -- @TODO: Implement searching (& confiscation)
+        end, 3 )
     end
 } )

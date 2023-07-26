@@ -44,6 +44,8 @@ net.Receive( "PRP.Job.Select", function( _, pPlayer )
 
     cCharacter:SetClass( iClass )
 
+    pPlayer:Spawn()
+
     pPlayer:SetModel( ix.class.Get( iClass ):GetModel( pPlayer ) )
     pPlayer:SetBodyGroups( ix.class.Get( iClass ).bodygroups or "" )
 

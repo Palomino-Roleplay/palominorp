@@ -60,21 +60,35 @@ end
 -- 
 
 -- @TODO: Move to a config or something
-PRP.Vehicle.Job.Register( "chev_impala_09_taxi", {
+PRP.Vehicle.Job.Register( "19tahoe_sgm", {
     Factions = {
         [FACTION_POLICE] = true
     },
     Classes = {
+        [CLASS_POLICE_CHIEF] = true, 
+        [CLASS_POLICE_LIEUTENANT] = true,
         [CLASS_POLICE_SERGEANT] = true,
-        [CLASS_POLICE_CADET] = true
+        [CLASS_POLICE_OFFICER] = true
     }
 } )
 
-PRP.Vehicle.Job.Register( "Airboat", {
+
+PRP.Vehicle.Job.Register( "chargersrt8poltdm", {
     Factions = {
         [FACTION_POLICE] = true
     },
     Classes = {
+        [CLASS_POLICE_CHIEF] = true, 
+        [CLASS_POLICE_LIEUTENANT] = true,
         [CLASS_POLICE_SERGEANT] = true
+    }
+} )
+
+PRP.Vehicle.Job.Register( "17raptor_cop_sgm", {
+    Factions = {
+        [FACTION_POLICE] = true
+    },
+    Classes = {
+        [CLASS_POLICE_CHIEF] = true
     }
 } )

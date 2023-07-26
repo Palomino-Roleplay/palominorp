@@ -2,6 +2,8 @@ PLUGIN.name = "Admin Spawn Menu"
 PLUGIN.author = "Pilot | Ported to helix: JohnyReaper"
 PLUGIN.desc = "Allow admins to easily spawn items."
 
+-- @TODO: Remove on launch (or at least edit permissions)
+
 if (SERVER) then
     util.AddNetworkString("adminSpawnMenu")
     util.AddNetworkString("adminSpawnItem")
