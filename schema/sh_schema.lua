@@ -21,6 +21,11 @@ ix.config.Add("DeveloperMode", false, "Enables some things and makes the server 
     category = "Palomino"
 })
 
+ix.config.Add("EquipTime", 3, "How long does it take for a weapon to be equipped from the inventory.", nil, {
+    data = {min = 0, max = 10},
+    category = "Palomino"
+})
+
 -- CustomizableWeaponry 2 Configs
 CustomizableWeaponry.canOpenInteractionMenu = true
 CustomizableWeaponry.customizationEnabled = true
