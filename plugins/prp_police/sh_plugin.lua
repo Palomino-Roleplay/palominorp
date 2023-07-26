@@ -143,6 +143,9 @@ ix.menu.RegisterPlayerOption( "Search", {
     end,
     OnRun = function( pVictim, pPlayer, sOption, tData )
         -- Realistic_Police.Drag( pVictim, pPlayer )
-        
+        pPlayer:SetAction( "Searching...", 3 )
+        pPlayer:DoStaredAction( pVictim, function()
+            -- @TODO: Implement searching (& confiscation)
+        end, 3 )
     end
 } )
