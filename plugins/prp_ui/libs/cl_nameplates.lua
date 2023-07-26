@@ -80,10 +80,10 @@ hook.Add( "HUDPaint", "PRP.UI.Nameplates.HUDPaint", function()
         if v:GetMoveType() == MOVETYPE_NOCLIP then continue end
         if v:GetPos():DistToSqr( LocalPlayer():GetPos() ) > 80000 then continue end
 
-        -- Don't display if player not in view
-
-        local tTrace = util.QuickTrace( LocalPlayer():EyePos(), v:EyePos() - LocalPlayer():EyePos(), LocalPlayer() )
-        if tTrace.Entity ~= v then continue end
+        -- @TODO: Probably a little too expensive for HUDPaint. Can we do this some other way?
+        -- Don't display if player obstructed
+        local tTrace = util.QuickTrace( LocalPlayer():GetShootPos(), v:GetPos() - LocalPlayer():GetShootPos(), LocalPlayer() )
+        if IsValid( tTrace.Entity ) and tTrace.Entity ~= v then continue end
 
         PRP.UI.Nameplates.Draw( v )
     end
