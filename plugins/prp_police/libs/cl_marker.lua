@@ -49,3 +49,24 @@ hook.Add( "HUDPaint", "PRP.Marker.HUDPaint", function()
         end
     end
 end )
+
+-- Define a console command 'prp_dev_marker'
+concommand.Add( "prp_dev_marker", function(ply, cmd, args)
+    -- Ensure the player exists and is a developer
+    if not IsValid( ply ) or not ply:IsDeveloper() then
+        return
+    end
+
+    -- Get player's current position
+    local plyPos = ply:GetPos()
+
+    -- Marker's information
+    local tMarkerInfo = {
+        pos = plyPos,  -- the player's current position
+        color = COLOR_WHITE,  -- set marker's color as white, adjust as needed
+        label = "Dev Marker"  -- label the marker as "Dev Marker", adjust as needed
+    }
+
+    -- Call the Create function to create a marker at the player's position
+    PRP.Marker.Create(tMarkerInfo)
+end )
