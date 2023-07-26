@@ -79,6 +79,12 @@ hook.Add( "HUDPaint", "PRP.UI.Nameplates.HUDPaint", function()
         if v:GetNoDraw() then continue end
         if v:GetMoveType() == MOVETYPE_NOCLIP then continue end
         if v:GetPos():DistToSqr( LocalPlayer():GetPos() ) > 80000 then continue end
+
+        -- Don't display if player not in view
+
+        local tTrace = util.QuickTrace( LocalPlayer():EyePos(), v:EyePos() - LocalPlayer():EyePos(), LocalPlayer() )
+        if tTrace.Entity ~= v then continue end
+
         PRP.UI.Nameplates.Draw( v )
     end
 end )
