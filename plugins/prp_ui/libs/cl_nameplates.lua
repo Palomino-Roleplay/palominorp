@@ -74,7 +74,11 @@ end
 
 hook.Add( "HUDPaint", "PRP.UI.Nameplates.HUDPaint", function()
     for k, v in pairs( player.GetAll() ) do
-        -- if v == LocalPlayer() then continue end
+        if v == LocalPlayer() then continue end
+        if not v:Alive() then continue end
+        if v:GetNoDraw() then continue end
+        if v:GetMoveType() == MOVETYPE_NOCLIP then continue end
+        if v:GetPos():DistToSqr( LocalPlayer():GetPos() ) > 80000 then continue end
         PRP.UI.Nameplates.Draw( v )
     end
 end )
