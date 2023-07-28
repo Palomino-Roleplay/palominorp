@@ -143,9 +143,18 @@ ix.menu.RegisterPlayerOption( "Search", {
     end,
     OnRun = function( pVictim, pPlayer, sOption, tData )
         -- Realistic_Police.Drag( pVictim, pPlayer )
-        pPlayer:SetAction( "Searching...", 3 )
-        pPlayer:DoStaredAction( pVictim, function()
-            -- @TODO: Implement searching (& confiscation)
-        end, 3 )
+        -- pPlayer:SetAction( "Searching...", 3 )
+        -- pPlayer:DoStaredAction( pVictim, function()
+        -- end, 3 )
+        ix.storage.Open( pPlayer, pVictim:GetCharacter():GetInventory(), {
+            name = pVictim:GetName() .. "'s Inventory",
+            entity = pVictim,
+            bMultipleUsers = true,
+            searchText = "Searching...",
+            searchTime = 1,
+            data = {
+                bIsConfiscation = true,
+            }
+        })
     end
 } )
