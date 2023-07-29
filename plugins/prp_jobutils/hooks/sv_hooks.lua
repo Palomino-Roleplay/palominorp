@@ -10,6 +10,9 @@ net.Receive( "PRP.Job.Select", function( _, pPlayer )
     local cCharacter = pPlayer:GetCharacter()
     if not cCharacter then return end
 
+    local iOldFaction = cCharacter:GetFaction()
+    local iOldClass = cCharacter:GetClass()
+
     if cCharacter:GetFaction() == FACTION_PRISONER then
         pPlayer:Notify( "You cannot join a job while in prison." )
         return
@@ -38,11 +41,17 @@ net.Receive( "PRP.Job.Select", function( _, pPlayer )
         cCharacter:SetFaction(tFaction.index)
     end
 
+    if (tFaction.OnTransferredOut) then
+        tFaction:OnTransferredOut( cCharacter )
+    end
+
     if (tFaction.OnTransferred) then
         tFaction:OnTransferred( cCharacter )
     end
 
     cCharacter:SetClass( iClass )
+
+    pPlayer:Spawn()
 
     pPlayer:SetModel( ix.class.Get( iClass ):GetModel( pPlayer ) )
     pPlayer:SetBodyGroups( ix.class.Get( iClass ).bodygroups or "" )
@@ -52,7 +61,14 @@ end )
 
 util.AddNetworkString( "PRP.Job.Quit" )
 net.Receive( "PRP.Job.Quit", function( _, pPlayer )
-    -- @TODO: Check distance from NPC, whether they can actually quit a job, all that stuff.
+    -- @TODO: Check distance from NPC, whether they can actually select a job, all that stuff.
+    -- local eNPC = net.ReadEntity()
+
+    -- if not IsValid( eNPC ) or not eNPC.IsPalominoNPC then print("oopsie woopsie") return end
+    -- if eNPC:GetPos():DistToSqr(LocalPlayer():GetPos()) > 90000 then
+    --     pPlayer:Notify( "You are too far away from the Job NPC." )
+    --     return
+    -- end 
 
     -- @TODO: Consider putting this shit in a helper (joining too)
     local cCharacter = pPlayer:GetCharacter()

@@ -19,7 +19,8 @@ function PRP.Vehicle.Job.Register( sVehicleID, tOverrides )
     PRP.Vehicle.Job.List[sVehicleID] = table.Merge( {
         Name = tVehicleData.Name,
         Model = tVehicleData.Model,
-        Factions = {}
+        Factions = {},
+        Classes = {}
     }, tOverrides )
 end
 
@@ -44,15 +45,50 @@ function PRP.Vehicle.Job.GetByFaction( iFactionID )
     return tVehicles
 end
 
+function PRP.Vehicle.Job.GetByFactionAndClass( iFactionID, iClassID )
+    local tVehicles = {}
+
+    for sVehicleID, tVehicleData in pairs( PRP.Vehicle.Job.List ) do
+        if tVehicleData.Factions[iFactionID] and tVehicleData.Classes[iClassID] then
+            tVehicles[sVehicleID] = tVehicleData
+        end
+    end
+
+    return tVehicles
+end
+
+-- 
+
 -- @TODO: Move to a config or something
-PRP.Vehicle.Job.Register( "07sgmcrownviccvpi", {
+PRP.Vehicle.Job.Register( "19tahoe_sgm", {
     Factions = {
         [FACTION_POLICE] = true
+    },
+    Classes = {
+        [CLASS_POLICE_CHIEF] = true, 
+        [CLASS_POLICE_LIEUTENANT] = true,
+        [CLASS_POLICE_SERGEANT] = true,
+        [CLASS_POLICE_OFFICER] = true
     }
 } )
 
-PRP.Vehicle.Job.Register( "chev_impala_09_police", {
+
+PRP.Vehicle.Job.Register( "chargersrt8poltdm", {
     Factions = {
         [FACTION_POLICE] = true
+    },
+    Classes = {
+        [CLASS_POLICE_CHIEF] = true, 
+        [CLASS_POLICE_LIEUTENANT] = true,
+        [CLASS_POLICE_SERGEANT] = true
+    }
+} )
+
+PRP.Vehicle.Job.Register( "17raptor_cop_sgm", {
+    Factions = {
+        [FACTION_POLICE] = true
+    },
+    Classes = {
+        [CLASS_POLICE_CHIEF] = true
     }
 } )

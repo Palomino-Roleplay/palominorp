@@ -11,6 +11,8 @@ ENT.PhysgunDisabled = true
 
 ENT.Sequence = "idle_all_02"
 
+ENT.IsPalominoNPC = true
+
 -- Good ones:
 -- idle_all_01
 -- idle_all_02
