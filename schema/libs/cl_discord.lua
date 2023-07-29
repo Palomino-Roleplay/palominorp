@@ -3,17 +3,13 @@
 if file.Find("lua/bin/gmcl_gdiscord_*.dll", "GAME")[1] == nil then return end
 require("gdiscord")
 
-print("testooo")
-
 local discord_id = "1134931747482652683"
-local refresh_time = 15
+local refresh_time = 60
 
 local discord_start = discord_start or -1
 
 function DiscordUpdate()
     local rpc_data = {}
-
-    print("Discord Update")
 
     -- @TODO: Update before launch
     rpc_data["state"] = ""
