@@ -337,7 +337,7 @@ function PANEL:Init()
         surface.DrawTexturedRect( 0, 0, iW, iH )
 
         surface.SetDrawColor( 255, 255, 255, 255 * 1 * self.easedFraction )
-        surface.SetMaterial( Material( "prp/webcontent12.png", "" ) )
+        surface.SetMaterial( Material( "prp/webcontent13.png", "" ) )
         surface.DrawTexturedRect( 0, 0, iW, iH )
 
         surface.SetDrawColor( 255, 255, 255, 255 * 1 * self.easedFraction )
