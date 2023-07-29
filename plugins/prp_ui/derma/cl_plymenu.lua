@@ -119,11 +119,11 @@ function PANEL:Init()
     self.m_pnlTabCharacterLeftInventory.childPanels = {}
 
     local inventory = LocalPlayer():GetCharacter():GetInventory()
-    ix.gui["inv"..inventory:GetID()] = self.m_pnlTabCharacterLeftInventory
-
+    
     if (inventory) then
         self.m_pnlTabCharacterLeftInventory:SetInventory(inventory)
     end
+    ix.gui.inv1 = self.m_pnlTabCharacterLeftInventory
 
     local iInventoryX = self.m_pnlTabCharacterLeft:GetWide() / 2 - (self.m_pnlTabCharacterLeftInventory:GetWide() / 2)
     local iInventoryY = (self.m_pnlTabCharacterLeft:GetTall() - self.m_pnlTabCharacterLeftInventory:GetTall()) / 2
