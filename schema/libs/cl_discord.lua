@@ -56,7 +56,7 @@ function DiscordUpdate()
     DiscordUpdateRPC(rpc_data)
 end
 
-hook.Add("InitializedPlugins", "UpdateDiscordStatus", function()
+hook.Add("Initialize", "UpdateDiscordStatus", function()
     discord_start = os.time()
 
     -- @TODO: This is not okay.
