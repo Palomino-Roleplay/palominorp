@@ -60,15 +60,33 @@ function PRP.UI.Nameplates.Draw( pPlayer )
     -- draw.SimpleText( "EQUIPPING MP5", "PRP.UI.Nameplates.Tag.Blurred", vPos:ToScreen().x, vPos:ToScreen().y - ((20 + 4 + 3) * PRP.UI.ScaleFactor), Color( 0, 0, 0, iDistanceMultiplier * 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
     -- draw.SimpleText( "EQUIPPING MP5", "PRP.UI.Nameplates.Tag", vPos:ToScreen().x, vPos:ToScreen().y - ((20 + 4 + 3) * PRP.UI.ScaleFactor), Color( 255, 40, 40, iDistanceMultiplier * 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
 
-    if pPlayer:GetNetVar( "actionString", nil ) then
-        draw.SimpleText( pPlayer:Nick(), "PRP.UI.Nameplates.Name.Blurred", vPos:ToScreen().x, vPos:ToScreen().y - ((20 + 4) * PRP.UI.ScaleFactor), Color( 255, 255, 255, iAlpha ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
-        draw.SimpleText( "#" .. string.format( "%06d", pPlayer:GetCharacter():GetID() ), "PRP.UI.Nameplates.ID", vPos:ToScreen().x, vPos:ToScreen().y, Color( 255, 255, 255, iAlpha * 0.45 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+    -- ID #
+    local iYPos = vPos:ToScreen().y
+    draw.SimpleText( "#" .. string.format( "%06d", pPlayer:GetCharacter():GetID() ), "PRP.UI.Nameplates.ID", vPos:ToScreen().x, vPos:ToScreen().y, Color( 255, 255, 255, iAlpha * 0.45 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
     
-        draw.SimpleText( string.upper( pPlayer:GetNetVar( "actionString", "" ) ), "PRP.UI.Nameplates.Tag.Blurred", vPos:ToScreen().x, vPos:ToScreen().y - ((20 + 4 + 3) * PRP.UI.ScaleFactor), Color( 0, 0, 0, iDistanceMultiplier * 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
-        draw.SimpleText( string.upper( pPlayer:GetNetVar( "actionString", "" ) ), "PRP.UI.Nameplates.Tag", vPos:ToScreen().x, vPos:ToScreen().y - ((20 + 4 + 3) * PRP.UI.ScaleFactor), Color( 255, 206, 73, iDistanceMultiplier * 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+    -- RP Name
+    if pPlayer:GetNetVar( "actionString", nil ) then
+        -- Name (Blurred)
+        iYPos = iYPos - ((20 + 4) * PRP.UI.ScaleFactor)
+        draw.SimpleText( pPlayer:Nick(), "PRP.UI.Nameplates.Name.Blurred", vPos:ToScreen().x, iYPos, Color( 255, 255, 255, iAlpha ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+
+        -- Action
+        iYPos = iYPos - (3 * PRP.UI.ScaleFactor)
+        draw.SimpleText( string.upper( pPlayer:GetNetVar( "actionString", "" ) ), "PRP.UI.Nameplates.Tag.Blurred", vPos:ToScreen().x, iYPos, Color( 0, 0, 0, iDistanceMultiplier * 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+        draw.SimpleText( string.upper( pPlayer:GetNetVar( "actionString", "" ) ), "PRP.UI.Nameplates.Tag", vPos:ToScreen().x, iYPos, Color( 255, 206, 73, iDistanceMultiplier * 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+    
     else    
-        draw.SimpleText( pPlayer:Nick(), "PRP.UI.Nameplates.Name", vPos:ToScreen().x, vPos:ToScreen().y - ((20 + 4) * PRP.UI.ScaleFactor), Color( 137 + ( 118 * pPlayer:VoiceVolume() ), 191 + ( 64 * pPlayer:VoiceVolume() ), 255, iAlpha ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
-        draw.SimpleText( "#" .. string.format( "%06d", pPlayer:GetCharacter():GetID() ), "PRP.UI.Nameplates.ID", vPos:ToScreen().x, vPos:ToScreen().y, Color( 255, 255, 255, iAlpha * 0.15 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+        iYPos = iYPos - ((20 + 4) * PRP.UI.ScaleFactor)
+        draw.SimpleText( pPlayer:Nick(), "PRP.UI.Nameplates.Name", vPos:ToScreen().x, iYPos, Color( 137 + ( 118 * pPlayer:VoiceVolume() ), 191 + ( 64 * pPlayer:VoiceVolume() ), 255, iAlpha ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+    end
+
+    -- Developer Settings
+    if GetConVar( "developer" ):GetBool() and LocalPlayer():IsAdmin() then
+        iYPos = iYPos - (32 * PRP.UI.ScaleFactor)
+        draw.SimpleText( "HP: " .. pPlayer:Health(), "DebugFixed", vPos:ToScreen().x, iYPos, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+        
+        iYPos = iYPos - (12 * PRP.UI.ScaleFactor)
+        draw.SimpleText( "Armor: " .. pPlayer:Armor(), "DebugFixed", vPos:ToScreen().x, iYPos, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
     end
 end
 
