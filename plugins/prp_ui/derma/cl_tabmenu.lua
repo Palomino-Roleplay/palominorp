@@ -56,8 +56,8 @@ function PANEL:AddTab( sName )
     dTab.m_pnlContent = self.m_pnlContent:Add( "Panel" )
     dTab.m_pnlContent:SetSize( ScrW(), self.m_pnlContent:GetTall() )
     dTab.m_pnlContent.Paint = function()
-        draw.SimpleText( "Tab " .. iID, "Trebuchet24", 0, 24, Color( 255, 255, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
-        draw.SimpleText( dTab.m_strName, "Trebuchet24", 0, 48, Color( 255, 255, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
+        -- draw.SimpleText( "Tab " .. iID, "Trebuchet24", 0, 24, Color( 255, 255, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
+        -- draw.SimpleText( dTab.m_strName, "Trebuchet24", 0, 48, Color( 255, 255, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
     end
 
     self._iCursorPosEased = self.iStartingPos
@@ -114,7 +114,7 @@ function PANEL:Paint(w, h)
 
     -- draw.RoundedBox( 0, iCursorPos, 0, iTabWidth, iTabHeight, Color( 255, 0, 0, 1 ) )
 
-    draw.SimpleText( self._iCurrentTab, "Trebuchet24", 0, 0, Color( 255, 255, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
+    -- draw.SimpleText( self._iCurrentTab, "Trebuchet24", 0, 0, Color( 255, 255, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
 
     
     surface.SetDrawColor( 39, 150, 110, 128 )
