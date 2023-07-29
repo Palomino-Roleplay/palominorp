@@ -468,7 +468,7 @@ PRP.Scene.ParamTest = {
         Angle( -6.335949, -140.624832, 0.000000 ),
         controlPoints = {
             Vector( -9122.620117, 12450.714844, 384.818909 ),
-            Vector( -7044.165527, 12461.743164, 447.409515 ),
+            Vector( -7144.165527, 12491.743164, 447.409515 ),
             -- Vector( -6482.790039, 12374.115234, 513.223633 )
         }
     },
@@ -552,47 +552,50 @@ PRP.Scene.ParamTest = {
 
 local points = { Vector( 100, 100, 0 ), Vector( 200, 200, 0 ), Vector( 300, 100, 0 ), Vector( 400, 200, 0 ) }
 
--- hook.Add( "HUDPaint", "BSplinePointExample", function()
--- 	-- Draw the points
--- 	for _, p in ipairs( points ) do
--- 		draw.RoundedBox( 0, p.x - 2, p.y - 2, 4, 4, color_white )
--- 	end
+hook.Add( "HUDPaint", "BSplinePointExample", function()
+	-- -- Draw the points
+	-- for _, p in ipairs( points ) do
+	-- 	draw.RoundedBox( 0, p.x - 2, p.y - 2, 4, 4, color_white )
+	-- end
 
--- 	-- Draw the spline
--- 	local pos = math.BSplinePoint( ( math.cos( CurTime() ) + 1 ) / 2, points, 1 )
--- 	draw.RoundedBox( 0, pos.x - 2, pos.y - 2, 4, 4, Color( 0, 0, 0 ) )
--- end )
+	-- -- Draw the spline
+	-- local pos = math.BSplinePoint( ( math.cos( CurTime() ) + 1 ) / 2, points, 1 )
+	-- draw.RoundedBox( 0, pos.x - 2, pos.y - 2, 4, 4, Color( 0, 0, 0 ) )
+end )
 
 
--- hook.Add( "PostDrawTranslucentRenderables", "tsetjhsoeifjosidfj", function()
---     for iIndex, tData in ipairs( PRP.Scene.ParamTest ) do
---         render.DrawWireframeSphere( tData[ 1 ], 10, 10, 10, Color( 255, 0, 0 ), false )
---         if iIndex ~= 1 then
---             if tData.controlPoints then
---                 for _, vPos in ipairs( tData.controlPoints ) do
---                     render.DrawWireframeSphere( vPos, 10, 10, 10, Color( 0, 255, 0 ), false )
---                 end
+hook.Add( "PostDrawTranslucentRenderables", "tsetjhsoeifjosidfj", function()
+    if true then return end
+    if PRP.Scene.Active then return end
 
---                 local iDetail = 10
---                 local tPoints = table.Copy( tData.controlPoints )
---                 table.insert( tPoints, 1, PRP.Scene.ParamTest[ iIndex - 1 ][ 1 ] )
---                 table.insert( tPoints, tData[ 1 ] )
+    for iIndex, tData in ipairs( PRP.Scene.ParamTest ) do
+        render.DrawWireframeSphere( tData[ 1 ], 10, 10, 10, Color( 255, 0, 0 ), false )
+        if iIndex ~= 1 then
+            if tData.controlPoints then
+                for _, vPos in ipairs( tData.controlPoints ) do
+                    render.DrawWireframeSphere( vPos, 10, 10, 10, Color( 0, 255, 0 ), false )
+                end
 
---                 -- Print( tPoints )
+                local iDetail = 10
+                local tPoints = table.Copy( tData.controlPoints )
+                table.insert( tPoints, 1, PRP.Scene.ParamTest[ iIndex - 1 ][ 1 ] )
+                table.insert( tPoints, tData[ 1 ] )
 
---                 local vLastSpline = tPoints[ 1 ]
---                 for i=1, iDetail do
---                     -- Print( tPoints )
---                     local vSpline = CalculateBezierFromBSplinePoint( i / iDetail, tPoints, 1 )
---                     render.DrawLine( vLastSpline, vSpline, Color( 255, 100, 0 ), false )
---                     vLastSpline = vSpline
---                 end
---             else
---                 render.DrawLine( tData[ 1 ], PRP.Scene.ParamTest[ iIndex - 1 ][ 1 ], Color( 255, 0, 0 ), false )
---             end
---         end
---     end
--- end )
+                -- Print( tPoints )
+
+                local vLastSpline = tPoints[ 1 ]
+                for i=1, iDetail do
+                    -- Print( tPoints )
+                    local vSpline = CalculateBezierFromBSplinePoint( i / iDetail, tPoints, 1 )
+                    render.DrawLine( vLastSpline, vSpline, Color( 255, 100, 0 ), false )
+                    vLastSpline = vSpline
+                end
+            else
+                render.DrawLine( tData[ 1 ], PRP.Scene.ParamTest[ iIndex - 1 ][ 1 ], Color( 255, 0, 0 ), false )
+            end
+        end
+    end
+end )
 
 function CalculateBezierCurve( p0, p1, p2, p3, t )
     local u = 1 - t

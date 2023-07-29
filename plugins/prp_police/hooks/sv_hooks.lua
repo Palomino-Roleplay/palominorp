@@ -12,8 +12,12 @@ function PLUGIN:CanPlayerDropItem( pPlayer )
     if pPlayer:GetCharacter():IsArrested() then return false end
 end
 
-function PLUGIN:CanPlayerEquipItem( pPlayer )
+function PLUGIN:CanPlayerEquipItem( pPlayer, oItem )
     if pPlayer:GetCharacter():IsArrested() then return false end
+    if pPlayer:GetCharacter():IsGovernment() and oItem.isWeapon then
+        pPlayer:Notify( "You may not equip weapons as a Government Official." )
+        return false
+    end
 end
 
 function PLUGIN:CanPlayerInteractItem( pPlayer )
