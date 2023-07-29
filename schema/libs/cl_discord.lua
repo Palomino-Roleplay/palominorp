@@ -1,5 +1,10 @@
 -- This requires a special module to be installed before it works correctly
 -- Sorry to disappoint you
+
+PRP = PRP or {}
+PRP.Discord = PRP.Discord or {}
+PRP.Discord.Active = PRP.Discord.Active or false
+
 if file.Find("lua/bin/gmcl_gdiscord_*.dll", "GAME")[1] == nil then return end
 require("gdiscord")
 
@@ -54,13 +59,14 @@ function DiscordUpdate()
     -- rpc_data["startTimestamp"] = discord_start
 
     DiscordUpdateRPC(rpc_data)
-end
 
-hook.Add("Initialize", "UpdateDiscordStatus", function()
+    PRP.Discord.Active = true
+end
+-- @TODO: This is not okay.
+if not PRP.Discord.Active then 
     discord_start = os.time()
 
-    -- @TODO: This is not okay.
-    timer.Simple( 10, function()
+    timer.Simple( 30, function()
         if LocalPlayer():SteamID() == "STEAM_0:0:0" then return end
 
         DiscordRPCInitialize(discord_id)
@@ -68,7 +74,7 @@ hook.Add("Initialize", "UpdateDiscordStatus", function()
     
         timer.Create("DiscordRPCTimer", refresh_time, 0, DiscordUpdate)
     end )
-end)
+end
 
 -- discord_start = os.time()
 -- DiscordRPCInitialize(discord_id)
