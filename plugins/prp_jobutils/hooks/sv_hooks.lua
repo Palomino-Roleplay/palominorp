@@ -10,6 +10,9 @@ net.Receive( "PRP.Job.Select", function( _, pPlayer )
     local cCharacter = pPlayer:GetCharacter()
     if not cCharacter then return end
 
+    local iOldFaction = cCharacter:GetFaction()
+    local iOldClass = cCharacter:GetClass()
+
     if cCharacter:GetFaction() == FACTION_PRISONER then
         pPlayer:Notify( "You cannot join a job while in prison." )
         return
@@ -36,6 +39,10 @@ net.Receive( "PRP.Job.Select", function( _, pPlayer )
     if iFaction ~= cCharacter:GetFaction() then
         cCharacter.vars.faction = tFaction.uniqueID
         cCharacter:SetFaction(tFaction.index)
+    end
+
+    if (tFaction.OnTransferredOut) then
+        tFaction:OnTransferredOut( cCharacter )
     end
 
     if (tFaction.OnTransferred) then
