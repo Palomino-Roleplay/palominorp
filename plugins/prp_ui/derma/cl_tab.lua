@@ -6,7 +6,7 @@ local oMaterial = Material( "gui/gradient_up" )
 local PANEL = {}
 
 surface.CreateFont( "PRP_TabMenu_Tab", {
-    font = "Inter SemiBold",
+    font = "Inter Bold",
     size = 24 * PRP.UI.ScaleFactor,
     weight = 24,
     antialias = true,
@@ -15,7 +15,7 @@ surface.CreateFont( "PRP_TabMenu_Tab", {
 
 function PANEL:Init()
     -- self.m_pnlCanvas = vgui.Create( "Panel", self )
-    self:SetWide( 250 * PRP.UI.ScaleFactor )
+    self:SetWide( 240 * PRP.UI.ScaleFactor )
     self:SetTall( 50 * PRP.UI.ScaleFactor )
 
     self:SetText( "" )

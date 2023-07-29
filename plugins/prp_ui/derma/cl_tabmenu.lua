@@ -17,7 +17,7 @@ function PANEL:Init()
 
     self._bTabSwitchLock = false
 
-    self._iCurrentTab = self._iCurrentTab or 1
+    self._iCurrentTab = self._iCurrentTab or 2
     self._iTabSwitchTime = 0
 
     self._iPanelPosEased = 0
@@ -44,7 +44,7 @@ function PANEL:AddTab( sName )
     dTab._iID = iID - 1
 
     -- Correctly position tabs
-    self.iStartingPos = ( ScrW() - ( 250 * PRP.UI.ScaleFactor * #self._tabs ) ) / 2
+    self.iStartingPos = ( ScrW() - ( 240 * PRP.UI.ScaleFactor * #self._tabs ) ) / 2
     local currentPos = self.iStartingPos -- Starting position
     for i, tab in ipairs(self._tabs) do
         tab:SetPos( currentPos, 50 * PRP.UI.ScaleFactor )
@@ -100,7 +100,7 @@ end
 
 local oGradientMaterial = Material( "gui/gradient_up" )
 function PANEL:Paint(w, h)
-    local iTabWidth = 250 * PRP.UI.ScaleFactor
+    local iTabWidth = 240 * PRP.UI.ScaleFactor
     local iTabHeight = 50 * PRP.UI.ScaleFactor
     local iLowerBarHeight = (2 * PRP.UI.ScaleFactor)
 
@@ -117,7 +117,7 @@ function PANEL:Paint(w, h)
     -- draw.SimpleText( self._iCurrentTab, "Trebuchet24", 0, 0, Color( 255, 255, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
 
     
-    surface.SetDrawColor( 39, 150, 110, 128 )
+    surface.SetDrawColor( 65, 179, 131, 32 )
     surface.SetMaterial( oGradientMaterial )
     surface.DrawTexturedRect( self._iCursorPosEased, iTabHeight, iTabWidth, iTabHeight )
     

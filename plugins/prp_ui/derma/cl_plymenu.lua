@@ -12,7 +12,7 @@ local sAPIURL = "http://loopback.gmod:3000"
 local PANEL = {}
 
 local function DownloadAPIFiles()
-    if PRP.UI.PLY_MENU then return end
+    if IsValid( PRP.UI.PLY_MENU ) then return end
 
     PRP.UI.tAPIFiles = {
         ["plymenu/bg"] = "plymenu_bg_" .. ScrW() .. "x" .. ScrH() .. "_" .. math.floor( CurTime() ) .. ".png",
@@ -71,12 +71,6 @@ function PANEL:Init()
     self.m_pnlBackground = vgui.Create( "DPanel", self )
     self.m_pnlBackground:SetPos( 0, 0 )
     self.m_pnlBackground:SetSize( ScrW(), ScrH() )
-    self.m_pnlBackground.Paint = function( p, iW, iH )
-        ix.util.DrawBlur( p, self.easedFraction * 3 or 0 )
-        surface.SetDrawColor( 255, 255, 255, 100 * self.easedFraction )
-        surface.SetMaterial( PRP.UI.PlyMenu.tMaterials["plymenu/bg"] )
-        surface.DrawTexturedRect( 0, 0, iW, iH )
-    end
 
     local function fnBackgroundEffects()
         if not self then return end
@@ -88,8 +82,8 @@ function PANEL:Init()
             ["$pp_colour_addr"] = 0,
             ["$pp_colour_addg"] = 0,
             ["$pp_colour_addb"] = 0,
-            ["$pp_colour_brightness"] = -0.1 * self.easedFraction,
-            ["$pp_colour_contrast"] = 1 - ( 0.2 * self.easedFraction ),
+            ["$pp_colour_brightness"] = -0 * self.easedFraction,
+            ["$pp_colour_contrast"] = 1 - ( 0 * self.easedFraction ),
             ["$pp_colour_colour"] = 1 * ( 1 - self.easedFraction ),
             ["$pp_colour_mulr"] = 0,
             ["$pp_colour_mulg"] = 0,
@@ -104,15 +98,18 @@ function PANEL:Init()
     self.m_pnlTabPanel = vgui.Create( "PRP.TabMenu", self )
     self.m_pnlTabSettings = self.m_pnlTabPanel:AddTab( "SETTINGS" )
 
+    self.m_pnlTabSettings = self.m_pnlTabPanel:AddTab( "SCOREBOARD" )
+
     -- Character Tab
-    self.m_pnlTabCharacter, self.m_pnlTabCharacterContent = self.m_pnlTabPanel:AddTab( "CHARACTER" )
+    self.m_pnlTabCharacter, self.m_pnlTabCharacterContent = self.m_pnlTabPanel:AddTab( "YOU" )
     -- self.m_pnlTabCharacter.m_panelContent
 
     self.m_pnlTabCharacterLeft = vgui.Create( "DPanel", self.m_pnlTabCharacterContent )
     self.m_pnlTabCharacterLeft:SetPos( ScrW() / 2 - PRP.UI.ScaleFactor * 500, 0 )
-    self.m_pnlTabCharacterLeft:SetSize( PRP.UI.ScaleFactor * 500, ScrH() - ( 50 * PRP.UI.ScaleFactor ) )
+    self.m_pnlTabCharacterLeft:SetSize( PRP.UI.ScaleFactor * 500, ScrH() - ( 100 * PRP.UI.ScaleFactor ) )
 
     self.m_pnlTabCharacterLeftInventory = self.m_pnlTabCharacterLeft:Add("ixInventory")
+    self.m_pnlTabCharacterLeftInventory:SetIconSize( 80 * PRP.UI.ScaleFactor )
     self.m_pnlTabCharacterLeftInventory:SetPos(0, 0)
     self.m_pnlTabCharacterLeftInventory:SetDraggable(false)
     self.m_pnlTabCharacterLeftInventory:SetSizable(false)
@@ -140,24 +137,27 @@ function PANEL:Init()
 
 
     self.m_pnlTabCharacterRight = vgui.Create( "DPanel", self.m_pnlTabCharacterContent )
-    self.m_pnlTabCharacterRight:SetPos( ScrW() / 2, 0 )
-    self.m_pnlTabCharacterRight:SetSize( PRP.UI.ScaleFactor * 500, ScrH() - ( 50 * PRP.UI.ScaleFactor ) )
+    self.m_pnlTabCharacterRight:SetPos( ScrW() / 2, 20 * PRP.UI.ScaleFactor )
+    self.m_pnlTabCharacterRight:SetSize( PRP.UI.ScaleFactor * 500, ScrH() - ( 120 * PRP.UI.ScaleFactor ) )
     self.m_pnlTabCharacterRight.Paint = function( pnl, w, h )
-        surface.SetDrawColor( 255, 255, 255, 80 )
-        surface.SetMaterial( Material( "sprites/glow04_noz_gmod", "noclamp smooth" ) )
-        surface.DrawTexturedRect( 0, 0, w, h )
+        -- surface.SetDrawColor( 255, 255, 255, 128 )
+        -- surface.SetMaterial( Material( "prp/light2.png", "" ) )
+        -- surface.DrawTexturedRect( 0, 0, w, h )
 
-        surface.SetDrawColor( 255, 0, 0, 255 )
-        surface.SetMaterial( Material( "sprites/glow04_noz_gmod", "smooth" ) )
-        surface.DrawTexturedRect( 0, h - 1.6 * h / 7, w, h / 7 )
+        -- surface.SetDrawColor( 255, 255, 255, 255 )
+        -- surface.SetMaterial( Material( "prp/shadow.png", "" ) )
+        -- surface.DrawTexturedRect( w * 0.25 / 2, h - 1.8 * h / 8, w * 0.75, h / 8 )
+
+        -- surface.SetDrawColor( 255, 255, 255, 255 * self.easedFraction )
+        -- surface.SetMaterial( Material( "prp/plybg.png", "smooth" ) )
+        -- surface.DrawTexturedRect( 0, h * 0.1, w, h * 0.8 )
     end
 
 
     local wow = vgui.Create( "DModelPanel", self.m_pnlTabCharacterRight )
-    wow:SetPos( 0, 0 )
     wow:Dock( FILL )
     wow:SetModel( LocalPlayer():GetModel() )
-    wow:SetFOV( 9 )
+    wow:SetFOV( 7.5 )
     wow:SetAmbientLight( Color( 0, 0, 0 ) )
     wow:SetZPos( 100 )
 
@@ -203,8 +203,11 @@ function PANEL:Init()
         pac.DrawEntity2D(self.Entity, x, y, w, h, self:GetCamPos(), ang, self:GetFOV())
     end
     -- function wow:Paint( w, h )
-    --     surface.SetDrawColor( 255, 255, 255, 100 )
-    --     surface.DrawOutlinedRect( 0, 0, w, h )
+    --     -- local x, y = self:LocalToScreen(0, 0)
+    --     -- local w, h = self:GetSize()
+    --     -- surface.SetMaterial( Material( "prp/plyshadow.png", "smooth" ) )
+    --     -- surface.SetDrawColor( 255, 255, 255, 255 )
+    --     -- surface.DrawTexturedRect( - ( 747 - w ) / 2, 0, 747, h )
     -- end
     function wow:PaintOver( w, h )
         -- surface.SetDrawColor( 255, 255, 255, 100 )
@@ -212,8 +215,8 @@ function PANEL:Init()
     end
     function wow:DrawModel()
         -- self.Entity:DrawModel()
-        local oGlowMaterial = Material( "sprites/glow04_noz" )
-        local oGlowColor = Color( 255, 255, 255, 255 )
+        -- local oGlowMaterial = Material( "sprites/glow04_noz" )
+        -- local oGlowColor = Color( 255, 255, 255, 255 )
 
         render.SetModelLighting(0, 1, 1, 1)
         -- self:LayoutEntity( self.Entity )
@@ -259,7 +262,7 @@ function PANEL:Init()
             cam.Start2D()
                 -- render.OverrideBlend( true, BLEND_SRC_ALPHA, BLEND_DST_ALPHA, BLENDFUNC_ADD, BLEND_SRC_ALPHA, BLEND_SRC_ALPHA, BLENDFUNC_ADD )
                 
-                surface.SetMaterial( matInvL )
+                surface.SetMaterial( PRP.UI.PlyMenu.tMaterials["plymenu/bg"] )
                 render.OverrideBlend( true, BLEND_DST_COLOR, BLEND_DST_ALPHA, BLENDFUNC_ADD, BLEND_SRC_COLOR, BLEND_DST_ALPHA, BLENDFUNC_ADD )
                 surface.SetDrawColor( 255, 255, 255, 255 )
                 surface.DrawTexturedRect( 0, 0, ScrW(), ScrH())
@@ -304,6 +307,8 @@ function PANEL:Init()
     timer.Simple(0, function()
         wow.Entity:ResetSequence( wow.Entity:LookupSequence( "idle_all_01" ) )
     end )
+
+    self.m_pnlTabSettings = self.m_pnlTabPanel:AddTab( "COMMUNITY" )
     
     -- Help Tab
     self.m_pnlTabHelp = self.m_pnlTabPanel:AddTab( "HELP" )
@@ -320,6 +325,50 @@ function PANEL:Init()
     end
     self.m_pnlCloseButton.DoClick = function()
         self:Remove()
+    end
+
+    -- Background Paint
+
+    self.m_pnlBackground.Paint = function( p, iW, iH )
+        ix.util.DrawBlur( p, self.easedFraction * 6 or 0 )
+
+        surface.SetDrawColor( 255, 255, 255, 255 * 1 * self.easedFraction )
+        surface.SetMaterial( Material( "prp/vignette4.png", "smooth" ) )
+        surface.DrawTexturedRect( 0, 0, iW, iH )
+
+        surface.SetDrawColor( 255, 255, 255, 255 * 1 * self.easedFraction )
+        surface.SetMaterial( Material( "prp/webcontent12.png", "" ) )
+        surface.DrawTexturedRect( 0, 0, iW, iH )
+
+        surface.SetDrawColor( 255, 255, 255, 255 * 1 * self.easedFraction )
+        surface.SetMaterial( Material( "prp/Footer.png", "" ) )
+        surface.DrawTexturedRect( 0, iH - 74, iW, 74 )
+
+        surface.SetDrawColor( 255, 255, 255, 255 * 0.1 * self.easedFraction )
+
+        -- local x, y = wow:LocalToScreen(0, 0)
+        -- local w, h = wow:GetSize()
+        -- surface.SetMaterial( Material( "prp/webcontent8.png", "smooth" ) )
+        -- surface.SetDrawColor( 255, 255, 255, 255 )
+        -- surface.DrawTexturedRect( x + (w - 747)/2, y, 747, 1080 )
+
+        -- surface.SetDrawColor( 255, 255, 255, 255 * 0.7 * self.easedFraction )
+        -- surface.SetMaterial( Material( "prp/noise.png", "" ) )
+        -- surface.DrawTexturedRect( 0, 0, iW, iH )
+
+        -- surface.SetDrawColor( 0, 0, 0, 255 * 0.15 )
+        -- surface.DrawRect( 0, 0, iW, iH )
+
+        -- surface.SetDrawColor( 255, 255, 255, 255 * 0.5 * self.easedFraction )
+        -- surface.SetMaterial( PRP.UI.PlyMenu.tMaterials["plymenu/bg"] )
+        -- surface.DrawTexturedRect( 0, 0, iW, iH )
+
+        -- surface.SetDrawColor( 255, 255, 255, 255 * 0.4 * self.easedFraction )
+        -- surface.SetMaterial( Material( "prp/lighting3.png", "smooth" ) )
+        -- surface.DrawTexturedRect( 0, 0, iW, iH )
+
+        -- surface.SetDrawColor( 0, 0, 0, 255 * 0.3 * self.easedFraction )
+        -- surface.DrawRect( 0, 0, iW, iH )
     end
 end
 
