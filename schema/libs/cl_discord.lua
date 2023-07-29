@@ -65,6 +65,8 @@ hook.Add("InitializedPlugins", "UpdateDiscordStatus", function()
 
     -- @TODO: This is not okay.
     timer.Simple( 10, function()
+        if LocalPlayer():SteamID() == "STEAM_0:0:0" then return end
+
         DiscordRPCInitialize(discord_id)
         DiscordUpdate()
     
