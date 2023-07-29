@@ -12,6 +12,7 @@ local sAPIURL = "http://loopback.gmod:3000"
 local PANEL = {}
 
 local function DownloadAPIFiles()
+    if true then return end
     if IsValid( PRP.UI.PLY_MENU ) then return end
 
     PRP.UI.tAPIFiles = {
@@ -55,10 +56,10 @@ concommand.Add( "prp_ui_download", function()
 end )
 
 function PANEL:Init()
-    if not PRP.UI.PlyMenu.tMaterials["plymenu/bg"] then
-        DownloadAPIFiles()
-        self:Remove()
-    end
+    -- if not PRP.UI.PlyMenu.tMaterials["plymenu/bg"] then
+    --     DownloadAPIFiles()
+    --     self:Remove()
+    -- end
 
     self:SetPos( 0, 0 )
     self:SetSize( ScrW(), ScrH() )
@@ -262,7 +263,7 @@ function PANEL:Init()
             cam.Start2D()
                 -- render.OverrideBlend( true, BLEND_SRC_ALPHA, BLEND_DST_ALPHA, BLENDFUNC_ADD, BLEND_SRC_ALPHA, BLEND_SRC_ALPHA, BLENDFUNC_ADD )
                 
-                surface.SetMaterial( PRP.UI.PlyMenu.tMaterials["plymenu/bg"] )
+                surface.SetMaterial( Material( "prp/coooolers.png", "" ) )
                 render.OverrideBlend( true, BLEND_DST_COLOR, BLEND_DST_ALPHA, BLENDFUNC_ADD, BLEND_SRC_COLOR, BLEND_DST_ALPHA, BLENDFUNC_ADD )
                 surface.SetDrawColor( 255, 255, 255, 255 )
                 surface.DrawTexturedRect( 0, 0, ScrW(), ScrH())
@@ -337,7 +338,7 @@ function PANEL:Init()
         surface.DrawTexturedRect( 0, 0, iW, iH )
 
         surface.SetDrawColor( 255, 255, 255, 255 * 1 * self.easedFraction )
-        surface.SetMaterial( Material( "prp/webcontent13.png", "" ) )
+        surface.SetMaterial( Material( "prp/webcontent14.png", "" ) )
         surface.DrawTexturedRect( 0, 0, iW, iH )
 
         surface.SetDrawColor( 255, 255, 255, 255 * 1 * self.easedFraction )
