@@ -190,6 +190,9 @@ function PANEL:Init()
             self:RunAnimation()
         end
 
+        eEntity:SetSkin( LocalPlayer():GetSkin() )
+        eEntity:SetBodyGroups( LocalPlayer():GetBodyGroupsString() )
+
         return
     end
     function wow:DrawPACEntity()
