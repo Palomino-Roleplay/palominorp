@@ -14,6 +14,17 @@ FACTION.radioChannels = {
 
 FACTION.modelBase = "models/player/icpd/cops/%s_shortsleeved.mdl"
 
+function FACTION:OnTransferred( cCharacter )
+    local bItemsUnequipped = false
+
+    for _, oItem in pairs( cCharacter:GetInventory():GetItems() ) do
+        if ( oItem.isWeapon and oItem:GetData("equip") == true ) then
+            oItem:Unequip( cCharacter:GetPlayer() )
+            bItemsUnequipped = true
+        end
+    end
+end
+
 -- FACTION.models = {
 -- 	"models/police.mdl"
 -- }
