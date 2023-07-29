@@ -83,10 +83,20 @@ function PRP.UI.Nameplates.Draw( pPlayer )
     -- Developer Settings
     if GetConVar( "developer" ):GetBool() and LocalPlayer():IsAdmin() then
         iYPos = iYPos - (32 * PRP.UI.ScaleFactor)
-        draw.SimpleText( "HP: " .. pPlayer:Health(), "DebugFixed", vPos:ToScreen().x, iYPos, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+        draw.SimpleText( ix.faction.Get(pPlayer:Team()).name .. ( pPlayer:GetCharacter():GetClass() and (" (" .. (ix.class.Get(pPlayer:GetCharacter():GetClass()).name) .. ")") or ""), "DebugFixed", vPos:ToScreen().x, iYPos, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
         
         iYPos = iYPos - (12 * PRP.UI.ScaleFactor)
+        draw.SimpleText( "Distance: " .. math.Round( LocalPlayer():GetPos():Distance( pPlayer:GetPos() ), 2 ), "DebugFixed", vPos:ToScreen().x, iYPos, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+
+        iYPos = iYPos - (12 * PRP.UI.ScaleFactor)
         draw.SimpleText( "Armor: " .. pPlayer:Armor(), "DebugFixed", vPos:ToScreen().x, iYPos, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+
+        iYPos = iYPos - (12 * PRP.UI.ScaleFactor)
+        draw.SimpleText( "HP: " .. pPlayer:Health(), "DebugFixed", vPos:ToScreen().x, iYPos, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+
+        iYPos = iYPos - (20 * PRP.UI.ScaleFactor)
+        draw.SimpleText( pPlayer:SteamName(), "Trebuchet24", vPos:ToScreen().x, iYPos, Color( 150, 150, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+        
     end
 end
 
