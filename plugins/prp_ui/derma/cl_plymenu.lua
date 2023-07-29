@@ -121,6 +121,7 @@ function PANEL:Init()
     self.m_pnlTabCharacterLeftInventory.childPanels = {}
 
     local inventory = LocalPlayer():GetCharacter():GetInventory()
+    ix.gui["inv"..inventory:GetID()] = self.m_pnlTabCharacterLeftInventory
 
     if (inventory) then
         self.m_pnlTabCharacterLeftInventory:SetInventory(inventory)
@@ -326,6 +327,8 @@ function PANEL:OnRemove()
     hook.Remove( "RenderScreenspaceEffects", "PRP.UI.PlyMenu.RenderScreenspaceEffects" )
     hook.Remove( "ix.pac.OnPartAttached", "PRP.UI.PlyMenu.OnPartAttached" )
     hook.Remove( "ix.pac.OnPartRemoved", "PRP.UI.PlyMenu.OnPartRemoved" )
+
+    ix.gui["inv"..LocalPlayer():GetCharacter():GetInventory()] = nil
 end
 
 function PANEL:Paint()
