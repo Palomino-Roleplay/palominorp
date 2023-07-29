@@ -159,6 +159,21 @@ function PANEL:Init()
     wow:SetFOV( 9 )
     wow:SetAmbientLight( Color( 0, 0, 0 ) )
     wow:SetZPos( 100 )
+    wow.bFirstDraw = true
+
+    pac.SetupENT(wow.Entity)
+
+    hook.Add( "ix.pac.OnPartAttached", "PRP.UI.PlyMenu.OnPartAttached", function( eEntity, sPartID )
+        if ( eEntity == LocalPlayer() ) then
+            ix.pac.AttachPart( wow.Entity, sPartID )
+        end
+    end )
+
+    hook.Add( "ix.pac.OnPartRemoved", "PRP.UI.PlyMenu.OnPartRemoved", function( eEntity, sPartID )
+        if ( eEntity == LocalPlayer() ) then
+            ix.pac.RemovePart( wow.Entity, sPartID )
+        end
+    end )
 
     -- hook.Add( "PreDrawHalos", "toiasjdoisjad", function()
     --     print( wow.Entity )
@@ -168,6 +183,14 @@ function PANEL:Init()
     function wow:LayoutEntity( eEntity )
         if ( self.bAnimated ) then
             self:RunAnimation()
+        end
+
+        if wow.bFirstDraw then
+            wow.bFirstDraw = false
+
+            for sPartID, _ in pairs( LocalPlayer():GetParts() ) do
+                ix.pac.AttachPart( wow.Entity, sPartID )
+            end
         end
 
         return
@@ -181,6 +204,24 @@ function PANEL:Init()
         -- surface.DrawOutlinedRect( 0, 0, w, h )
     end
     function wow:DrawModel()
+        if self.bFirstDraw then
+            self.bFirstDraw = false
+        end
+
+        -- self.Entity:DrawModel()
+
+        local x, y = self:LocalToScreen(0, 0)
+        local w, h = self:GetSize()
+
+        local ang = self.aLookAngle
+        if (!ang) then
+            ang = (self.vLookatPos - self.vCamPos):Angle()
+        end
+
+        pac.DrawEntity2D(self.Entity, x, y, w, h, self:GetCamPos(), ang, self:GetFOV())
+
+        if true then return end
+
         local oGlowMaterial = Material( "sprites/glow04_noz" )
         local oGlowColor = Color( 255, 255, 255, 255 )
 
@@ -292,6 +333,8 @@ end
 
 function PANEL:OnRemove()
     hook.Remove( "RenderScreenspaceEffects", "PRP.UI.PlyMenu.RenderScreenspaceEffects" )
+    hook.Remove( "ix.pac.OnPartAttached", "PRP.UI.PlyMenu.OnPartAttached" )
+    hook.Remove( "ix.pac.OnPartRemoved", "PRP.UI.PlyMenu.OnPartRemoved" )
 end
 
 function PANEL:Paint()
