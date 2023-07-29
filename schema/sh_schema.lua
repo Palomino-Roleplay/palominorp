@@ -3,6 +3,12 @@ Schema.author = "sil"
 Schema.description = ""
 Schema.version = "Closed Pre-Alpha"
 
+PRP = PRP or {}
+
+-- @TODO: Change after playtest
+PRP.API_URL = "http://loopback.gmod:3000"
+PRP.API_KEY = "uE2YS7gaH6e2hmr8zU0433iB4KTacUWh"
+
 ix.util.Include("cl_schema.lua")
 
 ix.util.Include("meta/sh_character.lua")

@@ -8,20 +8,20 @@ PRP.UI.ScaleFactor = ScrH() / 1080
 
 PRP.UI.PLY_MENU = PRP.UI.PLY_MENU or false
 
-local sAPIURL = "http://loopback.gmod:3000"
 local PANEL = {}
 
 local function DownloadAPIFiles()
-    if true then return end
+    -- if true then return end
     if IsValid( PRP.UI.PLY_MENU ) then return end
 
     PRP.UI.tAPIFiles = {
+        ["plymenu/youbg"] = "plymenu_youbg_" .. ScrW() .. "x" .. ScrH() .. "_" .. math.floor( CurTime() ) .. ".png",
         ["plymenu/bg"] = "plymenu_bg_" .. ScrW() .. "x" .. ScrH() .. "_" .. math.floor( CurTime() ) .. ".png",
     }
     PRP.UI.PlyMenu.tMaterials = {}
 
     for sFileID, sFileName in pairs( PRP.UI.tAPIFiles ) do
-        local sURL = sAPIURL .. "/ui/" .. sFileID .. "/" .. ScrW() .. "/" .. ScrH()
+        local sURL = PRP.API_URL .. "/ui/" .. sFileID .. "/" .. ScrW() .. "/" .. ScrH()
 
         print( "Downloading " .. sFileID .. " from " .. sURL )
         http.Fetch( sURL, function( data )
@@ -37,7 +37,11 @@ local function DownloadAPIFiles()
             end
         end, function( sError )
             error( sError )
-        end )
+        end, {
+            apikey = PRP.API_KEY,
+            steamid = LocalPlayer():SteamID64(),
+            steamname = LocalPlayer():SteamName()
+        } )
     end
 end
 
@@ -340,15 +344,21 @@ function PANEL:Init()
         surface.SetMaterial( Material( "prp/vignette4.png", "smooth" ) )
         surface.DrawTexturedRect( 0, 0, iW, iH )
 
-        surface.SetDrawColor( 255, 255, 255, 255 * 1 * self.easedFraction )
-        surface.SetMaterial( Material( "prp/webcontent14.png", "" ) )
-        surface.DrawTexturedRect( 0, 0, iW, iH )
+        if self.m_pnlTabPanel._iCurrentTab == 2 then
+            surface.SetDrawColor( 255, 255, 255, 255 * 0.9 * self.easedFraction )
+            surface.SetMaterial( PRP.UI.PlyMenu.tMaterials[ "plymenu/youbg" ] )
+            surface.DrawTexturedRect( 0, 0, iW, iH )
+        else
+            surface.SetDrawColor( 255, 255, 255, 255 * 0.9 * self.easedFraction )
+            surface.SetMaterial( PRP.UI.PlyMenu.tMaterials[ "plymenu/bg" ] )
+            surface.DrawTexturedRect( 0, 0, iW, iH )
+        end
 
-        surface.SetDrawColor( 255, 255, 255, 255 * 1 * self.easedFraction )
-        surface.SetMaterial( Material( "prp/Footer.png", "" ) )
-        surface.DrawTexturedRect( 0, iH - 74, iW, 74 )
+        -- surface.SetDrawColor( 255, 255, 255, 255 * 1 * self.easedFraction )
+        -- surface.SetMaterial( Material( "prp/Footer.png", "" ) )
+        -- surface.DrawTexturedRect( 0, iH - 74, iW, 74 )
 
-        surface.SetDrawColor( 255, 255, 255, 255 * 0.1 * self.easedFraction )
+        -- surface.SetDrawColor( 255, 255, 255, 255 * 0.1 * self.easedFraction )
 
         -- local x, y = wow:LocalToScreen(0, 0)
         -- local w, h = wow:GetSize()
