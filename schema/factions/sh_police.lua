@@ -23,6 +23,12 @@ function FACTION:OnTransferred( cCharacter )
             bItemsUnequipped = true
         end
     end
+
+    cCharacter:GetPlayer():SetArmor( 100 )
+end
+
+function FACTION:OnTransferredOut( cCharacter )
+    cCharacter:GetPlayer():SetArmor( 0 )
 end
 
 -- FACTION.models = {
