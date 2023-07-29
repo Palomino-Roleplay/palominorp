@@ -45,7 +45,6 @@ local function DownloadAPIFiles()
     end
 end
 
-DownloadAPIFiles()
 local matInvL = Material( "prp/InventoryL.png" )
 
 surface.CreateFont( "PRP.PlyMenu.Large", {
@@ -60,10 +59,10 @@ concommand.Add( "prp_ui_download", function()
 end )
 
 function PANEL:Init()
-    -- if not PRP.UI.PlyMenu.tMaterials["plymenu/bg"] then
-    --     DownloadAPIFiles()
-    --     self:Remove()
-    -- end
+    if not PRP.UI.PlyMenu.tMaterials["plymenu/bg"] then
+        DownloadAPIFiles()
+        self:Remove()
+    end
 
     self:SetPos( 0, 0 )
     self:SetSize( ScrW(), ScrH() )
