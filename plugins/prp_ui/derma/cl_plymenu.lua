@@ -328,7 +328,7 @@ function PANEL:OnRemove()
     hook.Remove( "ix.pac.OnPartAttached", "PRP.UI.PlyMenu.OnPartAttached" )
     hook.Remove( "ix.pac.OnPartRemoved", "PRP.UI.PlyMenu.OnPartRemoved" )
 
-    ix.gui["inv"..LocalPlayer():GetCharacter():GetInventory()] = nil
+    ix.gui["inv"..LocalPlayer():GetCharacter():GetInventory():GetID()] = nil
 end
 
 function PANEL:Paint()
