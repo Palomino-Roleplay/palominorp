@@ -159,9 +159,12 @@ function PANEL:Init()
     wow:SetFOV( 9 )
     wow:SetAmbientLight( Color( 0, 0, 0 ) )
     wow:SetZPos( 100 )
-    wow.bFirstDraw = true
 
     pac.SetupENT(wow.Entity)
+
+    for sPartID, _ in pairs( LocalPlayer():GetParts() ) do
+        ix.pac.AttachPart( wow.Entity, sPartID )
+    end
 
     hook.Add( "ix.pac.OnPartAttached", "PRP.UI.PlyMenu.OnPartAttached", function( eEntity, sPartID )
         if ( eEntity == LocalPlayer() ) then
@@ -185,15 +188,18 @@ function PANEL:Init()
             self:RunAnimation()
         end
 
-        if wow.bFirstDraw then
-            wow.bFirstDraw = false
+        return
+    end
+    function wow:DrawPACEntity()
+        local x, y = self:LocalToScreen(0, 0)
+        local w, h = self:GetSize()
 
-            for sPartID, _ in pairs( LocalPlayer():GetParts() ) do
-                ix.pac.AttachPart( wow.Entity, sPartID )
-            end
+        local ang = self.aLookAngle
+        if (!ang) then
+            ang = (self.vLookatPos - self.vCamPos):Angle()
         end
 
-        return
+        pac.DrawEntity2D(self.Entity, x, y, w, h, self:GetCamPos(), ang, self:GetFOV())
     end
     -- function wow:Paint( w, h )
     --     surface.SetDrawColor( 255, 255, 255, 100 )
@@ -204,24 +210,7 @@ function PANEL:Init()
         -- surface.DrawOutlinedRect( 0, 0, w, h )
     end
     function wow:DrawModel()
-        if self.bFirstDraw then
-            self.bFirstDraw = false
-        end
-
         -- self.Entity:DrawModel()
-
-        local x, y = self:LocalToScreen(0, 0)
-        local w, h = self:GetSize()
-
-        local ang = self.aLookAngle
-        if (!ang) then
-            ang = (self.vLookatPos - self.vCamPos):Angle()
-        end
-
-        pac.DrawEntity2D(self.Entity, x, y, w, h, self:GetCamPos(), ang, self:GetFOV())
-
-        if true then return end
-
         local oGlowMaterial = Material( "sprites/glow04_noz" )
         local oGlowColor = Color( 255, 255, 255, 255 )
 
@@ -239,7 +228,8 @@ function PANEL:Init()
 
         -- render.SetBlend( easedFrac )
 
-        self.Entity:DrawModel()
+        -- self.Entity:DrawModel()
+        wow:DrawPACEntity()
 
         render.SetStencilEnable(true)
             -- Force everything to fail
@@ -254,7 +244,8 @@ function PANEL:Init()
             -- With our current reference value, the result will be 00010100.
             render.SetStencilWriteMask( 0x55 )
 
-            self.Entity:DrawModel()
+            -- self.Entity:DrawModel()
+            wow:DrawPACEntity()
 
             -- Set the test mask to 11110011.
             -- Any time a pixel is read out of the stencil buffer it will be bitwise ANDed with this mask.
