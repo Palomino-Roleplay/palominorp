@@ -2,43 +2,47 @@ PRP.UI = PRP.UI or {}
 PRP.UI.Nameplates = PRP.UI.Nameplates or {}
 
 -- @TODO: Get a unified font for all UI elements
-surface.CreateFont( "PRP.UI.Nameplates.Name", {
-    font = "Inter",
-    size = 32 * PRP.UI.ScaleFactor,
-    weight = 700,
-    antialias = true,
-} )
 
-surface.CreateFont( "PRP.UI.Nameplates.Name.Blurred", {
-    font = "Inter",
-    size = 32 * PRP.UI.ScaleFactor,
-    blursize = 4,
-    weight = 700,
-    antialias = true,
-} )
+function PLUGIN:InitializedPlugins()
+    surface.CreateFont( "PRP.UI.Nameplates.Name", {
+        font = "Inter",
+        size = 32 * PRP.UI.ScaleFactor,
+        weight = 700,
+        antialias = true,
+    } )
+    
+    surface.CreateFont( "PRP.UI.Nameplates.Name.Blurred", {
+        font = "Inter",
+        size = 32 * PRP.UI.ScaleFactor,
+        blursize = 4,
+        weight = 700,
+        antialias = true,
+    } )
+    
+    surface.CreateFont( "PRP.UI.Nameplates.ID", {
+        font = "Oxygen Mono",
+        size = 24 * PRP.UI.ScaleFactor,
+        antialias = true,
+    } )
+    
+    surface.CreateFont( "PRP.UI.Nameplates.Tag", {
+        font = "Oxygen",
+        weight = 700,
+        size = 20 * PRP.UI.ScaleFactor,
+        antialias = true,
+        additive = true,
+        -- shadow = true,
+    } )
+    
+    surface.CreateFont( "PRP.UI.Nameplates.Tag.Blurred", {
+        font = "Oxygen",
+        weight = 700,
+        size = 20 * PRP.UI.ScaleFactor,
+        blursize = 3,
+        antialias = true,
+    } )
+end
 
-surface.CreateFont( "PRP.UI.Nameplates.ID", {
-    font = "Oxygen Mono",
-    size = 24 * PRP.UI.ScaleFactor,
-    antialias = true,
-} )
-
-surface.CreateFont( "PRP.UI.Nameplates.Tag", {
-    font = "Oxygen",
-    weight = 700,
-    size = 20 * PRP.UI.ScaleFactor,
-    antialias = true,
-    additive = true,
-    -- shadow = true,
-} )
-
-surface.CreateFont( "PRP.UI.Nameplates.Tag.Blurred", {
-    font = "Oxygen",
-    weight = 700,
-    size = 20 * PRP.UI.ScaleFactor,
-    blursize = 3,
-    antialias = true,
-} )
 
 function PRP.UI.Nameplates.Draw( pPlayer )
     local vPos = pPlayer:GetPos() + Vector( 0, 0, 64 + 10 )
@@ -103,6 +107,8 @@ end
 
 hook.Add( "HUDPaint", "PRP.UI.Nameplates.HUDPaint", function()
     for k, v in pairs( player.GetAll() ) do
+        if not IsValid( v ) then continue end
+        if not v:GetCharacter() then continue end
         if v == LocalPlayer() and not ix.config.Get( "DeveloperMode", false ) then continue end
         if not v:Alive() then continue end
         if v:GetNoDraw() then continue end
