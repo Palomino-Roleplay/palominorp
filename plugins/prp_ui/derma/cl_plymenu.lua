@@ -4,9 +4,6 @@ PRP.UI = PRP.UI or {}
 PRP.UI.PlyMenu = PRP.UI.PlyMenu or {}
 PRP.UI.PlyMenu.tMaterials = PRP.UI.PlyMenu.tMaterials or {}
 PRP.UI.PlyMenu.tAPIFiles = PRP.UI.PlyMenu.tAPIFiles or {}
-PRP.UI.ScaleFactor = ScrH() / 1080
-
-PRP.UI.PLY_MENU = PRP.UI.PLY_MENU or false
 
 local PANEL = {}
 
@@ -391,6 +388,8 @@ function PANEL:Paint()
 
 end
 
+print("Alive check")
+
 vgui.Register( "PRP.Menu", PANEL, "DPanel" )
 
 -- concommand.Add( "prp_menu", function()
@@ -401,14 +400,3 @@ vgui.Register( "PRP.Menu", PANEL, "DPanel" )
 --         PRP.UI.PLY_MENU = vgui.Create( "PRP.Menu" )
 --     end
 -- end )
-
-hook.Add( "ScoreboardShow", "PRP.API.ScoreboardShow", function()
-    if PRP.UI.PLY_MENU then
-        PRP.UI.PLY_MENU:Remove()
-        PRP.UI.PLY_MENU = false
-    else
-        PRP.UI.PLY_MENU = vgui.Create( "PRP.Menu" )
-    end
-
-    return true
-end )

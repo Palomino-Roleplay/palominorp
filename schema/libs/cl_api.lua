@@ -2,8 +2,9 @@ PRP = PRP or {}
 PRP.API = PRP.API or {}
 
 PRP.API._bInitComplete = PRP.API._bInitComplete or false
-PRP.API._tMaterials = {}
-PRP.API._tMaterialsDownloadQueue = {}
+PRP.API._bDownloadComplete = false
+PRP.API._tMaterials = PRP.API._tMaterials or {}
+PRP.API._tMaterialsDownloadQueue = PRP.API._tMaterialsDownloadQueue or {}
 
 
 
@@ -40,6 +41,12 @@ local function DownloadMaterial( sURI, sMaterialParameters )
             PRP.API._tMaterials[sURI] = Material( "data/" .. sPath, sMaterialParameters )
 
             Print( "Downloaded " .. sFileName .. " to " .. sPath )
+
+            PRP.API._tMaterialsDownloadQueue[sURI] = nil
+
+            if table.Count(PRP.API._tMaterialsDownloadQueue) == 0 then
+                PRP.API._bDownloadComplete = true
+            end
         else
             error( "Failed to download material from API: " .. sURI .. " (Code: " .. iResponseCode .. ")" )
         end
@@ -57,10 +64,13 @@ function PRP.API.Material( sURI )
 end
 
 function PRP.API.AddMaterial( sURI, sMaterialParameters )
+    PRP.API._bDownloadComplete = false
+    PRP.API._tMaterialsDownloadQueue[sURI] = sMaterialParameters
+
     if PRP.API._bInitComplete then
         DownloadMaterial( sURI, sMaterialParameters )
     else
-        table.insert( PRP.API._tMaterialsDownloadQueue, { sURI, sMaterialParameters } )
+        Print( "PAPI not initialized. Skipping material download..." )
     end
 end
 
@@ -77,9 +87,12 @@ function PRP.API.Initialize()
         Print( "Initializing PAPI..." )
 
         Print( "Downloading materials..." )
-        for _, tMaterial in ipairs( PRP.API._tMaterialsDownloadQueue ) do
-            DownloadMaterial( unpack( tMaterial ) )
+        for sURI, sMaterialParameters in pairs( PRP.API._tMaterialsDownloadQueue ) do
+            Print( sURI )
+            DownloadMaterial( sURI, sMaterialParameters )
         end
+
+        Print( "why though?" )
 
         PRP.API._bInitComplete = true
 
