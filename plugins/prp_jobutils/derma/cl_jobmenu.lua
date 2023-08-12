@@ -503,7 +503,7 @@ function PANEL:Populate()
     end
 
     self.salary = self.left:Add( "ixLabel" )
-    self.salary:SetText( "Salary: " .. ix.currency.Get( self.class.salary or self.faction.salary or 0 ) )
+    self.salary:SetText( "Salary: " .. ix.currency.Get( self.class.pay or self.faction.pay or 0 ) )
     self.salary:SetFont( "ixMenuButtonFont" )
     self.salary:SetContentAlignment( 4 )
     self.salary:SetTextColor( Color( 255, 255, 255, 255 ) )
