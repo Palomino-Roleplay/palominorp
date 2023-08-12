@@ -4,4 +4,4 @@ PLUGIN.name = "User Interface"
 PLUGIN.author = "sil"
 PLUGIN.description = ""
 
-print("yo???")
+ix.util.Include("cl_hooks.lua")
