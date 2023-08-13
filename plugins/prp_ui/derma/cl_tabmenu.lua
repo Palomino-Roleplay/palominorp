@@ -61,6 +61,10 @@ function PANEL:AddTab( sName )
     end
 
     self._iCursorPosEased = self.iStartingPos
+    -- Start on 3rd tab
+    -- @TODO: AIDS
+    self._iCursorPosEased = self._iCursorPosEased + ( 2 * 240 * PRP.UI.ScaleFactor )
+    self._iPanelPosEased = ScrW() * 2
 
 
     self:UpdateActiveTab()
@@ -107,8 +111,8 @@ function PANEL:Paint(w, h)
     local iCursorPos = self.iStartingPos
     local iPanelPos = 0
 
-    self._iCursorPosEased = Lerp( FrameTime() * 20, self._iCursorPosEased, iCursorPos + ( self._iCurrentTab * iTabWidth ) )
-    self._iPanelPosEased = Lerp( FrameTime() * 20, self._iPanelPosEased, iPanelPos + ( self._iCurrentTab * ScrW() ) )
+    self._iCursorPosEased = Lerp( FrameTime() * 30, self._iCursorPosEased, iCursorPos + ( self._iCurrentTab * iTabWidth ) )
+    self._iPanelPosEased = Lerp( FrameTime() * 30, self._iPanelPosEased, iPanelPos + ( self._iCurrentTab * ScrW() ) )
 
     self.m_pnlContent:SetPos( -self._iPanelPosEased, 100 * PRP.UI.ScaleFactor )
 

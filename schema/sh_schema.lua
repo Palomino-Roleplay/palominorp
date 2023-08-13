@@ -6,7 +6,8 @@ Schema.version = "Closed Pre-Alpha"
 PRP = PRP or {}
 
 -- @TODO: Change after playtest
-PRP.API_URL = "http://loopback.gmod:3000"
+PRP.API_URL = "http://papi-dev.us-east-2.elasticbeanstalk.com"
+-- PRP.API_URL = "https://papi.sil.dev"
 PRP.API_KEY = "uE2YS7gaH6e2hmr8zU0433iB4KTacUWh"
 
 ix.util.Include("cl_schema.lua")
@@ -21,6 +22,13 @@ ix.util.Include("hooks/cl_hooks.lua")
 
 -- Default config values
 ix.config.SetDefault( "intro", false )
+ix.config.SetDefault( "music", "" )
+ix.config.SetDefault( "font", "Inter Black" )
+ix.config.SetDefault( "genericFont", "Inter Medium" )
+ix.config.SetDefault( "inventoryHeight", 7 )
+ix.config.SetDefault( "inventoryWidth", 5 )
+ix.config.SetDefault( "doorLockTime", 0 )
+ix.config.SetDefault( "allowVoice", true )
 
 -- Config values
 ix.config.Add("DeveloperMode", false, "Enables some things and makes the server slower.", nil, {

@@ -4,49 +4,48 @@ PRP.UI = PRP.UI or {}
 PRP.UI.PlyMenu = PRP.UI.PlyMenu or {}
 PRP.UI.PlyMenu.tMaterials = PRP.UI.PlyMenu.tMaterials or {}
 PRP.UI.PlyMenu.tAPIFiles = PRP.UI.PlyMenu.tAPIFiles or {}
-PRP.UI.ScaleFactor = ScrH() / 1080
-
-PRP.UI.PLY_MENU = PRP.UI.PLY_MENU or false
 
 local PANEL = {}
 
-local function DownloadAPIFiles()
-    -- if true then return end
-    if IsValid( PRP.UI.PLY_MENU ) then return end
+PRP.API.AddMaterial( "ui/plymenu/youbg", "" )
+PRP.API.AddMaterial( "ui/plymenu/bg", "" )
 
-    PRP.UI.tAPIFiles = {
-        ["plymenu/youbg"] = "plymenu_youbg_" .. ScrW() .. "x" .. ScrH() .. "_" .. math.floor( CurTime() ) .. ".png",
-        ["plymenu/bg"] = "plymenu_bg_" .. ScrW() .. "x" .. ScrH() .. "_" .. math.floor( CurTime() ) .. ".png",
-    }
-    PRP.UI.PlyMenu.tMaterials = {}
+-- local function DownloadAPIFiles()
+--     -- if true then return end
+--     if IsValid( PRP.UI.PLY_MENU ) then return end
 
-    for sFileID, sFileName in pairs( PRP.UI.tAPIFiles ) do
-        local sURL = PRP.API_URL .. "/ui/" .. sFileID .. "/" .. ScrW() .. "/" .. ScrH()
+--     PRP.UI.tAPIFiles = {
+--         ["plymenu/youbg"] = "plymenu_youbg_" .. ScrW() .. "x" .. ScrH() .. "_" .. math.floor( CurTime() ) .. ".png",
+--         ["plymenu/bg"] = "plymenu_bg_" .. ScrW() .. "x" .. ScrH() .. "_" .. math.floor( CurTime() ) .. ".png",
+--     }
+--     PRP.UI.PlyMenu.tMaterials = {}
 
-        print( "Downloading " .. sFileID .. " from " .. sURL )
-        http.Fetch( sURL, function( data )
-            if data then
-                if file.Exists( sFileName, "DATA" ) then
-                    file.Delete( sFileName, "DATA" )
-                end
+--     for sFileID, sFileName in pairs( PRP.UI.tAPIFiles ) do
+--         local sURL = PRP.API_URL .. "/ui/" .. sFileID .. "/" .. ScrW() .. "/" .. ScrH()
 
-                file.Write( sFileName, data )
-                PRP.UI.PlyMenu.tMaterials[sFileID] = Material( "data/" .. sFileName, "" )
+--         print( "Downloading " .. sFileID .. " from " .. sURL )
+--         http.Fetch( sURL, function( data )
+--             if data then
+--                 if file.Exists( sFileName, "DATA" ) then
+--                     file.Delete( sFileName, "DATA" )
+--                 end
 
-                print( "Downloaded " .. sFileID .. " to " .. sFileName )
-            end
-        end, function( sError )
-            error( sError )
-        end, {
-            apikey = PRP.API_KEY,
-            steamid = LocalPlayer():SteamID64(),
-            steamname = LocalPlayer():SteamName()
-        } )
-    end
-end
+--                 file.Write( sFileName, data )
+--                 PRP.UI.PlyMenu.tMaterials[sFileID] = Material( "data/" .. sFileName, "" )
 
-DownloadAPIFiles()
-local matInvL = Material( "prp/InventoryL.png" )
+--                 print( "Downloaded " .. sFileID .. " to " .. sFileName )
+--             end
+--         end, function( sError )
+--             error( sError )
+--         end, {
+--             apikey = PRP.API_KEY,
+--             steamid = LocalPlayer():SteamID64(),
+--             steamname = LocalPlayer():SteamName()
+--         } )
+--     end
+-- end
+
+-- local matInvL = Material( "prp/InventoryL.png" )
 
 surface.CreateFont( "PRP.PlyMenu.Large", {
     font = "Inter Bold",
@@ -54,21 +53,12 @@ surface.CreateFont( "PRP.PlyMenu.Large", {
     antialias = true
 } )
 
--- @TODO: Remove
-concommand.Add( "prp_ui_download", function()
-    DownloadAPIFiles()
-end )
-
 function PANEL:Init()
-    -- if not PRP.UI.PlyMenu.tMaterials["plymenu/bg"] then
-    --     DownloadAPIFiles()
-    --     self:Remove()
-    -- end
-
     self:SetPos( 0, 0 )
     self:SetSize( ScrW(), ScrH() )
 
     self:MakePopup()
+    self:SetKeyboardInputEnabled( false )
 
     self.iOpenTime = CurTime()
 
@@ -346,11 +336,11 @@ function PANEL:Init()
 
         if self.m_pnlTabPanel._iCurrentTab == 2 then
             surface.SetDrawColor( 255, 255, 255, 255 * 0.9 * self.easedFraction )
-            surface.SetMaterial( PRP.UI.PlyMenu.tMaterials[ "plymenu/youbg" ] )
+            surface.SetMaterial( PRP.API.Material( "ui/plymenu/youbg" ) )
             surface.DrawTexturedRect( 0, 0, iW, iH )
         else
             surface.SetDrawColor( 255, 255, 255, 255 * 0.9 * self.easedFraction )
-            surface.SetMaterial( PRP.UI.PlyMenu.tMaterials[ "plymenu/bg" ] )
+            surface.SetMaterial( PRP.API.Material( "ui/plymenu/bg" ) )
             surface.DrawTexturedRect( 0, 0, iW, iH )
         end
 
@@ -398,13 +388,15 @@ function PANEL:Paint()
 
 end
 
+print("Alive check")
+
 vgui.Register( "PRP.Menu", PANEL, "DPanel" )
 
-concommand.Add( "prp_menu", function()
-    if PRP.UI.PLY_MENU then
-        PRP.UI.PLY_MENU:Remove()
-        PRP.UI.PLY_MENU = false
-    else
-        PRP.UI.PLY_MENU = vgui.Create( "PRP.Menu" )
-    end
-end )
+-- concommand.Add( "prp_menu", function()
+--     if PRP.UI.PLY_MENU then
+--         PRP.UI.PLY_MENU:Remove()
+--         PRP.UI.PLY_MENU = false
+--     else
+--         PRP.UI.PLY_MENU = vgui.Create( "PRP.Menu" )
+--     end
+-- end )

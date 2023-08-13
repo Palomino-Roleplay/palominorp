@@ -19,7 +19,8 @@ function PLUGIN:PlayerButtonDown( pPlayer, iKey )
 
     if iKey == KEY_B then
         pPlayer._bInRadio = true
-        pPlayer:EmitSound( "npc/metropolice/vo/on2.wav" )
+        pPlayer:SetNWBool( "bInRadio", true )
+        pPlayer:EmitSound( "npc/metropolice/vo/on1.wav", 60 )
         pPlayer:SelectWeightedSequence( ACT_GMOD_IN_CHAT )
     end
 end
@@ -30,6 +31,7 @@ function PLUGIN:PlayerButtonUp( pPlayer, iKey )
 
     if iKey == KEY_B then
         pPlayer._bInRadio = false
-        pPlayer:EmitSound( "npc/metropolice/vo/off4.wav" )
+        pPlayer:SetNWBool( "bInRadio", false)
+        pPlayer:EmitSound( "npc/metropolice/vo/on1.wav", 60, 66.6 )
     end
 end

@@ -1,4 +1,3 @@
-PRP = PRP or {}
 PRP.UI = PRP.UI or {}
 
 local oMaterial = Material( "gui/gradient_up" )

@@ -55,6 +55,26 @@ function Schema:PlayerJoinedClass( pPlayer, iNewClass, iOldClass )
     end
 end
 
+local tWhitelist = {
+    "76561198072551027", -- sil
+    "76561197997304089", -- Knight
+    "0",
+
+    -- Playtesters
+    "76561198139507705", -- ZakisMal
+    "76561198030695593", -- tone
+    "76561199117143435", -- puvz
+    "76561198159973012", -- Wolv
+    "76561198352665638", -- Sudzy
+    "76561198241491232", --Du$ty
+}
+
+function Schema:CheckPassword( sSteamID64, sIPAddress, sSVPassword, sCLPassword, sName )
+    if not table.HasValue( tWhitelist, sSteamID64 ) then
+        return false, "Not yet :)"
+    end
+end
+
 -- @TODO: Somewhere in the gamemode we're changing the hitgroup scales, but I can't find where.
 -- For now, the left number sets the damage to the base damage, and the right number is our multiplier.
 
