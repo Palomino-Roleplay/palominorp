@@ -9,6 +9,7 @@ function CHAR:Arrest( pArrestor, iTime, sReason )
 
     pPlayer:Uncuff()
     self:SetFaction( FACTION_PRISONER )
+    pPlayer:Spawn()
 
 
     pPlayer:StripWeapons()
