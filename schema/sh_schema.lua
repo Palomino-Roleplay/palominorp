@@ -1,7 +1,7 @@
 Schema.name = "PRP"
 Schema.author = "sil"
 Schema.description = ""
-Schema.version = "Closed Pre-Alpha"
+Schema.version = "0.1.1"
 
 PRP = PRP or {}
 
