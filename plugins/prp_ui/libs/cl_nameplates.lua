@@ -80,8 +80,14 @@ function PRP.UI.Nameplates.Draw( pPlayer )
 
         -- Action
         iYPos = iYPos - (3 * PRP.UI.ScaleFactor)
-        draw.SimpleText( string.upper( pPlayer:GetNetVar( "actionString", "" ) ), "PRP.UI.Nameplates.Tag.Blurred", vPos:ToScreen().x, iYPos, Color( 0, 0, 0, iDistanceMultiplier * 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
-        draw.SimpleText( string.upper( pPlayer:GetNetVar( "actionString", "" ) ), "PRP.UI.Nameplates.Tag", vPos:ToScreen().x, iYPos, Color( 255, 206, 73, iDistanceMultiplier * 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+        local sActionString = pPlayer:GetNetVar( "actionString", "" )
+
+        if (sActionString:sub(1, 1) == "@") then
+            sActionString = L2(sActionString:sub(2)) or sActionString
+        end
+
+        draw.SimpleText( string.upper( sActionString ), "PRP.UI.Nameplates.Tag.Blurred", vPos:ToScreen().x, iYPos, Color( 0, 0, 0, iDistanceMultiplier * 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+        draw.SimpleText( string.upper( sActionString ), "PRP.UI.Nameplates.Tag", vPos:ToScreen().x, iYPos, Color( 255, 206, 73, iDistanceMultiplier * 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
     
     else    
         draw.SimpleText( pPlayer:Nick(), "PRP.UI.Nameplates.Name", vPos:ToScreen().x, iYPos, Color( 137 + ( 118 * pPlayer:VoiceVolume() ), 191 + ( 64 * pPlayer:VoiceVolume() ), 255, iAlpha ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
