@@ -12,6 +12,14 @@ FACTION.radioChannels = {
     ["Police"] = true
 }
 
+-- @TODO: Do this by map (and use spawn library)
+FACTION.spawns = {
+    Vector( 8368, 7970, -120 ),
+    Vector( 8369, 7882, -120 ),
+    Vector( 8367, 7538, -120 ),
+    Vector( 8369, 7409, -120 ),
+}
+
 FACTION.modelBase = "models/player/icpd/cops/%s_shortsleeved.mdl"
 
 function FACTION:OnTransferred( cCharacter )
