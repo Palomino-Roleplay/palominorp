@@ -127,7 +127,7 @@ hook.Add( "HUDPaint", "PRP.UI.Nameplates.HUDPaint", function()
         -- @TODO: Probably a little too expensive for HUDPaint. Can we do this some other way?
         -- Don't display if player obstructed
         local tTrace = util.QuickTrace( LocalPlayer():GetShootPos(), v:GetPos() - LocalPlayer():GetShootPos(), LocalPlayer() )
-        Print( tTrace )
+        -- Print( tTrace )
         if tTrace.HitWorld then
             continue
         end
