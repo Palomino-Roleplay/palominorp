@@ -4,11 +4,11 @@ PRP.Banking = PRP.Banking or {}
 function PRP.Banking.Create( cCharacter, fnCallback )
     ix.inventory.New( 0, "banking_character", function( oInventory )
         if ( oInventory ) then
+            cCharacter:SetData( "banking_inventory_id", oInventory:GetID() )
+
             if fnCallback then
                 fnCallback( oInventory )
             end
-
-            cCharacter:SetData( "banking_inventory_id", oInventory:GetID() )
         end
     end )
 end
