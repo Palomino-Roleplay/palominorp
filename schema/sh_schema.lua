@@ -26,7 +26,7 @@ ix.config.SetDefault( "font", "Inter Black" )
 ix.config.SetDefault( "genericFont", "Inter Medium" )
 ix.config.SetDefault( "inventoryHeight", 7 )
 ix.config.SetDefault( "inventoryWidth", 5 )
-ix.config.SetDefault( "doorLockTime", 0 )
+-- ix.config.SetDefault( "doorLockTime", 0 )
 ix.config.SetDefault( "allowVoice", true )
 
 -- Config values
