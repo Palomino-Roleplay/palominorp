@@ -2,6 +2,8 @@ PRP.Banking = PRP.Banking or {}
 
 -- Create a new bank account
 function PRP.Banking.Create( cCharacter, fnCallback )
+    if PRP.Banking.HasAccount( cCharacter ) then return end
+
     ix.inventory.New( 0, "banking_character", function( oInventory )
         if ( oInventory ) then
             cCharacter:SetData( "banking_inventory_id", oInventory:GetID() )
