@@ -13,10 +13,6 @@ ix.util.Include( "hooks/sv_hooks.lua" )
 ix.util.Include( "hooks/sh_hooks.lua" )
 ix.util.Include( "hooks/cl_hooks.lua" )
 
-PLUGIN.PrisonPositions = {
-    Vector( -8438.446289, 9241.693359, 64.031250 + 16 ),
-}
-
 -- 911
 
 ix.chat.Register("911", {
@@ -137,16 +133,29 @@ ix.menu.RegisterVehicleOption( "Force Out of Vehicle", {
     end,
 } )
 
-ix.menu.RegisterPlayerOption( "Search", {
-    OnCanRun = function( pVictim, pPlayer, sOption, tData )
-        -- @TODO: Do distance check in the RegisterPlayerOption function
-        -- @TODO: Verify these checks. Is "IsPlayer" even necessary?
-        return pVictim:IsPlayer()
-            and pVictim:GetPos():DistToSqr( pPlayer:GetPos() ) <= 8000
-            and pVictim:IsHandcuffed()
-    end,
-    OnRun = function( pVictim, pPlayer, sOption, tData )
-        -- Realistic_Police.Drag( pVictim, pPlayer )
-        
-    end
-} )
+-- ix.menu.RegisterPlayerOption( "Search", {
+--     OnCanRun = function( pVictim, pPlayer, sOption, tData )
+--         -- @TODO: Do distance check in the RegisterPlayerOption function
+--         -- @TODO: Verify these checks. Is "IsPlayer" even necessary?
+--         return pVictim:IsPlayer()
+--             and pVictim:GetPos():DistToSqr( pPlayer:GetPos() ) <= 8000
+--             and pVictim:IsHandcuffed()
+--     end,
+--     OnRun = function( pVictim, pPlayer, sOption, tData )
+--         -- Realistic_Police.Drag( pVictim, pPlayer )
+--         -- pPlayer:SetAction( "Searching...", 3 )
+--         -- pPlayer:DoStaredAction( pVictim, function()
+--         -- end, 3 )
+--         ix.storage.Open( pPlayer, pVictim:GetCharacter():GetInventory(), {
+--             name = pVictim:GetName() .. "'s Inventory",
+--             entity = pVictim,
+--             bMultipleUsers = true,
+--             searchText = "Searching...",
+--             searchTime = 3,
+--             data = {
+--                 money = false,
+--                 bIsConfiscation = true,
+--             }
+--         })
+--     end
+-- } )

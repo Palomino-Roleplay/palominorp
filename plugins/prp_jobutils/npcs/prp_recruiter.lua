@@ -8,9 +8,12 @@ function NPC:Init()
 end
 
 if CLIENT then
-    function NPC:OnUse()
+    function NPC:OnUse( eEntity )
         local dJobMenu = vgui.Create( "PRP.Job.Menu" )
         dJobMenu:SetFaction( self:GetFaction() )
+        Print( "KIL LMYSELF" )
+        Print( eEntity )
+        dJobMenu:SetNPC( eEntity )
     end
 end
 

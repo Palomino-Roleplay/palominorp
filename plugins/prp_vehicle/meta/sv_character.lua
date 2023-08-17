@@ -5,9 +5,11 @@ function CHAR:SpawnJobVehicle( sVehicleID )
         return false, "You already have a job vehicle!"
     end
 
-    -- @TODO: Find the parking spaces and al that crap
     -- @TODO: Check the PRP.Vehicle.Job.List table for overrides & permissions
     local vVehicle = PRP.Vehicle.Parking.Spawn( "police_garage", sVehicleID )
+    if not vVehicle then
+        return false, "There was an error spawning your job vehicle!"
+    end
 
     self._jobVehicle = vVehicle
 
@@ -20,7 +22,7 @@ function CHAR:SpawnJobVehicle( sVehicleID )
     end )
     vVehicle:CPPISetOwner( self:GetPlayer() )
 
-    return true, "Your job vehicle has been spawned!"
+    return vVehicle, "Your job vehicle has been spawned!"
 end
 
 function CHAR:RemoveJobVehicle()

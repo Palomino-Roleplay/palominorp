@@ -20,6 +20,11 @@ function Schema:InitializedPlugins()
         -- Give a second for the data file to update.
         timer.Simple( 1, function() RunConsoleCommand("changelevel", game.GetMap()) end )
     end
+
+    -- Disable giving CW 2.0 attachments on spawn
+    for key, attData in ipairs(CustomizableWeaponry.registeredAttachments) do
+		game.ConsoleCommand(attData.cvar .. " 0\n")
+	end
 end
 
 function Schema:PlayerCanHearPlayersVoice( pListener, pTalker )
@@ -47,6 +52,52 @@ function Schema:PlayerJoinedClass( pPlayer, iNewClass, iOldClass )
 
     for _, sWeapon in pairs( tNewClass.weapons or {} ) do
         pPlayer:Give( sWeapon )
+    end
+end
+
+local tWhitelist = {
+    "76561198072551027", -- sil
+    "76561197997304089", -- Knight
+    "0",
+
+    -- Playtesters
+    "76561198139507705", -- ZakisMal
+    "76561198030695593", -- tone
+    "76561199117143435", -- puvz
+    "76561198159973012", -- Wolv
+    "76561198352665638", -- Sudzy
+    "76561198241491232", --Du$ty
+}
+
+function Schema:CheckPassword( sSteamID64, sIPAddress, sSVPassword, sCLPassword, sName )
+    if not table.HasValue( tWhitelist, sSteamID64 ) then
+        return false, "Not yet :)"
+    end
+end
+
+-- @TODO: Somewhere in the gamemode we're changing the hitgroup scales, but I can't find where.
+-- For now, the left number sets the damage to the base damage, and the right number is our multiplier.
+
+-- TLDR: Don't touch the left number.
+local tHitgroupsScale = {
+    [HITGROUP_GENERIC] = 1 * 1,
+    [HITGROUP_HEAD] = 0.5 * 2,
+    [HITGROUP_CHEST] = 1 * 1,
+    [HITGROUP_STOMACH] = 1 * 1,
+    [HITGROUP_LEFTARM] = 4 * 1,
+    [HITGROUP_RIGHTARM] = 4 * 1,
+    [HITGROUP_LEFTLEG] = 4 * 0.5,
+    [HITGROUP_RIGHTLEG] = 4 * 0.5,
+    [HITGROUP_GEAR] = 1
+}
+
+function Schema:ScalePlayerDamage( pPlayer, iHitGroup, tDamageInfo )
+    local iScale = tHitgroupsScale[ iHitGroup ] or 1
+
+    tDamageInfo:ScaleDamage( iScale )
+
+    if iHitGroup == HITGROUP_HEAD then
+        pPlayer:EmitSound( "player/headshot" .. math.random( 1, 2 ) .. ".wav" )
     end
 end
 
