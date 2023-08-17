@@ -75,9 +75,17 @@ function PLUGIN:PlayerDeathThink( pPlayer )
 		local iFullDeathTimestamp = pPlayer:GetNetVar("deathTimeFull")
 
         if iFastDeathTimestamp and iFastDeathTimestamp <= CurTime() and pPlayer:KeyDown( IN_JUMP ) then
-            pPlayer:Spawn()
+			if pPlayer.DeathSpawn then
+            	pPlayer:DeathSpawn()
+			else
+				pPlayer:Spawn()
+			end
         elseif (iFullDeathTimestamp and iFullDeathTimestamp <= CurTime()) then
-            pPlayer:Spawn()
+			if pPlayer.DeathSpawn then
+            	pPlayer:DeathSpawn()
+			else
+				pPlayer:Spawn()
+			end
 		end
 	end
 
