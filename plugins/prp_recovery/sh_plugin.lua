@@ -17,7 +17,6 @@ PLUGIN.hospital = {
     Vector(8127.9467773438,5760.03125,735.89385986328)
 }
 
-ix.util.Include( "hooks/sv_hooks.lua" )
 ix.util.Include( "hooks/sh_hooks.lua" )
 ix.util.Include( "hooks/cl_hooks.lua" )
 

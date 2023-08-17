@@ -6,7 +6,7 @@ Schema.version = "0.1.1"
 PRP = PRP or {}
 
 -- @TODO: Change after playtest
-PRP.API_URL = "https://papi.sil.dev"
+PRP.API_URL = "https://papi-staging.palomino.life"
 PRP.API_KEY = "aFp2bC5P3bhVHWqNTdI7SXljJOtIu2gb"
 
 ix.util.Include("cl_schema.lua")
