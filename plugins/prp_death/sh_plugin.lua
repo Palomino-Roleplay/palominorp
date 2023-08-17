@@ -5,6 +5,7 @@ PLUGIN.author = "sil"
 PLUGIN.description = "Handles death & respawning."
 
 ix.util.Include("hooks/sv_hooks.lua")
+ix.util.Include("hooks/cl_hooks.lua")
 
 ix.config.Add("spawnTimeFast", 5, "Amount of seconds before a player can trigger a respawn with spacebar.", nil, {
 	data = {min = 0, max = 300},
