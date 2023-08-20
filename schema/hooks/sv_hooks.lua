@@ -95,6 +95,10 @@ function Schema:ScalePlayerDamage( pPlayer, iHitGroup, tDamageInfo )
     local iScale = tHitgroupsScale[ iHitGroup ] or 1
 
     tDamageInfo:ScaleDamage( iScale )
+
+    if iHitGroup == HITGROUP_HEAD then
+        pPlayer:EmitSound( "player/headshot" .. math.random( 1, 2 ) .. ".wav" )
+    end
 end
 
 local HELIX = baseclass.Get( "gamemode_helix" )

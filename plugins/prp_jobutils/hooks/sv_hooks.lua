@@ -94,3 +94,17 @@ net.Receive( "PRP.Job.Quit", function( _, pPlayer )
 
     pPlayer:Notify( "You have quit your job!" )
 end )
+
+-- Job spawns
+function PLUGIN:PlayerLoadout( pPlayer )
+    -- @TODO: Use spawning library (the vehicle parking module)
+    local cCharacter = pPlayer:GetCharacter()
+
+    if not cCharacter then return end
+
+    local tFaction = ix.faction.indices[cCharacter:GetFaction()]
+
+    if tFaction.spawns then
+        pPlayer:SetPos( tFaction.spawns[math.random( #tFaction.spawns )] )
+    end
+end

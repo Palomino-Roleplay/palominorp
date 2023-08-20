@@ -43,13 +43,17 @@ function PLUGIN:InitializedPlugins()
     } )
 end
 
+-- @TODO: Move to a config setting
+local iNameplateDrawDistance = math.pow( 400, 2 )
+local iNameplateFadeDistance = math.pow( 350, 2 )
+
 
 function PRP.UI.Nameplates.Draw( pPlayer )
     local vPos = pPlayer:GetPos() + Vector( 0, 0, 64 + 10 )
     
     local iDistanceSqr = LocalPlayer():GetPos():DistToSqr( pPlayer:GetPos() )
     
-    local iDistanceMultiplier = math.Clamp( 1 - ( ( iDistanceSqr - 40000 ) / 40000 ), 0, 1 )
+    local iDistanceMultiplier = math.Clamp( 1 - ( ( iDistanceSqr - (iNameplateDrawDistance - iNameplateFadeDistance) ) / iNameplateFadeDistance ), 0, 1 )
     local iVoiceMultiplier = math.Clamp( pPlayer:VoiceVolume() * 2, 0, 1 )
     
     local iAlpha = math.Clamp( ( (iDistanceMultiplier * 0.25) + (0.75 * iVoiceMultiplier) ) * 255, 0, 255 )
@@ -76,8 +80,14 @@ function PRP.UI.Nameplates.Draw( pPlayer )
 
         -- Action
         iYPos = iYPos - (3 * PRP.UI.ScaleFactor)
-        draw.SimpleText( string.upper( pPlayer:GetNetVar( "actionString", "" ) ), "PRP.UI.Nameplates.Tag.Blurred", vPos:ToScreen().x, iYPos, Color( 0, 0, 0, iDistanceMultiplier * 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
-        draw.SimpleText( string.upper( pPlayer:GetNetVar( "actionString", "" ) ), "PRP.UI.Nameplates.Tag", vPos:ToScreen().x, iYPos, Color( 255, 206, 73, iDistanceMultiplier * 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+        local sActionString = pPlayer:GetNetVar( "actionString", "" )
+
+        if (sActionString:sub(1, 1) == "@") then
+            sActionString = L2(sActionString:sub(2)) or sActionString
+        end
+
+        draw.SimpleText( string.upper( sActionString ), "PRP.UI.Nameplates.Tag.Blurred", vPos:ToScreen().x, iYPos, Color( 0, 0, 0, iDistanceMultiplier * 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+        draw.SimpleText( string.upper( sActionString ), "PRP.UI.Nameplates.Tag", vPos:ToScreen().x, iYPos, Color( 255, 206, 73, iDistanceMultiplier * 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
     
     else    
         draw.SimpleText( pPlayer:Nick(), "PRP.UI.Nameplates.Name", vPos:ToScreen().x, iYPos, Color( 137 + ( 118 * pPlayer:VoiceVolume() ), 191 + ( 64 * pPlayer:VoiceVolume() ), 255, iAlpha ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
@@ -112,12 +122,15 @@ hook.Add( "HUDPaint", "PRP.UI.Nameplates.HUDPaint", function()
         if not v:Alive() then continue end
         if v:GetNoDraw() then continue end
         if v:GetMoveType() == MOVETYPE_NOCLIP then continue end
-        if v:GetPos():DistToSqr( LocalPlayer():GetPos() ) > 80000 then continue end
+        if v:GetPos():DistToSqr( LocalPlayer():GetPos() ) > iNameplateDrawDistance then continue end
 
         -- @TODO: Probably a little too expensive for HUDPaint. Can we do this some other way?
         -- Don't display if player obstructed
         local tTrace = util.QuickTrace( LocalPlayer():GetShootPos(), v:GetPos() - LocalPlayer():GetShootPos(), LocalPlayer() )
-        if IsValid( tTrace.Entity ) and tTrace.Entity ~= v then continue end
+        -- Print( tTrace )
+        if tTrace.HitWorld then
+            continue
+        end
 
         PRP.UI.Nameplates.Draw( v )
     end
