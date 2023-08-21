@@ -3,8 +3,6 @@ local PLUGIN = PLUGIN
 local PLY = FindMetaTable("Player")
 
 function PLY:DeathSpawn()
-    Print( "Death Spawn!" )
-
     self:Spawn()
     self:SetPos( table.Random( PLUGIN.spawns ) )
     self:SetHealth( 1 )
