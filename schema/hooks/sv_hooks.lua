@@ -66,7 +66,8 @@ local tWhitelist = {
     "76561199117143435", -- puvz
     "76561198159973012", -- Wolv
     "76561198352665638", -- Sudzy
-    "76561198241491232", --Du$ty
+    "76561198241491232", -- Du$ty
+    "76561198002150852", -- gregg
 }
 
 function Schema:CheckPassword( sSteamID64, sIPAddress, sSVPassword, sCLPassword, sName )
