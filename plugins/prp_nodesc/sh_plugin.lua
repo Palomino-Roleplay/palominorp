@@ -4,10 +4,10 @@ PLUGIN.name = "No Descriptions"
 PLUGIN.author = "sil"
 PLUGIN.description = "Removes character descriptions"
 
-ix.char.vars["description"].OnValidate = nil
-ix.char.vars["description"].OnPostSetup = nil
-ix.char.vars["description"].bNoDisplay = true
-ix.config.stored["minDescriptionLength"] = nil
+-- ix.char.vars["description"].OnValidate = nil
+-- ix.char.vars["description"].OnPostSetup = nil
+-- ix.char.vars["description"].bNoDisplay = true
+-- ix.config.stored["minDescriptionLength"] = nil
 
 -- function PLUGIN:GetCharacterName(client, chatType)
 --     if (client != LocalPlayer()) then
