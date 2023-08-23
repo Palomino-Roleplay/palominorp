@@ -55,21 +55,6 @@ function Schema:PlayerJoinedClass( pPlayer, iNewClass, iOldClass )
     end
 end
 
-local tWhitelist = {
-    "76561198072551027", -- sil
-    "76561197997304089", -- Knight
-    "0",
-
-    -- Playtesters
-    "76561198139507705", -- ZakisMal
-    "76561198030695593", -- tone
-    "76561199117143435", -- puvz
-    "76561198159973012", -- Wolv
-    "76561198352665638", -- Sudzy
-    "76561198241491232", -- Du$ty
-    "76561198002150852", -- gregg
-}
-
 function Schema:CheckPassword( sSteamID64, sIPAddress, sSVPassword, sCLPassword, sName )
     if not PRP.API.bInitialized then
         return false, "Palomino is still initializing. Please wait a few seconds and try again."
