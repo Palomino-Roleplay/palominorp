@@ -233,6 +233,7 @@ function PRP.API.Initialize()
 
             -- timer.Simple( 0, fnInitializeREST )
             fnInitializeREST()
+            return
         end
 
         if not PRP.API.bInitialized then
