@@ -71,10 +71,29 @@ local tWhitelist = {
 }
 
 function Schema:CheckPassword( sSteamID64, sIPAddress, sSVPassword, sCLPassword, sName )
-    if not table.HasValue( tWhitelist, sSteamID64 ) then
-        return false, "Not yet :)"
+    if not PRP.API.bInitialized then
+        return false, "Palomino is still initializing. Please wait a few seconds and try again."
     end
+
+    local sSteamID = util.SteamIDFrom64( sSteamID64 )
+
+    if PRP.API.ServerInfo.whitelist and not PRP.API.ServerInfo.whitelist[ sSteamID ] then
+        return false, "Sorry, " .. sName .. ", you are not whitelisted for this Palomino server."
+    end
+
+    PRP.API.WS.Send( "player/join", {
+        steamID = sSteamID,
+        steamName = sName,
+    } )
 end
+
+gameevent.Listen( "player_disconnect" )
+hook.Add( "player_disconnect", "PRP:PlayerDisconnected", function( tData )
+    PRP.API.WS.Send( "player/leave", {
+        steamID = tData.networkid,
+        sReason, tData.reason
+    } )
+end )
 
 -- @TODO: Somewhere in the gamemode we're changing the hitgroup scales, but I can't find where.
 -- For now, the left number sets the damage to the base damage, and the right number is our multiplier.
