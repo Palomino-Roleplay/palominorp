@@ -5,7 +5,7 @@ require( "gwsockets" )
 PRP.API = PRP.API or {}
 PRP.API.bInitialized = PRP.API.bInitialized or false
 
-PRP.API.SessionToken = PRP.API.SessionToken or nil
+PRP.API.SessionToken = nil
 PRP.API.ServerInfo = PRP.API.ServerInfo or {}
 
 PRP.API.Config = {
@@ -48,6 +48,38 @@ function PRP.API.WS.Log( sMessage )
 end
 
 PRP.API.REST = {}
+
+function PRP.API.REST.HTTP( tHTTPRequest, fnOK, fnFailed )
+    -- @TODO: Queue requests if not initialized or disconnected
+
+    tHTTPRequest.timeout = tHTTPRequest.timeout or 10
+
+    tHTTPRequest.headers = tHTTPRequest.headers or {}
+    tHTTPRequest.headers["x-session-token"] = PRP.API.SessionToken
+    Print( "Session token: ", PRP.API.SessionToken )
+
+    tHTTPRequest.success = tHTTPRequest.success or function( iResponseCode, sBody, tHeaders )
+        if iResponseCode == 200 then
+            PRP.API.REST.Log( "Request successful: " .. tHTTPRequest.url )
+
+            if fnOK then
+                fnOK( iResponseCode, sBody, tHeaders )
+            end
+            return
+        end
+
+        -- @TODO: Maybe re-authenticate when we implement OAuth2
+        PRP.API.REST.Log( "Request failed: " .. tHTTPRequest.url .. " (" .. iResponseCode .. ")" )
+        if fnFailed then fnFailed( iResponseCode .. ": ".. sBody ) end
+    end
+
+    tHTTPRequest.failed = tHTTPRequest.failed or function( sError )
+        PRP.API.REST.Log( "Request failed: " .. tHTTPRequest.url .. " (" .. sError .. ")" )
+        if fnFailed then fnFailed( sError ) end
+    end
+
+    PRP.HTTP( tHTTPRequest )
+end
 
 function PRP.API.REST.Log( sMessage )
     MsgC(
@@ -94,42 +126,54 @@ end
 local function fnInitializeREST()
     PRP.API.REST.Log( "Attempting to connect to REST API server..." )
 
-    PRP.HTTP({
-        url = PRP.API_REST_URL,
-        method = "GET",
-        success = function( iResponseCode, sBody, tHeaders )
-            if iResponseCode == 200 then
-                local tBody = util.JSONToTable( sBody )
+    PRP.API.REST.HTTP(
+        {
+            url = PRP.API_REST_URL .. "/server",
+            method = "GET",
+        },
+        -- Success
+        function( iResponseCode, sBody, tHeaders )
+            local tBody = util.JSONToTable( sBody )
 
-                if not tBody then
-                    PRP.API.REST.Log( "Failed to parse body" )
-                    PRP.API.REST.Log( "Shutting down server..." )
-                    -- while true do end
-                end
-
-                PRP.API.REST.Log( "Successfully connected to PAPI (v" .. tBody.version .. ")" )
-
-                PRP.API.bInitialized = true
-                hook.Run( "PRP.API.Initialized", tBody.version )
-            else
-                PRP.API.REST.Log( "Failed to connect to REST API server: " .. iResponseCode )
+            if not tBody then
+                PRP.API.REST.Log( "Failed to parse body" )
                 PRP.API.REST.Log( "Shutting down server..." )
                 -- while true do end
             end
+
+            if not tBody.realm or tBody.realm ~= "server" then
+                PRP.API.REST.Log( "Invalid realm" )
+                PRP.API.REST.Log( "Shutting down server..." )
+                -- while true do end
+            end
+
+            if not tBody.version then
+                PRP.API.REST.Log( "Invalid version" )
+                PRP.API.REST.Log( "Shutting down server..." )
+                -- while true do end
+            end
+
+            PRP.API.REST.Log( "Successfully connected to PAPI (v" .. tBody.version .. ")" )
+
+            PRP.API.bInitialized = true
+            hook.Run( "PRP.API.Initialized", tBody.version )
         end,
-        failed = function( err )
-            PRP.API.REST.Log( "Failed to connect to REST API server: " .. err )
+
+        -- Failed
+        function( sError )
+            PRP.API.REST.Log( "Failed to connect to REST API server: " .. sError )
             PRP.API.REST.Log( "Shutting down server..." )
             -- while true do end
         end
-    })
+    )
 end
 
 -- @TODO Hell no
 function PRP.API.Initialize()
     if PRP._WebSocket and PRP._WebSocket:isConnected() then
-        PRP.API.WS.Log( "Closing existing socket" )
-        PRP._WebSocket:close()
+        PRP.API.WS.Log( "Aborting API Initialization: Already connected to WebSocket server." )
+        return
+        -- PRP._WebSocket:close()
     end
 
     local sPalominoEnvironment = file.Read( "gamemodes/" .. Schema.folder .. "/palomino.json", true )
@@ -187,6 +231,7 @@ function PRP.API.Initialize()
             PRP.API.WS.Log( "Successfully authenticated server as \"" .. PRP.API.ServerInfo.name .. "\"" )
             Print( "Session token: ", PRP.API.SessionToken )
 
+            -- timer.Simple( 0, fnInitializeREST )
             fnInitializeREST()
         end
 
@@ -221,6 +266,8 @@ function PRP.API.Initialize()
 
         timer.Remove("PRP.API.WS.Heartbeat")
 
+        PRP.API.bInitialized = false
+
         -- @TODO: Attempt reconnect w/ session token
     end
 
@@ -231,8 +278,19 @@ hook.Add( "InitPostEntity", "PRP.API.InitPostEntity", PRP.API.Initialize )
 -- timer.Simple( 0, function() PRP.API.Initialize() end )
 
 -- @TODO: Remove
-PRP.API.Initialize()
+-- PRP.API.Initialize()
 
 concommand.Add( "prp_api_init", function()
     PRP.API.Initialize()
 end )
+
+concommand.Add( "prp_api_close", function()
+    if PRP._WebSocket then
+        PRP._WebSocket:close()
+    end
+end )
+
+--
+-- Events
+--
+
