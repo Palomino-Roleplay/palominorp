@@ -1,0 +1,8 @@
+{
+    "api": {
+        "key": "YOUR_KEY_HERE",
+
+        "websocket_url": "ws://localhost:3030",
+        "rest_url": "http://localhost:3030"
+    }
+}
