@@ -68,9 +68,9 @@ PLUGIN.config = {
             end,
 
             PhysgunDrop = function( eProp, pPlayer )
-                Print( "defensive_props: PhysgunDrop" )
-                Print( eProp )
-                Print( pPlayer )
+                -- Print( "defensive_props: PhysgunDrop" )
+                -- Print( eProp )
+                -- Print( pPlayer )
 
                 local oPhysics = eProp:GetPhysicsObject()
 
@@ -97,10 +97,6 @@ PLUGIN.config = {
                 eProp._bWasDropped = true
                 -- @TODO: Do a custom sound
                 eProp:EmitSound( "garrysmod/balloon_pop_cute.wav" )
-            end,
-
-            OnPhysgunPickup = function( eProp, pPlayer )
-
             end,
         },
 
@@ -246,18 +242,22 @@ PLUGIN.config = {
     }
 }
 
-ix.util.Include( "meta/cl_spawnmenu.lua" )
-ix.util.Include( "meta/sh_entity.lua" )
-ix.util.Include( "meta/sh_character.lua" )
-ix.util.Include( "meta/sv_property.lua" )
-ix.util.Include( "meta/sh_property.lua" )
 ix.util.Include( "meta/cl_property.lua" )
+ix.util.Include( "meta/cl_spawnmenu.lua" )
+ix.util.Include( "meta/sh_character.lua" )
+ix.util.Include( "meta/sh_entity.lua" )
+ix.util.Include( "meta/sh_property.lua" )
+ix.util.Include( "meta/sv_entity.lua" )
+ix.util.Include( "meta/sv_property.lua" )
 
-ix.util.Include( "hooks/sh_property.lua" )
-ix.util.Include( "hooks/sv_property.lua" )
+ix.util.Include( "hooks/cl_physgun.lua" )
 ix.util.Include( "hooks/cl_property.lua" )
-ix.util.Include( "hooks/sv_props.lua" )
+ix.util.Include( "hooks/sh_property.lua" )
 ix.util.Include( "hooks/sh_props.lua" )
+ix.util.Include( "hooks/sh_physgun.lua" )
+ix.util.Include( "hooks/sv_physgun.lua" )
+ix.util.Include( "hooks/sv_property.lua" )
+ix.util.Include( "hooks/sv_props.lua" )
 
 ix.config.Add("propertyRentPaymentInterval", 15, "How many minutes are there between the rent payments? (Needs map change to update)", nil, {
     data = {min = 1, max = 60, decimals = 0},

@@ -26,6 +26,7 @@ AccessorFunc( PROPERTY, "m_tDoors", "Doors" )
 
 AccessorFunc( PROPERTY, "m_bLockOnStart", "LockOnStart" )
 AccessorFunc( PROPERTY, "m_tPublicDoors", "PublicDoors" )
+AccessorFunc( PROPERTY, "m_tProps", "Props" )
 
 function PROPERTY:Init()
     self:SetEntities( {} )
@@ -138,6 +139,42 @@ function PROPERTY:IsPositionInZoneType( vPosition, sZoneType )
     return false
 end
 
+function PROPERTY:AddProp( eEntity )
+    self.m_tProps = self.m_tProps or {}
+
+    table.insert( self:GetProps(), eEntity )
+
+    eEntity:SetProperty( self )
+
+    local sPropCategory = eEntity:GetNW2String( "PRP.Prop.Category", nil )
+    if not sPropCategory then return true end
+
+    self.m_tPropsCategorized = self.m_tPropsCategorized or {}
+
+    -- For a prop category (e.g.) decor_props/furniture/medium, add to following tables:
+    -- decor_props
+    -- decor_props/furniture
+    -- decor_props/furniture/medium
+
+    local sRunningCategory = ""
+    for _, sCategory in ipairs( string.Explode( "/", sPropCategory ) ) do
+        sRunningCategory = sRunningCategory .. sCategory
+
+        self.m_tPropsCategorized[ sRunningCategory ] = self.m_tPropsCategorized[ sRunningCategory ] or {}
+        table.insert( self.m_tPropsCategorized[ sRunningCategory ], eEntity )
+
+        sRunningCategory = sRunningCategory .. "/"
+    end
+
+    return true
+end
+
+function PROPERTY:GetPropsByCategory( sCategory )
+    self.m_tPropsCategorized = self.m_tPropsCategorized or {}
+
+    return self.m_tPropsCategorized[ sCategory ] or {}
+end
+
 if SERVER then
     function PROPERTY:SetupDoor( eEntity )
         -- @TODO: Ugly. Have it support multiple factions.
@@ -197,8 +234,13 @@ if SERVER then
         self:SetRenter( nil )
 
         -- Don't leave them stuck!
-        for _, eEntity in ipairs( self:GetDoors() ) do
+        for _, eEntity in ipairs( self:GetDoors() or {} ) do
             eEntity:Fire( "unlock" )
+        end
+
+        -- Remove all props
+        for _, eEntity in ipairs( self:GetProps() or {} ) do
+            eEntity:Remove()
         end
 
         self:Network()

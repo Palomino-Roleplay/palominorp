@@ -1,45 +1,51 @@
 local PLUGIN = PLUGIN
 
-local dCreationMenu = vgui.GetControlTable( "CreationMenu" )
-
-dCreationMenu.Populate = function( self )
-    print("come on!")
-    local tabs = spawnmenu.GetCreationTabs()
-
-    for k, v in SortedPairsByMemberValue( tabs, "Order" ) do
-        if k ~= "#spawnmenu.content_tab" then continue end
-
-        local pnl = vgui.Create( "Panel" )
-
-		self:AddSheet( k, pnl, v.Icon, nil, nil, v.Tooltip )
-
-		timer.Simple( 0, function()
-			local childpnl = v.Function()
-			childpnl:SetParent( pnl )
-			childpnl:Dock( FILL )
-		end )
-	end
-end
+PRP.Property = PRP.Property or {}
+PRP.Property.SpawnmenuInitialized = PRP.Property.SpawnmenuInitialized or false
 
 -- The tools that we are going to hide from the menu.
--- local toolsToShow = {
---     light = true,
---     remover = true,
--- 	wheel = true,
--- 	button = true,
--- 	material = true,
--- 	colour = true,
--- 	rope = true,
--- }
+local tToolsToShow = {
+    light = true,
+    remover = true,
+	wheel = true,
+	button = true,
+	material = true,
+	rope = true,
+	-- @TODO: Below doesn't work.
+	color = true,
+	colour = true,
+}
 
--- hook.Add( "PreReloadToolsMenu", "HideTools", function()
---     -- Tool contains information about all registered tools.
---     for name, data in pairs( weapons.GetStored( "gmod_tool" ).Tool ) do
---         if not toolsToShow[ name ] then
---             data.AddToMenu = false
---         end
---     end
--- end )
+function PLUGIN:PreReloadToolsMenu()
+	-- Hide the default spawnmenu tabs.
+	local dCreationMenu = vgui.GetControlTable( "CreationMenu" )
+	dCreationMenu.Populate = function( this )
+		print("come on!")
+		local tabs = spawnmenu.GetCreationTabs()
+
+		for k, v in SortedPairsByMemberValue( tabs, "Order" ) do
+			if k ~= "#spawnmenu.content_tab" then continue end
+
+			local pnl = vgui.Create( "Panel" )
+
+			this:AddSheet( k, pnl, v.Icon, nil, nil, v.Tooltip )
+
+			timer.Simple( 0, function()
+				local childpnl = v.Function()
+				childpnl:SetParent( pnl )
+				childpnl:Dock( FILL )
+			end )
+		end
+	end
+
+
+	-- Show only the tools we want to show.
+    for name, data in pairs( weapons.GetStored( "gmod_tool" ).Tool ) do
+        if not tToolsToShow[ name ] then
+            data.AddToMenu = false
+        end
+    end
+end
 
 function Schema:PostReloadToolsMenu()
 	local tToolMenuPanels = g_SpawnMenu.ToolMenu:GetItems()
@@ -63,13 +69,13 @@ function Schema:AddGamemodeToolMenuCategories()
 	return false
 end
 
--- hook.Add( "PopulatePropMenu", "PRP.Property.Spawnmenu.PopulatePropMenu", function( dPanel, dTree, dNode )
---     return false
--- end )
+hook.Add( "PopulatePropMenu", "PRP.Property.Spawnmenu.PopulatePropMenu", function( dPanel, dTree, dNode )
+    return false
+end )
 
--- function PLUGIN:PopulatePropMenu()
---     return false
--- end
+function PLUGIN:PopulatePropMenu()
+    return false
+end
 
 -- function PLUGIN:PopulateMenuBar( dMenuBar )
 	-- dMenuBar:GetParent():Hide()
@@ -82,8 +88,42 @@ end
 -- end
 
 function PLUGIN:PopulateContent( dContent, dTree, dNode )
+	-- if PRP.Property.SpawnmenuInitialized then return end
+	-- PRP.Property.SpawnmenuInitialized = true
+
+	spawnmenu.AddContentType( "palomino_prop", function( container, obj )
+		local icon = vgui.Create( "SpawnIcon", container )
+
+		icon:SetWide( 256 )
+		icon:SetTall( 256 )
+
+		icon:InvalidateLayout( true )
+
+		icon:SetModel( obj.model, obj.skin or 0, obj.body )
+
+		icon:SetTooltip( string.Replace( string.GetFileFromFilename( obj.model ), ".mdl", "" ) )
+
+		icon.DoClick = function( s )
+			surface.PlaySound( "prp/ui/click.wav" )
+
+			net.Start( "PRP.Prop.Spawn" )
+				net.WriteString( obj.category )
+				net.WriteString( obj.model )
+			net.SendToServer()
+			-- RunConsoleCommand( "gm_spawn", s:GetModelName(), s:GetSkinID() or 0, s:GetBodyGroup() or "" )
+		end
+
+		icon:InvalidateLayout( true )
+
+		if ( IsValid( container ) ) then
+			container:Add( icon )
+		end
+	end )
+
 	-- This is literally how Rubat does it.
 	timer.Simple( 1, function()
+		dTree:Clear()
+
 		local dPalominoNode = dTree:AddNode( "Palomino" )
 
 		for _, tPropCategory in pairs( PLUGIN.config.props ) do
@@ -121,35 +161,6 @@ function PLUGIN:PopulateContent( dContent, dTree, dNode )
 		dPalominoNode:ExpandRecurse( true )
 	end )
 end
-
-spawnmenu.AddContentType( "palomino_prop", function( container, obj )
-	local icon = vgui.Create( "SpawnIcon", container )
-
-	icon:SetWide( 256 )
-	icon:SetTall( 256 )
-
-	icon:InvalidateLayout( true )
-
-	icon:SetModel( obj.model, obj.skin or 0, obj.body )
-
-	icon:SetTooltip( string.Replace( string.GetFileFromFilename( obj.model ), ".mdl", "" ) )
-
-	icon.DoClick = function( s )
-		surface.PlaySound( "prp/ui/click.wav" )
-
-		net.Start( "PRP.Prop.Spawn" )
-			net.WriteString( obj.category )
-			net.WriteString( obj.model )
-		net.SendToServer()
-		-- RunConsoleCommand( "gm_spawn", s:GetModelName(), s:GetSkinID() or 0, s:GetBodyGroup() or "" )
-	end
-
-	icon:InvalidateLayout( true )
-
-	if ( IsValid( container ) ) then
-		container:Add( icon )
-	end
-end )
 
 -- @TODO: Yucky, and lags client on autorefresh. Maybe only do it once? (See: SpawnMenuCreated)
 RunConsoleCommand( "spawnmenu_reload" )
