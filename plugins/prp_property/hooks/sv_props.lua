@@ -5,7 +5,7 @@ function PLUGIN:PlayerSpawnProp( pPlayer, sModel )
     --     return true
     -- end
 
-    local iCooldown = ix.config.Get( "propertySpawnmenuCooldown", 5 )
+    local iCooldown = ix.config.Get( "propertySpawnmenuCooldown", 1 )
 
     if pPlayer.m_iLastSpawnmenu and pPlayer.m_iLastSpawnmenu > CurTime() then
         pPlayer:Notify( "You must wait " .. math.ceil( pPlayer.m_iLastSpawnmenu - CurTime() ) .. " seconds before using the spawnmenu again." )

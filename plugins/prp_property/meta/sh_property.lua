@@ -18,6 +18,8 @@ AccessorFunc( PROPERTY, "m_tFactions", "Factions" )
 AccessorFunc( PROPERTY, "m_tClasses", "Classes" )
 
 AccessorFunc( PROPERTY, "m_tBounds", "Bounds" )
+AccessorFunc( PROPERTY, "m_tZones", "Zones" )
+AccessorFunc( PROPERTY, "m_iFloorZ", "FloorZ", FORCE_NUMBER )
 
 AccessorFunc( PROPERTY, "m_tEntities", "Entities" )
 AccessorFunc( PROPERTY, "m_tDoors", "Doors" )
@@ -85,6 +87,50 @@ end
 function PROPERTY:Contains( vPosition )
     for _, tBound in ipairs( self:GetBounds() ) do
         if vPosition:WithinAABox( tBound[ 1 ], tBound[ 2 ] ) then
+            return true
+        end
+    end
+
+    return false
+end
+
+function PROPERTY:GetZonesOfType( sZoneType )
+    local tZones = {}
+
+    for _, tZone in ipairs( self:GetZones() ) do
+        if tZone.type == sZoneType then
+            table.insert( tZones, tZone )
+        end
+    end
+
+    return tZones
+end
+
+function PROPERTY:GetZonesFromVector( vPosition )
+    local tZones = {}
+
+    for _, tZone in ipairs( self:GetZones() ) do
+        if vPosition:WithinAABox( tZone.pos[ 1 ], tZone.pos[ 2 ] ) then
+            table.insert( tZones, tZone )
+        end
+    end
+
+    return tZones
+end
+
+function PROPERTY:GetZoneTypesFromVector( vPosition )
+    local tZoneTypes = {}
+
+    for _, tZone in ipairs( self:GetZonesFromVector( vPosition ) ) do
+        table.insert( tZoneTypes, tZone.type )
+    end
+
+    return tZoneTypes
+end
+
+function PROPERTY:IsPositionInZoneType( vPosition, sZoneType )
+    for _, sZone in ipairs( self:GetZoneTypesFromVector( vPosition ) ) do
+        if sZone == sZoneType then
             return true
         end
     end

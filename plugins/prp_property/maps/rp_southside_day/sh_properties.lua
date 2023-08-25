@@ -1,6 +1,8 @@
 local PLUGIN = PLUGIN
 
-function PLUGIN:InitializedPlugins()
+function PRP.Property.RegisterProperties()
+    Print( "Initializing Properties..." )
+
     local PROPERTY = setmetatable( {}, { __index = PRP.Property.Meta } )
 
     -- Police Department
@@ -43,6 +45,8 @@ function PLUGIN:InitializedPlugins()
     PRP.Property.Register( PROPERTY )
     -- PROPERTY:Init()
 
+
+
     -- Leprechauns Winklepicker (Bar)
     PROPERTY = setmetatable( {}, { __index = PRP.Property.Meta } )
 
@@ -63,4 +67,76 @@ function PLUGIN:InitializedPlugins()
 
     PRP.Property.Register( PROPERTY )
     -- PROPERTY:Init()
+
+
+
+    -- Warehouse Complex on Any Way
+    PROPERTY = setmetatable( {}, { __index = PRP.Property.Meta } )
+
+    PROPERTY:SetID( "warehouse_complex" )
+    PROPERTY:SetName( "Warehouse Complex" )
+    PROPERTY:SetRentable( true )
+    PROPERTY:SetLockOnStart( true )
+    PROPERTY:SetRent( 10 )
+    PROPERTY:SetFloorZ( -96 )
+
+    PROPERTY:SetBounds(
+        {
+            -- White Warehouse
+            {
+                Vector(-1759.9952392578,-2432.0393066406,-96),
+                Vector(-191.96875,-1184.1264648438,343.77581787109),
+            },
+
+            -- Brick Warehouse
+            {
+                Vector(-2912.1110839844,-1088.0456542969,288.03125),
+                Vector(-3647.7465820313,-2079.9838867188,-96),
+            },
+
+            -- Outdoor
+            {
+                Vector(-2911.7924804688,-1056,-96),
+                Vector(-1779.9730224609,-2552.9321289063,546.9873046875),
+            }
+        }
+    )
+
+    -- @TODO: Consider multi vector-pair zones
+    PROPERTY:SetZones(
+        {
+            {
+                type = "prop_blacklist",
+                pos = {
+                    Vector(-2240,-1056,-96),
+                    Vector(-2777,-1303,96),
+                }
+            },
+            {
+                type = "prop_blacklist",
+                pos = {
+                    Vector(-1512, -2136, 156),
+                    Vector(-2035, -1461, -96),
+                }
+            },
+            {
+                type = "prop_blacklist",
+                pos = {
+                    Vector(-3158, -2080, 165),
+                    Vector(-2709, -1148, -96),
+                }
+            }
+        }
+    )
+    PRP.Property.Register( PROPERTY )
+    -- PROPERTY:Init()
+end
+hook.Add( "InitializedPlugins", "PRP.Property.InitializedPlugins.CreateProperties", PRP.Property.RegisterProperties )
+
+if SERVER then
+    concommand.Add( "prp_properties_register", function( pPlayer )
+        if not IsValid( pPlayer ) or not pPlayer:IsSuperAdmin() then return end
+
+        PRP.Property.RegisterProperties()
+    end )
 end
