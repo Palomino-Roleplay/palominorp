@@ -20,9 +20,11 @@ function PLUGIN:PostDrawTranslucentRenderables()
     if not PRP.Prop.PhysgunnedEntity:GetProperty() then return end
 
     local oProperty = PRP.Prop.PhysgunnedEntity:GetProperty()
-    local bIsDefensiveProp = string.StartsWith( PRP.Prop.PhysgunnedEntity:GetNW2String( "PRP.Prop.Category", "" ), "defensive_props" )
+    local sCategory = PRP.Prop.PhysgunnedEntity:GetNW2String( "PRP.Prop.Category", "" )
+    local bIsDefensiveProp = string.StartsWith( sCategory, "defensive_props" )
     -- local vPos = PRP.Prop.PhysgunnedEntity:GetPos()
     local vTargetPos = PRP.Prop.PhysgunnedEntity:GetPos()
+    local vTargetAng = PRP.Prop.PhysgunnedEntity:GetAngles()
     local iFloorZ = oProperty:GetFloorZ()
 
     local vHitBoxMin, vHitBoxMax = PRP.Prop.PhysgunnedEntity:GetCollisionBounds()
@@ -35,6 +37,125 @@ function PLUGIN:PostDrawTranslucentRenderables()
     end
 
     local bIntersectingAny = false
+
+    render.SetColorMaterial()
+
+    --------------------
+    -- SNAP POINTS :) --
+    --------------------
+    local tAllSnapPoints = {}
+    local tHeldSnapPoints = {}
+    for k, v in pairs( ents.GetAll() ) do
+        if not IsValid( v ) then continue end
+        if v:GetClass() ~= "prop_physics" then continue end
+        if not v:GetProperty() then continue end
+        if not v:GetProperty():HasAccess( LocalPlayer() ) then continue end
+        -- if v == PRP.Prop.PhysgunnedEntity then continue end
+
+        local tCategoryExploded = string.Explode( "/", sCategory )
+
+        -- @TODO: Fuck this. Hell no.
+        local tPropCategoryData = PLUGIN.config.props[tCategoryExploded[1]].subcategories[tCategoryExploded[2]].models[v:GetModel()]
+        if not tPropCategoryData.snapPoints then continue end
+
+        for _, tSnapPointData in pairs( tPropCategoryData.snapPoints ) do
+            -- Draw snap points
+            table.insert( v == PRP.Prop.PhysgunnedEntity and tHeldSnapPoints or tAllSnapPoints, {
+                ent = v,
+                snap = tSnapPointData
+            } )
+        end
+    end
+
+    local oSnapPointNormalColor = Color( 255, 255, 255 )
+    local oSnapPointDisplayColor = Color( 50, 200, 150 )
+
+    -- @TODO: Study leetcode so we're not doing O(n^2) in a render hook...
+    local tDisplayedSnapPoints = {}
+    for _, tSnapPoint1 in pairs( tAllSnapPoints ) do
+        for _, tSnapPoint2 in pairs( tHeldSnapPoints ) do
+            if #tDisplayedSnapPoints > 0 then break end
+            -- @TODO: Perhaps we should be indexing based on entity and not all snap points...
+            if tSnapPoint1.ent == tSnapPoint2.ent then continue end
+
+            if tSnapPoint1.ent:LocalToWorld( tSnapPoint1.snap.point ):DistToSqr( tSnapPoint2.ent:LocalToWorld( tSnapPoint2.snap.point ) ) < 4096 then
+                tDisplayedSnapPoints = {
+                    tSnapPoint1,
+                    tSnapPoint2
+                }
+
+                tSnapPoint1.displayed = true
+                tSnapPoint2.displayed = true
+            end
+        end
+
+        render.DrawSphere(
+            tSnapPoint1.ent:LocalToWorld( tSnapPoint1.snap.point ),
+            2,
+            8,
+            8,
+            tSnapPoint1.displayed and oSnapPointDisplayColor or oSnapPointNormalColor
+        )
+    end
+
+    for _, tSnapPoint in pairs( tHeldSnapPoints ) do
+        -- if tSnapPoint.displayed then continue end
+
+        render.DrawSphere(
+            tSnapPoint.ent:LocalToWorld( tSnapPoint.snap.point ),
+            2,
+            8,
+            8,
+            tSnapPoint.displayed and oSnapPointDisplayColor or oSnapPointNormalColor
+        )
+    end
+    -- We have a pair of eligible snap points!
+    if #tDisplayedSnapPoints > 0 then
+        local tSnapPoint1 = tDisplayedSnapPoints[ 1 ]
+        local tSnapPoint2 = tDisplayedSnapPoints[ 2 ]
+
+        -- Initial angles and grid
+        local targetAng = tSnapPoint1.ent:GetAngles()
+        local angleGrid = tSnapPoint1.snap.angleGrid
+
+        Print( angleGrid )
+
+        -- Local angle difference
+        local angleDiff = vTargetAng - targetAng
+        angleDiff:Normalize()
+
+        -- @TODO: This doesn't actually work for rotation in more than one axis
+        local function SnapToGrid(angle, grid)
+            return (grid == 360) and 0 or math.Round(angle / grid) * grid
+        end
+
+        -- Snap angles
+        angleDiff:SetUnpacked(SnapToGrid(angleDiff.p, angleGrid.p), SnapToGrid(angleDiff.y, angleGrid.y), SnapToGrid(angleDiff.r, angleGrid.r))
+
+        -- Calculate final snapped angles without altering the PhysgunnedEntity
+        local finalAng = targetAng + angleDiff
+        finalAng:Normalize()
+
+        -- Manually calculate world point for the snapped angle
+        local mat = Matrix()
+        mat:SetAngles(finalAng)
+        local vSnapPoint2Local = tSnapPoint2.snap.point
+        local vSnapPoint2WorldAdjusted = mat * vSnapPoint2Local + PRP.Prop.PhysgunnedEntity:GetPos()
+
+        -- Draw connecting line
+        local vSnapPoint1World = tSnapPoint1.ent:LocalToWorld(tSnapPoint1.snap.point)
+        render.DrawLine(vSnapPoint1World, tSnapPoint2.ent:LocalToWorld( tSnapPoint2.snap.point ), oSnapPointDisplayColor, false)
+
+        -- Calculate position offset
+        local vAlignVector = vSnapPoint1World - vSnapPoint2WorldAdjusted
+        vTargetPos = PRP.Prop.PhysgunnedEntity:GetPos() + vAlignVector
+
+        vTargetAng = finalAng
+    end
+
+    ---------------------
+    -- /SNAP POINTS :) --
+    ---------------------
 
     -- prop_blacklist zone
     local tBlacklistZones = oProperty:GetZonesOfType( "prop_blacklist" )
@@ -62,7 +183,7 @@ function PLUGIN:PostDrawTranslucentRenderables()
 
         local bIntersectingZone = util.IsOBBIntersectingOBB(
             vTargetPos,
-            PRP.Prop.PhysgunnedEntity:GetAngles(),
+            vTargetAng,
             vHitBoxMin,
             vHitBoxMax,
             vZoneMidpoint,
@@ -93,12 +214,14 @@ function PLUGIN:PostDrawTranslucentRenderables()
         bIntersectingAny = bIntersectingAny or bIntersectingZone
     end
 
+    -- Collision w/ other entities
     for _, eEntity in pairs( ents.FindInBox( vHitBoxMinWorld, vHitBoxMaxWorld ) ) do
         if not IsValid( eEntity ) then continue end
         if eEntity:IsWeapon() then continue end
         -- if bIntersectingAny then break end
-
         if eEntity == PRP.Prop.PhysgunnedEntity then continue end
+
+        if #tDisplayedSnapPoints > 0 and ( ( tDisplayedSnapPoints[ 1 ].ent == eEntity ) or ( tDisplayedSnapPoints[ 2 ].ent == eEntity ) ) then continue end
 
         render.DrawWireframeBox(
             eEntity:GetPos(),
@@ -112,41 +235,28 @@ function PLUGIN:PostDrawTranslucentRenderables()
         bIntersectingAny = true
     end
 
+    -- Box of the prop
     if bIsDefensiveProp then
-        local oColor = bIntersectingAny and Color( 255, 0, 0 ) or Color( 255, 255, 255 )
+        local oColor = bIntersectingAny and Color( 255, 0, 0 ) or ( #tDisplayedSnapPoints > 0 and oSnapPointDisplayColor or Color( 255, 255, 255 ) )
 
         render.DrawWireframeBox(
             vTargetPos,
-            PRP.Prop.PhysgunnedEntity:GetAngles(),
+            vTargetAng,
             vHitBoxMin,
             vHitBoxMax,
             oColor,
             false
         )
 
-        render.DrawLine(
-            PRP.Prop.PhysgunnedEntity:GetPos(),
-            vTargetPos,
-            oColor,
-            false
-        )
+        if #tDisplayedSnapPoints == 0 then
+            render.DrawLine(
+                PRP.Prop.PhysgunnedEntity:GetPos(),
+                vTargetPos,
+                oColor,
+                false
+            )
+        end
     end
-
-    -- Property Bounds box
-    -- local tBounds = oProperty:GetBounds()
-    -- for _, tBound in pairs( tBounds ) do
-    --     local vMin = tBound[ 1 ]
-    --     local vMax = tBound[ 2 ]
-
-    --     render.DrawWireframeBox(
-    --         vMin,
-    --         Angle( 0, 0, 0 ),
-    --         Vector( 0, 0, 0 ),
-    --         vMax - vMin,
-    --         Color( 255, 255, 255 ),
-    --         true
-    --     )
-    -- end
 end
 
 net.Receive( "PRP.Property.OnPhysgunPickup", function( iLen )

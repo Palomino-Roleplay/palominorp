@@ -29,6 +29,16 @@ PLUGIN.config = {
                     models = {
                         ["models/mosi/fallout4/props/fortifications/gravelwall.mdl"] = {
                             bodygroups = "010000000",
+                            snapPoints = {
+                                {
+                                    point = Vector( 0, 40, 44 ),
+                                    angleGrid = Angle( 360, 180, 360 ),
+                                },
+                                {
+                                    point = Vector( 0, -40, 44 ),
+                                    angleGrid = Angle( 360, 180, 360 ),
+                                },
+                            }
                         },
                     },
                 },
@@ -59,7 +69,7 @@ PLUGIN.config = {
             },
 
             OnSpawn = function( eProp, pPlayer, sModel, tModelConfig )
-                constraint.Keepupright( eProp, Angle( 0, 90, 0 ), 0, 999999 )
+                constraint.Keepupright( eProp, Angle( 0, 90, 0 ), 0, 9999999 )
 
                 local oPhysics = eProp:GetPhysicsObject()
                 if not oPhysics then return end
