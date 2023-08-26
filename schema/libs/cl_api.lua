@@ -64,6 +64,11 @@ function PRP.API.Material( sURI )
 end
 
 function PRP.API.AddMaterial( sURI, sMaterialParameters )
+    if PRP.API._tMaterials[sURI] then
+        Print( "Material already exists. Skipping material download..." )
+        return
+    end
+
     PRP.API._bDownloadComplete = false
     PRP.API._tMaterialsDownloadQueue[sURI] = sMaterialParameters
 
