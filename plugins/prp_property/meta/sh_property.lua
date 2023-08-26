@@ -248,7 +248,7 @@ if SERVER then
 
     function PROPERTY:Network( pPlayer )
         -- Don't update to individual players if the property isn't rented.
-        if not self:GetRenter() and pPlayer then return end
+        -- if pPlayer and ( not self:GetRenter() ) then return end
 
         -- @TODO: Network this to newly joined players
         net.Start( "PRP.Property.Update" )
