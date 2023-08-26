@@ -3,7 +3,7 @@ PRP = PRP or {}
 require( "gwsockets" )
 
 PRP.API = PRP.API or {}
-PRP.API.bInitialized = PRP.API.bInitialized or false
+PRP.API.bInitialized = PRP.API.bInitialized or true
 
 PRP.API.SessionToken = nil
 PRP.API.ServerInfo = PRP.API.ServerInfo or {}
@@ -266,7 +266,7 @@ function PRP.API.Initialize()
 
         timer.Remove("PRP.API.WS.Heartbeat")
 
-        PRP.API.bInitialized = false
+        -- PRP.API.bInitialized = false
 
         -- @TODO: Attempt reconnect w/ session token
     end

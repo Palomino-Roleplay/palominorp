@@ -130,6 +130,69 @@ function PRP.Property.RegisterProperties()
     )
     PRP.Property.Register( PROPERTY )
     -- PROPERTY:Init()
+
+    -- White edge warehouse
+    -- Warehouse Complex on Any Way
+    PROPERTY = setmetatable( {}, { __index = PRP.Property.Meta } )
+
+    PROPERTY:SetID( "warehouse_1" )
+    PROPERTY:SetName( "Warehouse 1" )
+    PROPERTY:SetRentable( true )
+    PROPERTY:SetLockOnStart( true )
+    PROPERTY:SetRent( 10 )
+    PROPERTY:SetFloorZ( -104 )
+
+    PROPERTY:SetBounds(
+        {
+            {
+                Vector(7199.9677734375,-2527.96875,-104),
+                Vector(6207.99609375,-991.96875,336),
+            }
+        }
+    )
+    PROPERTY:SetZones(
+        {
+            {
+                type = "prop_blacklist",
+                pos = {
+                    Vector(6400.7841796875,-980.6396484375,-104),
+                    Vector(7049.625,-1257.7608642578,201),
+                }
+            },
+        }
+    )
+    PRP.Property.Register( PROPERTY )
+
+    -- Old Taxi Depot
+    PROPERTY = setmetatable( {}, { __index = PRP.Property.Meta } )
+
+    PROPERTY:SetID( "warehouse_2" )
+    PROPERTY:SetName( "Warehouse 2" )
+    PROPERTY:SetRentable( true )
+    PROPERTY:SetLockOnStart( true )
+    PROPERTY:SetRent( 10 )
+    PROPERTY:SetFloorZ( -32 )
+
+    PROPERTY:SetBounds(
+        {
+            {
+                Vector(-4095.96875,3967.9140625,-40),
+                Vector(-5247.7553710938,2943.96875,344),
+            }
+        }
+    )
+    PROPERTY:SetZones(
+        {
+            {
+                type = "prop_blacklist",
+                pos = {
+                    Vector(-5248.03125,2943.9497070313,-40),
+                    Vector(-4942.2446289063,3935.96875,259),
+                }
+            },
+        }
+    )
+    PRP.Property.Register( PROPERTY )
 end
 hook.Add( "InitializedPlugins", "PRP.Property.InitializedPlugins.CreateProperties", PRP.Property.RegisterProperties )
 

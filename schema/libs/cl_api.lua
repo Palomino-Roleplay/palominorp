@@ -16,6 +16,7 @@ end
 
 local function DownloadMaterial( sURI, sMaterialParameters )
     local sURL = PRP.API_URL .. "/" .. sURI .. "/" .. ScrW() .. "/" .. ScrH()
+    Print( "URL: " .. sURL )
     local sPath = "palomino/" .. sURI .. ".png"
     local sFileName = string.GetFileFromFilename( sPath )
 
