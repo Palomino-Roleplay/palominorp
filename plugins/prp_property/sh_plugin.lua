@@ -252,7 +252,6 @@ PLUGIN.config = {
     }
 }
 
-ix.util.Include( "meta/cl_property.lua" )
 ix.util.Include( "meta/cl_spawnmenu.lua" )
 ix.util.Include( "meta/sh_character.lua" )
 ix.util.Include( "meta/sh_entity.lua" )
@@ -262,9 +261,9 @@ ix.util.Include( "meta/sv_property.lua" )
 
 ix.util.Include( "hooks/cl_physgun.lua" )
 ix.util.Include( "hooks/cl_property.lua" )
+ix.util.Include( "hooks/sh_physgun.lua" )
 ix.util.Include( "hooks/sh_property.lua" )
 ix.util.Include( "hooks/sh_props.lua" )
-ix.util.Include( "hooks/sh_physgun.lua" )
 ix.util.Include( "hooks/sv_physgun.lua" )
 ix.util.Include( "hooks/sv_property.lua" )
 ix.util.Include( "hooks/sv_props.lua" )
