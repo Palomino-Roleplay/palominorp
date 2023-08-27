@@ -14,10 +14,3 @@ function PLUGIN:PhysgunPickup( pPlayer, eEntity )
 
     return false
 end
-
-function PLUGIN:OnPhysgunFreeze( eWeapon, oPhysics, eEntity, pPlayer )
-    -- if pPlayer:IsAdmin() then return end
-    if not IsValid( eEntity ) then return end
-
-    return false
-end
