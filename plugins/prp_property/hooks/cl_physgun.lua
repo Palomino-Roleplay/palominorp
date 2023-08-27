@@ -27,6 +27,8 @@ function PLUGIN:PostDrawTranslucentRenderables()
     local vTargetAng = PRP.Prop.PhysgunnedEntity:GetAngles()
     local iFloorZ = oProperty:GetFloorZ()
 
+    Print( sCategory )
+
     local vHitBoxMin, vHitBoxMax = PRP.Prop.PhysgunnedEntity:GetCollisionBounds()
     local vHitBoxMinWorld = PRP.Prop.PhysgunnedEntity:LocalToWorld( vHitBoxMin )
     local vHitBoxMaxWorld = PRP.Prop.PhysgunnedEntity:LocalToWorld( vHitBoxMax )
@@ -49,7 +51,7 @@ function PLUGIN:PostDrawTranslucentRenderables()
         if not IsValid( v ) then continue end
         if v:GetClass() ~= "prop_physics" then continue end
         if not v:GetProperty() then continue end
-        if not v:GetProperty():HasAccess( LocalPlayer() ) then continue end
+        if not v:GetProperty():HasAccess( LocalPlayer():GetCharacter() ) then continue end
         -- if v == PRP.Prop.PhysgunnedEntity then continue end
 
         local tCategoryExploded = string.Explode( "/", sCategory )
