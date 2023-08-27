@@ -95,7 +95,6 @@ local tToolsToShow = {
 	material = true,
 	rope = true,
 	-- @TODO: Below doesn't work.
-	color = true,
 	colour = true,
 }
 
