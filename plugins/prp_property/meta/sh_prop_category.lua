@@ -2,18 +2,28 @@ local PLUGIN = PLUGIN
 
 PRP.Prop = PRP.Prop or {}
 PRP.Prop.Category = PRP.Prop.Category or {}
-PRP.Prop.Categories = PRP.Prop.Categories or {}
+PRP.Prop.Categories = {}
+PRP.Prop.CategoriesAll = {}
 
-function PRP.Prop.Category.New(sID, sName, sIcon, tModels)
+function PRP.Prop.Category.New(sID, sName, sIcon, tModels, bChild)
     local oCategory = setmetatable( {}, { __index = PRP.Prop.Category.Metatable } )
 
     oCategory:SetID( sID )
     oCategory:SetName( sName )
     oCategory:SetIcon( sIcon or "icon16/brick.png" )
 
-    PRP.Prop.Categories[sID] = oCategory
+    if not bChild then PRP.Prop.Categories[sID] = oCategory end
+    PRP.Prop.CategoriesAll[sID] = oCategory
 
     return oCategory
+end
+
+function PRP.Prop.Category.GetTree()
+    return PRP.Prop.Categories
+end
+
+function PRP.Prop.Category.GetAll()
+    return PRP.Prop.CategoriesAll
 end
 
 local CATEGORY = {}
@@ -43,7 +53,7 @@ function CATEGORY:HasModel(sModelPath)
 end
 
 function CATEGORY:NewChild(sID, sName, sIcon, tModels)
-    local oCategory = PRP.Prop.Category.New(sID, sName, sIcon, tModels)
+    local oCategory = PRP.Prop.Category.New(self:GetID() .. "/" .. sID, sName, sIcon, tModels or {}, true)
 
     self:AddChild(oCategory)
 
@@ -61,6 +71,10 @@ function CATEGORY:AddChild(oCategory)
     self.m_tChildrenHash[oCategory:GetID()] = self.m_tChildren[iIndex]
 end
 
+function CATEGORY:GetChild( sID )
+    return self.m_tChildrenHash[sID]
+end
+
 function CATEGORY:FindPath(sCategoryPath)
     if sCategoryPath == nil then return nil end
     if sCategoryPath == "" then return nil end
@@ -71,9 +85,9 @@ function CATEGORY:FindPath(sCategoryPath)
 
     if #tPath == 0 then return nil end
 
-    local sNextCategoryID = tPath[1]
+    local sNextCategoryID = tPath[1] == self:GetID() and tPath[2] or tPath[1]
 
-    if self.m_tChildrenHash == nil then return nil end
+    if not self.m_tChildrenHash then return nil end
     if not self.m_tChildrenHash[sNextCategoryID] then return nil end
     return self.m_tChildrenHash[sNextCategoryID]:FindPath(table.concat(tPath, "/", 2))
 end
