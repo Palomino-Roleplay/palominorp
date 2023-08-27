@@ -10,8 +10,8 @@ PRP.Property.Tools.Global = {
 
 -- Whitelist per-model/subcategory/category in the prop config.
 PRP.Property.Tools.Situational = {
-    material = true,
-    colour = true,
+    -- material = true,
+    -- colour = true,
 }
 
 PRP.Property.Tools.Premium = {
