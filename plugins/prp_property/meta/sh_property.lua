@@ -7,26 +7,32 @@ AccessorFunc( PROPERTY, "m_sName", "Name", FORCE_STRING )
 AccessorFunc( PROPERTY, "m_sCategory", "Category", FORCE_STRING )
 AccessorFunc( PROPERTY, "m_sDescription", "Description", FORCE_STRING )
 
-AccessorFunc( PROPERTY, "m_bOwnable", "Ownable", FORCE_BOOL )
-AccessorFunc( PROPERTY, "m_cOwner", "Owner" )
+AccessorFunc( PROPERTY, "m_bLeasable", "Leasable", FORCE_BOOL )
+AccessorFunc( PROPERTY, "m_cLessee", "Lessee" )
+AccessorFunc( PROPERTY, "m_iLesseeCharID", "LesseeCharID" )
 
 AccessorFunc( PROPERTY, "m_bRentable", "Rentable", FORCE_BOOL )
 AccessorFunc( PROPERTY, "m_iRent", "Rent", FORCE_NUMBER )
 AccessorFunc( PROPERTY, "m_cRenter", "Renter" )
+
+-- @TODO: Helper function: gets either Lessee or Renter.
+AccessorFunc( PROPERTY, "m_cTenant", "Tenant" )
 
 AccessorFunc( PROPERTY, "m_tFactions", "Factions" )
 AccessorFunc( PROPERTY, "m_tClasses", "Classes" )
 
 AccessorFunc( PROPERTY, "m_tBounds", "Bounds" )
 AccessorFunc( PROPERTY, "m_tZones", "Zones" )
+
+-- The Z value of the floor of the property (used to snap defense props to the floor)
 AccessorFunc( PROPERTY, "m_iFloorZ", "FloorZ", FORCE_NUMBER )
 
 AccessorFunc( PROPERTY, "m_tEntities", "Entities" )
 AccessorFunc( PROPERTY, "m_tDoors", "Doors" )
+AccessorFunc( PROPERTY, "m_tProps", "Props" )
 
 AccessorFunc( PROPERTY, "m_bLockOnStart", "LockOnStart" )
 AccessorFunc( PROPERTY, "m_tPublicDoors", "PublicDoors" )
-AccessorFunc( PROPERTY, "m_tProps", "Props" )
 
 function PROPERTY:Init()
     self:SetEntities( {} )
@@ -47,25 +53,37 @@ function PROPERTY:Init()
     end
 end
 
-function PROPERTY:HasAccess( pPlayer )
-    if self:GetFactions() and self:GetFactions()[ pPlayer:GetFaction() ] then return true end
-    if self:GetClasses() and self:GetClasses()[ pPlayer:GetClass() ] then return true end
+function PROPERTY:GetTenant()
+    return self:GetLessee() or self:GetRenter() or nil
+end
 
-    if self:GetRenter() == pPlayer:GetCharacter() then return true end
-    if self:GetOwner() == pPlayer:GetCharacter() then return true end
+function PROPERTY:GetOccupant()
+    return self:GetTenant()
+end
+
+function PROPERTY:IsOccupied()
+    return self:GetTenant() ~= nil
+end
+
+function PROPERTY:HasAccess( cCharacter )
+    if self:GetFactions() and self:GetFactions()[ cCharacter:GetFaction() ] then return true end
+    if self:GetClasses() and self:GetClasses()[ cCharacter:GetClass() ] then return true end
+
+    if self:GetRenter() == cCharacter then return true end
+    if self:GetLessee() == cCharacter then return true end
 
     -- @TODO: Add support for giving access to other players
 
     return false
 end
 
-function PROPERTY:CanRent( pPlayer )
-    if not pPlayer:GetCharacter() then return false, "You do not have a character." end
+function PROPERTY:CanRent( cCharacter )
+    -- if not cCharacter then return false, "You do not have a character." end
     if not self:GetRentable() then return false, "This property is not rentable." end
     -- @TODO: Check if this check works as intended with offline/unloaded characters
-    if self:GetRenter() then return false, "This property is already rented." end
+    if self:IsOccupied() then return false, "This property is already occupied." end
 
-    local cCharacter = pPlayer:GetCharacter()
+    -- local cCharacter = pPlayer:GetCharacter()
 
     -- Checking limits
     -- @TODO: These definitely need to be done differently in the future.
@@ -141,8 +159,10 @@ end
 
 function PROPERTY:AddProp( eEntity )
     self.m_tProps = self.m_tProps or {}
+    self.m_tEntities = self.m_tEntities or {}
 
     table.insert( self:GetProps(), eEntity )
+    table.insert( self:GetEntities(), eEntity )
 
     eEntity:SetProperty( self )
 
@@ -203,19 +223,19 @@ if SERVER then
         end
     end
 
-    function PROPERTY:Rent( pPlayer )
+    function PROPERTY:Rent( cCharacter )
         -- @TODO: Make sure players aren't renting/unrenting super fast (add a cooldown)
-        local bCanRent, sReason = self:CanRent( pPlayer )
+        local bCanRent, sReason = self:CanRent( cCharacter )
         if not bCanRent then
-            pPlayer:Notify( sReason )
+            cCharacter:GetPlayer():Notify( sReason )
             return
         end
 
-        self:SetRenter( pPlayer:GetCharacter() )
-        pPlayer:GetCharacter():AddRentedProperty( self )
+        self:SetRenter( cCharacter )
+        cCharacter:AddRentedProperty( self )
 
         -- @TODO: Add rent amount & interval to notification
-        pPlayer:Notify( "You have rented " .. self:GetName() .. "!" )
+        cCharacter:GetPlayer():Notify( "You have rented " .. self:GetName() .. "!" )
 
         self:Network()
     end
@@ -240,7 +260,7 @@ if SERVER then
 
         -- Remove all props
         for _, eEntity in ipairs( self:GetProps() or {} ) do
-            eEntity:Remove()
+            SafeRemoveEntity( eEntity )
         end
 
         self:Network()
