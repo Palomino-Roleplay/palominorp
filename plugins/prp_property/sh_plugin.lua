@@ -35,7 +35,7 @@ PLUGIN.config = {
                                     angleGrid = Angle( 360, 180, 360 ),
                                 },
                                 {
-                                    point = Vector( 0, -40, 44 ),
+                                    point = Vector( 0, -42, 44 ),
                                     angleGrid = Angle( 360, 180, 360 ),
                                 },
                             }
