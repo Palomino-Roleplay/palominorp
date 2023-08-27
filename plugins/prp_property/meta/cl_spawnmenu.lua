@@ -3,6 +3,89 @@ local PLUGIN = PLUGIN
 PRP.Property = PRP.Property or {}
 PRP.Property.SpawnmenuInitialized = PRP.Property.SpawnmenuInitialized or false
 
+function PLUGIN:PopulateContent( dContent, dTree, dNode )
+	-- if PRP.Property.SpawnmenuInitialized then return end
+	-- PRP.Property.SpawnmenuInitialized = true
+
+	spawnmenu.AddContentType( "palomino_prop", function( container, obj )
+		local icon = vgui.Create( "SpawnIcon", container )
+
+		icon:SetWide( 256 )
+		icon:SetTall( 256 )
+
+		icon:InvalidateLayout( true )
+
+		icon:SetModel( obj.model, obj.skin or 0, obj.body )
+
+		icon:SetTooltip( string.Replace( string.GetFileFromFilename( obj.model ), ".mdl", "" ) )
+
+		icon.DoClick = function( s )
+			surface.PlaySound( "prp/ui/click.wav" )
+
+			net.Start( "PRP.Prop.Spawn" )
+				net.WriteString( obj.category )
+				net.WriteString( obj.model )
+			net.SendToServer()
+			-- RunConsoleCommand( "gm_spawn", s:GetModelName(), s:GetSkinID() or 0, s:GetBodyGroup() or "" )
+		end
+
+		icon:InvalidateLayout( true )
+
+		if ( IsValid( container ) ) then
+			container:Add( icon )
+		end
+	end )
+
+	-- This is literally how Rubat does it.
+	timer.Simple( 1, function()
+		if ix.config.Get("doSpawnmenuHiding", false) then
+			dTree:Clear()
+		end
+
+		local dPalominoNode = dTree:AddNode( "Palomino" )
+
+		for _, tPropCategory in pairs( PLUGIN.config.props ) do
+			local dViewPanel = vgui.Create( "ContentContainer", dContent )
+			dViewPanel:SetVisible( false )
+			dViewPanel.IconList:SetReadOnly( true )
+
+			local dCategoryNode = dPalominoNode:AddNode( tPropCategory.name, tPropCategory.icon or "icon16/brick.png" )
+			dCategoryNode.pnlContent = dContent
+			dCategoryNode.ViewPanel = dViewPanel
+			dCategoryNode:SetExpanded( true )
+
+			for _, tPropSubcategory in pairs( tPropCategory.subcategories ) do
+				local dSubcategoryNode = dCategoryNode:AddNode( tPropSubcategory.name, tPropSubcategory.icon or "icon16/brick.png" )
+
+				dSubcategoryNode.DoClick = function()
+					dViewPanel:Clear( true )
+
+					local cp = spawnmenu.GetContentType( "palomino_prop" )
+
+					if cp then
+						for sModelPath, tModelSettings in pairs( tPropSubcategory.models ) do
+							cp( dViewPanel, { category = tPropSubcategory.categoryID, model = sModelPath, body = tModelSettings.bodygroups or "" } )
+						end
+					end
+
+					dCategoryNode.pnlContent:SwitchPanel( dViewPanel )
+				end
+
+				dSubcategoryNode.pnlContent = dContent
+				dSubcategoryNode.ViewPanel = dViewPanel
+			end
+		end
+
+		dPalominoNode:ExpandRecurse( true )
+	end )
+end
+
+-- @TODO: Make it a config thing.
+if true then return end
+
+-- local bDoHiding = ix.config.Get( "doSpawnmenuHiding", false )
+-- if not bDoHiding then return end
+
 -- The tools that we are going to hide from the menu.
 local tToolsToShow = {
     light = true,
@@ -86,81 +169,6 @@ end
 
 -- 	return false
 -- end
-
-function PLUGIN:PopulateContent( dContent, dTree, dNode )
-	-- if PRP.Property.SpawnmenuInitialized then return end
-	-- PRP.Property.SpawnmenuInitialized = true
-
-	spawnmenu.AddContentType( "palomino_prop", function( container, obj )
-		local icon = vgui.Create( "SpawnIcon", container )
-
-		icon:SetWide( 256 )
-		icon:SetTall( 256 )
-
-		icon:InvalidateLayout( true )
-
-		icon:SetModel( obj.model, obj.skin or 0, obj.body )
-
-		icon:SetTooltip( string.Replace( string.GetFileFromFilename( obj.model ), ".mdl", "" ) )
-
-		icon.DoClick = function( s )
-			surface.PlaySound( "prp/ui/click.wav" )
-
-			net.Start( "PRP.Prop.Spawn" )
-				net.WriteString( obj.category )
-				net.WriteString( obj.model )
-			net.SendToServer()
-			-- RunConsoleCommand( "gm_spawn", s:GetModelName(), s:GetSkinID() or 0, s:GetBodyGroup() or "" )
-		end
-
-		icon:InvalidateLayout( true )
-
-		if ( IsValid( container ) ) then
-			container:Add( icon )
-		end
-	end )
-
-	-- This is literally how Rubat does it.
-	timer.Simple( 1, function()
-		dTree:Clear()
-
-		local dPalominoNode = dTree:AddNode( "Palomino" )
-
-		for _, tPropCategory in pairs( PLUGIN.config.props ) do
-			local dViewPanel = vgui.Create( "ContentContainer", dContent )
-			dViewPanel:SetVisible( false )
-			dViewPanel.IconList:SetReadOnly( true )
-
-			local dCategoryNode = dPalominoNode:AddNode( tPropCategory.name, tPropCategory.icon or "icon16/brick.png" )
-			dCategoryNode.pnlContent = dContent
-			dCategoryNode.ViewPanel = dViewPanel
-			dCategoryNode:SetExpanded( true )
-
-			for _, tPropSubcategory in pairs( tPropCategory.subcategories ) do
-				local dSubcategoryNode = dCategoryNode:AddNode( tPropSubcategory.name, tPropSubcategory.icon or "icon16/brick.png" )
-
-				dSubcategoryNode.DoClick = function()
-					dViewPanel:Clear( true )
-
-					local cp = spawnmenu.GetContentType( "palomino_prop" )
-
-					if cp then
-						for sModelPath, tModelSettings in pairs( tPropSubcategory.models ) do
-							cp( dViewPanel, { category = tPropSubcategory.categoryID, model = sModelPath, body = tModelSettings.bodygroups or "" } )
-						end
-					end
-
-					dCategoryNode.pnlContent:SwitchPanel( dViewPanel )
-				end
-
-				dSubcategoryNode.pnlContent = dContent
-				dSubcategoryNode.ViewPanel = dViewPanel
-			end
-		end
-
-		dPalominoNode:ExpandRecurse( true )
-	end )
-end
 
 -- @TODO: Yucky, and lags client on autorefresh. Maybe only do it once? (See: SpawnMenuCreated)
 RunConsoleCommand( "spawnmenu_reload" )

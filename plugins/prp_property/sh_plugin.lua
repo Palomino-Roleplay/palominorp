@@ -277,3 +277,8 @@ ix.config.Add("propertySpawnmenuCooldown", 3, "How many seconds before players c
     data = {min = 1, max = 10, decimals = 0},
     category = "Palomino: Property"
 })
+
+-- @TODO: Make sure we actually *disallow* using stuff from the spawnmenu/tools.
+ix.config.Add("doSpawnmenuHiding", true, "Should we hide stuff from the spawnmenu?", nil, {
+    category = "Palomino: Property"
+})
