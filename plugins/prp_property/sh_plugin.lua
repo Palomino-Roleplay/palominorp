@@ -269,10 +269,7 @@ ix.util.Include( "hooks/sv_physgun.lua" )
 ix.util.Include( "hooks/sv_property.lua" )
 -- ix.util.Include( "hooks/sv_props.lua" )
 
-local oTestCategory = PRP.Prop.Category.New("test", "Test Category")
-oTestCategory:AddModel( "models/props_c17/oildrum001.mdl" )
-oTestCategory:AddModel( "models/props_interiors/pot01a.mdl" )
-oTestCategory:AddModel( "models/props_interiors/Furniture_Couch02a.mdl" )
+ix.util.Include( "config/sh_props.lua" )
 
 ix.config.Add("propertyRentPaymentInterval", 15, "How many minutes are there between the rent payments? (Needs map change to update)", nil, {
     data = {min = 1, max = 60, decimals = 0},
@@ -285,7 +282,9 @@ ix.config.Add("propertySpawnmenuCooldown", 3, "How many seconds before players c
 })
 
 -- @TODO: Make sure we actually *disallow* using stuff from the spawnmenu/tools.
-ix.config.Add("doSpawnmenuHiding", true, "Should we hide stuff from the spawnmenu?", nil, {
+ix.config.Add("doSpawnmenuHiding", true, "Should we hide stuff from the spawnmenu?", function()
+        if CLIENT and PRP.Property.SpawnmenuInitialized then RunConsoleCommand( "spawnmenu_reload" ) end
+    end, {
     category = "Palomino: Property"
 })
 
@@ -306,5 +305,40 @@ CAMI.RegisterPrivilege({
 
 CAMI.RegisterPrivilege({
     Name = "Palomino.Property.BypassToolLimitsDangerous",
+    MinAccess = "admin"
+})
+
+CAMI.RegisterPrivilege({
+    Name = "Palomino.Property.Spawn.Effect",
+    MinAccess = "admin"
+})
+
+CAMI.RegisterPrivilege({
+    Name = "Palomino.Property.Spawn.NPC",
+    MinAccess = "admin"
+})
+
+CAMI.RegisterPrivilege({
+    Name = "Palomino.Property.Spawn.Prop",
+    MinAccess = "admin"
+})
+
+CAMI.RegisterPrivilege({
+    Name = "Palomino.Property.Spawn.Ragdoll",
+    MinAccess = "admin"
+})
+
+CAMI.RegisterPrivilege({
+    Name = "Palomino.Property.Spawn.SENT",
+    MinAccess = "admin"
+})
+
+CAMI.RegisterPrivilege({
+    Name = "Palomino.Property.Spawn.SWEP",
+    MinAccess = "admin"
+})
+
+CAMI.RegisterPrivilege({
+    Name = "Palomino.Property.Spawn.Vehicle",
     MinAccess = "admin"
 })
