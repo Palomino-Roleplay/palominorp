@@ -5,21 +5,15 @@ hook.Add( "InitializedPlugins", "PRP.Property.InitializedPlugins", function()
     local iRentInterval = ix.config.Get( "propertyRentPaymentInterval", 15 ) * 60
 
     timer.Create( "PRP.Property.RentPayments", iRentInterval, 0, function()
-        print( "Processing rent payments..." )
-
         for _, pPlayer in ipairs( player.GetAll() ) do
-            print( "Processing rent payments for " .. pPlayer:Name() .. "..." )
             if not pPlayer:GetCharacter() then continue end
 
             local cCharacter = pPlayer:GetCharacter()
             local iRent = 0
 
             for _, oProperty in pairs( cCharacter:GetRentedProperties() ) do
-                print( "Processing rent payment for " .. oProperty:GetName() .. "..." )
                 iRent = iRent + oProperty:GetRent()
             end
-
-            print( "Rent to pay: " .. iRent )
 
             if iRent > 0 then
                 -- @TODO: Possible way to exploit and achieve 1/2 rent by going back and forth between having and not having money. Not that big of a deal imo.
@@ -74,6 +68,7 @@ end
 -- F2 hook
 function PLUGIN:ShowTeam( pPlayer )
     if not pPlayer:GetCharacter() then return end
+    local cCharacter = pPlayer:GetCharacter()
 
     local tTrace = util.TraceLine( {
         start = pPlayer:GetShootPos(),
@@ -92,6 +87,6 @@ function PLUGIN:ShowTeam( pPlayer )
         oProperty:UnRent()
     else
         -- Attempt to rent the property.
-        oProperty:Rent( pPlayer )
+        oProperty:Rent( cCharacter )
     end
 end
