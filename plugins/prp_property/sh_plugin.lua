@@ -255,18 +255,24 @@ PLUGIN.config = {
 ix.util.Include( "meta/cl_spawnmenu.lua" )
 ix.util.Include( "meta/sh_character.lua" )
 ix.util.Include( "meta/sh_entity.lua" )
+ix.util.Include( "meta/sh_prop_category.lua" )
 ix.util.Include( "meta/sh_property.lua" )
 ix.util.Include( "meta/sv_entity.lua" )
 ix.util.Include( "meta/sv_property.lua" )
 
 ix.util.Include( "hooks/cl_physgun.lua" )
-ix.util.Include( "hooks/cl_property.lua" )
 ix.util.Include( "hooks/sh_physgun.lua" )
 ix.util.Include( "hooks/sh_property.lua" )
 ix.util.Include( "hooks/sh_props.lua" )
+ix.util.Include( "hooks/sh_tools.lua" )
 ix.util.Include( "hooks/sv_physgun.lua" )
 ix.util.Include( "hooks/sv_property.lua" )
-ix.util.Include( "hooks/sv_props.lua" )
+-- ix.util.Include( "hooks/sv_props.lua" )
+
+local oTestCategory = PRP.Prop.Category.New("test", "Test Category")
+oTestCategory:AddModel( "models/props_c17/oildrum001.mdl" )
+oTestCategory:AddModel( "models/props_interiors/pot01a.mdl" )
+oTestCategory:AddModel( "models/props_interiors/Furniture_Couch02a.mdl" )
 
 ix.config.Add("propertyRentPaymentInterval", 15, "How many minutes are there between the rent payments? (Needs map change to update)", nil, {
     data = {min = 1, max = 60, decimals = 0},
@@ -281,4 +287,24 @@ ix.config.Add("propertySpawnmenuCooldown", 3, "How many seconds before players c
 -- @TODO: Make sure we actually *disallow* using stuff from the spawnmenu/tools.
 ix.config.Add("doSpawnmenuHiding", true, "Should we hide stuff from the spawnmenu?", nil, {
     category = "Palomino: Property"
+})
+
+CAMI.RegisterPrivilege({
+    Name = "Palomino.Property.BypassPropLimits",
+    MinAccess = "superadmin"
+})
+
+CAMI.RegisterPrivilege({
+    Name = "Palomino.Property.BypassPhysgunLimits",
+    MinAccess = "admin"
+})
+
+CAMI.RegisterPrivilege({
+    Name = "Palomino.Property.BypassToolLimits",
+    MinAccess = "admin"
+})
+
+CAMI.RegisterPrivilege({
+    Name = "Palomino.Property.BypassToolLimitsDangerous",
+    MinAccess = "admin"
 })
