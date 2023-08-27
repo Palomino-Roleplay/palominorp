@@ -1,5 +1,38 @@
 local PLUGIN = PLUGIN
 
+-- @TODO: Do staff limits & such
+function PLUGIN:PlayerSpawnEffect( pPlayer, sModel )
+    return CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.Spawn.Effect" )
+end
+
+function PLUGIN:PlayerSpawnNPC( pPlayer, sNPCType, sWeapon )
+    return CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.Spawn.NPC" )
+end
+
+function PLUGIN:PlayerSpawnProp( pPlayer, sModel )
+    return CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.Spawn.Prop" )
+end
+
+function PLUGIN:PlayerSpawnRagdoll( pPlayer, sModel )
+    return CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.Spawn.Ragdoll" )
+end
+
+function PLUGIN:PlayerSpawnSENT( pPlayer, sClass )
+    return CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.Spawn.SENT" )
+end
+
+function PLUGIN:PlayerSpawnSWEP( pPlayer, sClass, tWeapon )
+    return CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.Spawn.SWEP" )
+end
+
+function PLUGIN:PlayerGiveSWEP( pPlayer, sClass, tWeapon )
+    return CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.Spawn.SWEP" )
+end
+
+function PLUGIN:PlayerSpawnVehicle( pPlayer, sModel, tVehicleTable )
+    return CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.Spawn.Vehicle" )
+end
+
 -- @TODO: Find a better hook for this.
 hook.Add( "InitializedPlugins", "PRP.Property.InitializedPlugins", function()
     local iRentInterval = ix.config.Get( "propertyRentPaymentInterval", 15 ) * 60
