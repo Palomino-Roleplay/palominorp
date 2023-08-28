@@ -262,7 +262,7 @@ function ENTITY:IsInZoneOfType( sType, vTargetPos, aTargetAng )
     return false
 end
 
-function ENTITY:CalcIntersect(vTargetPos, aTargetAng)
+function ENTITY:CalcIntersect(vTargetPos, aTargetAng, tFilter)
     if not self:GetProperty() then return end
 
     vTargetPos = vTargetPos or self:GetPos()
@@ -285,23 +285,41 @@ function ENTITY:CalcIntersect(vTargetPos, aTargetAng)
 
     -- Loop through and refine collision check
     for _, ent in ipairs(tEntitiesInBox) do
-        if ent ~= self then
-            local entPos = ent:GetPos()
-            local entAng = ent:GetAngles()
-            local entMins, entMaxs = ent:OBBMins(), ent:OBBMaxs()
+        if ent == self then continue end
+        if not ent:IsSolid() then continue end
+        if tFilter and tFilter[ent:EntIndex()] then continue end
 
-            -- Use util.IsOBBIntersectingOBB for precise collision check
-            local isIntersecting = util.IsOBBIntersectingOBB(
-                vTargetPos, aTargetAng, vOBBMins, vOBBMaxs,
-                entPos, entAng, entMins, entMaxs,
-                0  -- Tolerance, you can adjust this value
-            )
+        local entPos = ent:GetPos()
+        local entAng = ent:GetAngles()
+        local entMins, entMaxs = ent:OBBMins(), ent:OBBMaxs()
 
-            if isIntersecting then
-                table.insert(tIntersectingEntities, ent)
-            end
+        -- Use util.IsOBBIntersectingOBB for precise collision check
+        local isIntersecting = util.IsOBBIntersectingOBB(
+            vTargetPos, aTargetAng, vOBBMins, vOBBMaxs,
+            entPos, entAng, entMins, entMaxs,
+            0  -- Tolerance, you can adjust this value
+        )
+
+        if isIntersecting then
+            table.insert(tIntersectingEntities, ent)
         end
     end
 
     return tIntersectingEntities
+end
+
+function ENTITY:CalcFloor(vTargetPos, aTargetAng)
+    if not self:GetProperty() then return end
+    local oProperty = self:GetProperty()
+    if not self:GetCategory() then return end
+    local oCategory = self:GetCategory()
+
+    vTargetPos = vTargetPos or self:GetPos()
+    aTargetAng = aTargetAng or self:GetAngles()
+
+    if string.StartsWith( oCategory:GetID(), "defensive_props" ) and oProperty:GetFloorZ() then
+        vTargetPos.z = oProperty:GetFloorZ()
+    end
+
+    return vTargetPos, aTargetAng
 end
