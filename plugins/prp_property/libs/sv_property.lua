@@ -20,33 +20,21 @@ function PRP.Prop.Spawn( pPlayer, sCategoryID, sModel )
     end
     pPlayer.m_iLastPropSpawn = CurTime() + iCooldown
 
-    local tCategoryPath = string.Explode( "/", sCategoryID )
-
-    local tCategory = {}
-    local tBaseCategory = {}
-    for _, sCategory in ipairs( tCategoryPath ) do
-        if sCategory == tCategoryPath[1] then
-            tCategory = PLUGIN.config.props[sCategory]
-            tBaseCategory = PLUGIN.config.props[sCategory]
-            continue
-        end
-
-        tCategory = tCategory.subcategories[sCategory]
-    end
+    local oCategory = PRP.Prop.Category.Get( sCategoryID )
 
     -- Print( tCategory )
 
-    if not tCategory then
+    if not oCategory then
         -- @TODO: Auto-bug reporting for stuff like this would be rly cool.
         return false, "INTERNAL ERROR: Category does not exist."
     end
 
-    if not tCategory.models[sModel] then
+    if not oCategory:HasModel(sModel) then
         -- @TODO: Actually, for some of this stuff, I'd trigger an exploit alert...
         return false, "INTERNAL ERROR: Model does not exist in category."
     end
 
-    local tModelConfig = tCategory.models[sModel]
+    local tModelConfig = oCategory:GetModel( sModel ).cfg
 
     -- @TODO: Base this on properties player has *access* to.
     local tProperties = cCharacter:GetRentedProperties()
@@ -88,16 +76,14 @@ function PRP.Prop.Spawn( pPlayer, sCategoryID, sModel )
     -- hook.Run( "PlayerSpawnedProp", pPlayer, sModel, eProp )
 
     -- @TODO: Allow this for all categories (and maybe do them in a better way)
-    if tBaseCategory.OnSpawn then
-        tBaseCategory.OnSpawn( eProp, pPlayer, sModel, tModelConfig )
-    end
+    oCategory:CallHook( "OnSpawn", eProp, pPlayer, sModel, tModelConfig )
 
-    if tBaseCategory.PhysgunDrop then
-        eProp.PhysgunDrop = tBaseCategory.PhysgunDrop
+    eProp.PhysgunDrop = function( pHookPlayer, eHookEntity )
+        oCategory:CallHook( "PhysgunDrop", pHookPlayer, eHookEntity )
     end
 
     -- @TODO: We can definitely do our own networking here somehow
-    eProp:SetNW2String( "PRP.Prop.Category", sCategoryID )
+    eProp:SetCategory( oCategory )
     eProp:SetNWString( "PRP.Prop.SpawnerSteamID", pPlayer:SteamID() )
 
     oProperty:AddProp( eProp )
