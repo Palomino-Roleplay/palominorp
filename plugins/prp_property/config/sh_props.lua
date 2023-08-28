@@ -9,12 +9,12 @@ local DefensiveProps = PRP.Prop.Category.New("defensive_props", "Defensive Props
             {
                 selfOnly = true,
                 point = Vector( 0, 40, 44 ),
-                angleGrid = Angle( 360, 360, 360 ),
+                angleGrid = Angle( 360, 180, 360 ),
             },
             {
                 selfOnly = true,
                 point = Vector( 0, -42, 44 ),
-                angleGrid = Angle( 360, 360, 360 ),
+                angleGrid = Angle( 360, 180, 360 ),
             },
         }
     } )
@@ -53,10 +53,10 @@ DefensiveProps:AddHook( "PhysgunDrop", function( eProp, pPlayer )
     -- See GM:OnPhysgunFreeze
     oPhysics:EnableMotion( false )
 
-    -- if oPhysics:IsPenetrating() then
-    --     Print( "defensive_props: PhysgunDrop: IsPenetrating" )
-    --     return false
-    -- end
+    if oPhysics:IsPenetrating() then
+        Print( "defensive_props: PhysgunDrop: IsPenetrating" )
+        -- return false
+    end
 
     -- Freeze
     eProp:GetPhysicsObject():EnableMotion( false )
@@ -68,6 +68,7 @@ DefensiveProps:AddHook( "PhysgunDrop", function( eProp, pPlayer )
     local iPropZ = eProp:GetPos().z
 
     eProp:SetPos( Vector( eProp:GetPos().x, eProp:GetPos().y, iFloorZ ) )
+    eProp:SetAngles( Angle( 0, eProp:GetAngles().y, 0 ) )
     eProp._bWasDropped = true
     -- @TODO: Do a custom sound
     eProp:EmitSound( "garrysmod/balloon_pop_cute.wav" )
