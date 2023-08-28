@@ -166,9 +166,6 @@ function PROPERTY:AddProp( eEntity )
 
     eEntity:SetProperty( self )
 
-    local sPropCategory = eEntity:GetNW2String( "PRP.Prop.Category", nil )
-    if not sPropCategory then return true end
-
     self.m_tPropsCategorized = self.m_tPropsCategorized or {}
 
     -- For a prop category (e.g.) decor_props/furniture/medium, add to following tables:
@@ -176,15 +173,25 @@ function PROPERTY:AddProp( eEntity )
     -- decor_props/furniture
     -- decor_props/furniture/medium
 
-    local sRunningCategory = ""
-    for _, sCategory in ipairs( string.Explode( "/", sPropCategory ) ) do
-        sRunningCategory = sRunningCategory .. sCategory
+    -- @TODO: Ass. This should be part of the category meta.
+    local oPropCategory = eEntity:GetCategory()
+    if not oPropCategory then return end
 
-        self.m_tPropsCategorized[ sRunningCategory ] = self.m_tPropsCategorized[ sRunningCategory ] or {}
-        table.insert( self.m_tPropsCategorized[ sRunningCategory ], eEntity )
+    local sCategoryID = oPropCategory:GetID()
+    local tCategories = string.Explode( "/", sCategoryID )
+    for i, oSubCategory in ipairs( tCategories ) do
+        local sSubCategoryID = table.concat( tCategories, "/", 1, i )
 
-        sRunningCategory = sRunningCategory .. "/"
+        self.m_tPropsCategorized[ sSubCategoryID ] = self.m_tPropsCategorized[ sSubCategoryID ] or {}
+        table.insert( self.m_tPropsCategorized[ sSubCategoryID ], eEntity )
     end
+
+    if CLIENT then return true end
+
+    -- @TODO: So we can't really network this immediately w/
+    -- net library since it's done right at entity spawn.
+    -- In the future though, we should definitely fix this.
+    eEntity:SetNW2String( "PRP.Property", self:GetID() )
 
     return true
 end
