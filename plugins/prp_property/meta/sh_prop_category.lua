@@ -26,6 +26,10 @@ function PRP.Prop.Category.GetAll()
     return PRP.Prop.CategoriesAll
 end
 
+function PRP.Prop.Category.Get( sCategoryID )
+    return PRP.Prop.CategoriesAll[sCategoryID]
+end
+
 local CATEGORY = {}
 
 AccessorFunc(CATEGORY, "m_iID", "ID", FORCE_STRING)
