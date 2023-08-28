@@ -55,6 +55,16 @@ function PLUGIN:PhysgunDrop( pPlayer, eEntity )
     if not eEntity:GetProperty() then return end
     local oProperty = eEntity:GetProperty()
 
+    -- Prop-snapping, floor-snapping, zone-blocking, collision blocking, and whatever else.
+    local bValid, vTargetPos, aTargetAng = eEntity:CalcTarget()
+    if not bValid then
+        pPlayer:Notify( "Invalid Position." )
+        eEntity:Remove()
+        return false
+    end
+    eEntity:SetPos( vTargetPos )
+    eEntity:SetAngles( aTargetAng )
+
     if eEntity.PhysgunDrop then
         eEntity:PhysgunDrop( pPlayer )
     end

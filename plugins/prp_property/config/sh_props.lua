@@ -42,20 +42,15 @@ DefensiveProps:AddHook( "OnSpawn", function( eProp, pPlayer, sModel, tModelConfi
 end )
 
 DefensiveProps:AddHook( "PhysgunDrop", function( eProp, pPlayer )
-    -- Print( "defensive_props: PhysgunDrop" )
-    -- Print( eProp )
-    -- Print( pPlayer )
-
+    if CLIENT then return end
     local oPhysics = eProp:GetPhysicsObject()
 
     if not oPhysics then return end
 
-    -- See GM:OnPhysgunFreeze
     oPhysics:EnableMotion( false )
 
     if oPhysics:IsPenetrating() then
         Print( "defensive_props: PhysgunDrop: IsPenetrating" )
-        -- return false
     end
 
     -- Freeze
@@ -64,14 +59,11 @@ DefensiveProps:AddHook( "PhysgunDrop", function( eProp, pPlayer )
     local oProperty = eProp:GetProperty()
     if not oProperty then return end
 
-    local iFloorZ = oProperty:GetFloorZ()
-    local iPropZ = eProp:GetPos().z
-
-    eProp:SetPos( Vector( eProp:GetPos().x, eProp:GetPos().y, iFloorZ ) )
     eProp:SetAngles( Angle( 0, eProp:GetAngles().y, 0 ) )
     eProp._bWasDropped = true
+
     -- @TODO: Do a custom sound
-    eProp:EmitSound( "garrysmod/balloon_pop_cute.wav" )
+    -- eProp:EmitSound( "garrysmod/balloon_pop_cute.wav" )
 end )
 
 -- Decor Props

@@ -323,3 +323,44 @@ function ENTITY:CalcFloor(vTargetPos, aTargetAng)
 
     return vTargetPos, aTargetAng
 end
+
+function ENTITY:CalcTarget()
+    local vTargetPos = self:GetPos()
+    local aTargetAng = self:GetAngles()
+
+    -- Snap to prop
+    local tSnappedPoints = self:CalcSnappingPoints( false )
+    if tSnappedPoints then
+        vTargetPos, aTargetAng = self:CalcSnappingPos( vTargetPos, aTargetAng, tSnappedPoints )
+    end
+
+    -- Snap to floor
+    vTargetPos, aTargetAng = self:CalcFloor( vTargetPos, aTargetAng )
+
+
+    -- prop_blacklist Zone
+    if self:IsInZoneOfType( "prop_blacklist", vTargetPos, aTargetAng ) then
+        Print( "prop_blacklist zone." )
+        return false
+    end
+
+    -- Intersections
+    local tFilter = tSnappedPoints and { [tSnappedPoints.theirs.entity:EntIndex()] = true } or false
+    local tIntersectingEntities = self:CalcIntersect( vTargetPos, aTargetAng, tFilter )
+    if #tIntersectingEntities > 0 then
+        Print( "Collision:" )
+        Print( tIntersectingEntities )
+        Print( tFilter )
+        return false
+    end
+
+    if SERVER then
+        if tSnappedPoints then
+            self:EmitSound( "garrysmod/balloon_pop_cute.wav" )
+        else
+            self:EmitSound( "physics/wood/wood_box_impact_soft3.wav" )
+        end
+    end
+
+    return true, vTargetPos, aTargetAng
+end

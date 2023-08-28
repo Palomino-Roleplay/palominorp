@@ -129,6 +129,9 @@ function PLUGIN:PostDrawTranslucentRenderables()
             false
         )
     end
+
+    local bAllowed = PRP.Prop.PhysgunnedEntity:CalcTarget()
+    Print( bAllowed )
 end
 
 net.Receive( "PRP.Property.OnPhysgunPickup", function( iLen )
