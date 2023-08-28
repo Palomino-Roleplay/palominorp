@@ -29,6 +29,48 @@ local DefensiveProps = PRP.Prop.Category.New("defensive_props", "Defensive Props
     DefensiveProps_Large:AddModel( "models/props_fortifications/sandbags_line2.mdl" )
     DefensiveProps_Large:AddModel( "models/props_fortifications/sandbags_line2_tall.mdl" )
 
+DefensiveProps:AddHook( "OnSpawn", function( eProp, pPlayer, sModel, tModelConfig )
+    Print( "We do be runnning OnSpawn huh" )
+    constraint.Keepupright( eProp, Angle( 0, 90, 0 ), 0, 9999999 )
+
+    local oPhysics = eProp:GetPhysicsObject()
+    if not oPhysics then return end
+
+    oPhysics:EnableMotion( false )
+end )
+
+DefensiveProps:AddHook( "PhysgunDrop", function( eProp, pPlayer )
+    -- Print( "defensive_props: PhysgunDrop" )
+    -- Print( eProp )
+    -- Print( pPlayer )
+
+    local oPhysics = eProp:GetPhysicsObject()
+
+    if not oPhysics then return end
+
+    -- See GM:OnPhysgunFreeze
+    oPhysics:EnableMotion( false )
+
+    -- if oPhysics:IsPenetrating() then
+    --     Print( "defensive_props: PhysgunDrop: IsPenetrating" )
+    --     return false
+    -- end
+
+    -- Freeze
+    eProp:GetPhysicsObject():EnableMotion( false )
+
+    local oProperty = eProp:GetProperty()
+    if not oProperty then return end
+
+    local iFloorZ = oProperty:GetFloorZ()
+    local iPropZ = eProp:GetPos().z
+
+    eProp:SetPos( Vector( eProp:GetPos().x, eProp:GetPos().y, iFloorZ ) )
+    eProp._bWasDropped = true
+    -- @TODO: Do a custom sound
+    eProp:EmitSound( "garrysmod/balloon_pop_cute.wav" )
+end )
+
 -- Decor Props
 local DecorProps = PRP.Prop.Category.New("decor_props", "Decor Props", "icon16/palette.png" )
 
