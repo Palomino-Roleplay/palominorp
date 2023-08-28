@@ -7,10 +7,12 @@ local DefensiveProps = PRP.Prop.Category.New("defensive_props", "Defensive Props
         bodygroups = "010000000",
         snapPoints = {
             {
+                selfOnly = true,
                 point = Vector( 0, 40, 44 ),
                 angleGrid = Angle( 360, 360, 360 ),
             },
             {
+                selfOnly = true,
                 point = Vector( 0, -42, 44 ),
                 angleGrid = Angle( 360, 360, 360 ),
             },
