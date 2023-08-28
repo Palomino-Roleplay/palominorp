@@ -15,6 +15,8 @@ PLUGIN.config = {
         }
     },
 
+    snapDistanceSqr = 64 * 64,
+
     props = {
         ["defensive_props"] = {
             categoryID = "defensive_props",
@@ -252,6 +254,7 @@ PLUGIN.config = {
     }
 }
 
+
 ix.util.Include( "meta/cl_spawnmenu.lua" )
 ix.util.Include( "meta/sh_character.lua" )
 ix.util.Include( "meta/sh_entity.lua" )
@@ -260,6 +263,7 @@ ix.util.Include( "meta/sh_property.lua" )
 ix.util.Include( "meta/sv_entity.lua" )
 ix.util.Include( "meta/sv_property.lua" )
 
+ix.util.Include( "hooks/cl_entity.lua" )
 ix.util.Include( "hooks/cl_physgun.lua" )
 ix.util.Include( "hooks/sh_physgun.lua" )
 ix.util.Include( "hooks/sh_property.lua" )
