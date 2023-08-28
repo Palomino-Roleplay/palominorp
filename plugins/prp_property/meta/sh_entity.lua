@@ -160,6 +160,9 @@ local function SnapToGrid(angle, grid)
 end
 
 function ENTITY:CalcSnappingPos( vTargetPos, aTargetAng, tSnappedPoints )
+    vTargetPos = vTargetPos or self:GetPos()
+    aTargetAng = aTargetAng or self:GetAngles()
+
     local tOurSnapPoint = tSnappedPoints.theirs
     local tTheirSnapPoint = tSnappedPoints.ours
 
@@ -191,4 +194,114 @@ function ENTITY:CalcSnappingPos( vTargetPos, aTargetAng, tSnappedPoints )
     local vAlignVector = vSnapPoint1World - vSnapPoint2WorldAdjusted
 
     return self:GetPos() + vAlignVector, finalAng
+end
+
+-- CalcZones is cached, so we can run it multiple times per tick without worrying about performance.
+local tZonesCache = {}
+local iZonesCacheTick = 0
+function ENTITY:CalcZones( vTargetPos, aTargetAng )
+    if iZonesCacheTick == engine.TickCount() then
+        if tZonesCache[ self:EntIndex() ] then return tZonesCache[ self:EntIndex() ] end
+    else
+        tZonesCache = {}
+        iZonesCacheTick = engine.TickCount()
+    end
+
+
+    if not self:GetProperty() then return end
+    local oProperty = self:GetProperty()
+
+    local vHitBoxMin, vHitBoxMax = self:GetCollisionBounds()
+
+    vTargetPos = vTargetPos or self:GetPos()
+    aTargetAng = aTargetAng or self:GetAngles()
+
+    local tZonesInside = {}
+
+
+    for _, tZone in pairs( oProperty:GetZones() ) do
+        local vZoneMidpoint = ( tZone.pos[ 1 ] + tZone.pos[ 2 ] ) / 2
+
+        -- @TODO: We should really be doing this at the property setup config level.
+        local vZoneSize = Vector(
+            math.abs(tZone.pos[1].x - tZone.pos[2].x) / 2,
+            math.abs(tZone.pos[1].y - tZone.pos[2].y) / 2,
+            math.abs(tZone.pos[1].z - tZone.pos[2].z) / 2
+        )
+
+        local bIntersectingZone = util.IsOBBIntersectingOBB(
+            vTargetPos,
+            aTargetAng,
+            vHitBoxMin,
+            vHitBoxMax,
+            vZoneMidpoint,
+            Angle(0, 0, 0),
+            -vZoneSize,
+            vZoneSize,
+            0
+        )
+
+        if bIntersectingZone then
+            table.insert( tZonesInside, tZone )
+        end
+    end
+
+    tZonesCache[ self:EntIndex() ] = tZonesInside
+
+    return tZonesInside
+end
+
+function ENTITY:IsInZoneOfType( sType, vTargetPos, aTargetAng )
+    local tZones = self:CalcZones()
+    if not tZones then return false end
+
+    for _, tZone in pairs( tZones ) do
+        if tZone.type == sType then return true end
+    end
+
+    return false
+end
+
+function ENTITY:CalcIntersect(vTargetPos, aTargetAng)
+    if not self:GetProperty() then return end
+
+    vTargetPos = vTargetPos or self:GetPos()
+    aTargetAng = aTargetAng or self:GetAngles()
+
+    local vOBBMins, vOBBMaxs = self:OBBMins(), self:OBBMaxs()
+    local iBoundingRadius = self:BoundingRadius()
+
+    -- @TODO: This isn't really perfect, but it's good enough for now.
+    local vAbsMax = Vector(
+        iBoundingRadius,
+        iBoundingRadius,
+        iBoundingRadius
+    )
+    vAbsMax:Mul(2)
+
+    local tEntitiesInBox = ents.FindInBox(vTargetPos - vAbsMax, vTargetPos + vAbsMax)
+
+    local tIntersectingEntities = {}
+
+    -- Loop through and refine collision check
+    for _, ent in ipairs(tEntitiesInBox) do
+        if ent ~= self then
+            local entPos = ent:GetPos()
+            local entAng = ent:GetAngles()
+            local entMins, entMaxs = ent:OBBMins(), ent:OBBMaxs()
+
+            -- Use util.IsOBBIntersectingOBB for precise collision check
+            local isIntersecting = util.IsOBBIntersectingOBB(
+                vTargetPos, aTargetAng, vOBBMins, vOBBMaxs,
+                entPos, entAng, entMins, entMaxs,
+                0  -- Tolerance, you can adjust this value
+            )
+
+            if isIntersecting then
+                table.insert(tIntersectingEntities, ent)
+            end
+        end
+    end
+
+    return tIntersectingEntities
 end
