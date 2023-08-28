@@ -77,78 +77,80 @@ end
 -- This looks worse than it is, I promise
 -- On client, it's only run when the LocalPlayer()'s physgun is physgunning an entity. 
 -- On server, it's only run once on physgun drop.
-function ENTITY:CalcSnapping( bReturnUnsnapped )
+function ENTITY:CalcSnapping(bReturnUnsnapped)
     local tSnapPoints = self:GetSnapPoints()
     if not tSnapPoints then return false end
 
     local oProperty = self:GetProperty()
-
     local tSnappedPoints = false
     local tUnsnappedPoints = {}
+    local indicesToRemove = {}
 
-    local bSeenAllSnapPoints = false
+    -- Gather all potential snap points
+    for _, eEntity in pairs(oProperty:GetProps() or {}) do
+        if not IsValid(eEntity) then continue end
+        if eEntity == self then continue end
 
-    -- one ... one for loop ... ah ah ah
-    for _, tSnapPoint in pairs( tSnapPoints ) do
-        -- two ... two for loops ... ah ah ah
-        local bFoundSnap = false
-        for _, eEntity in pairs( oProperty:GetProps() or {} ) do
-            if not IsValid( eEntity ) then continue end
-            if eEntity == self then Print( "skipping ourselves" ) continue end
-            local tOtherEntitySnapPoints = eEntity:GetSnapPoints()
-            if not tOtherEntitySnapPoints then continue end
+        local tOtherEntitySnapPoints = eEntity:GetSnapPoints()
+        if not tOtherEntitySnapPoints then continue end
 
-            if ( not bReturnUnsnapped ) and tSnapPoint.selfOnly and eEntity:GetModel() ~= self:GetModel() then continue end
+        for _, tOtherEntitySnapPoint in pairs(tOtherEntitySnapPoints) do
+            table.insert(tUnsnappedPoints, {
+                snapPoint = tOtherEntitySnapPoint,
+                entity = eEntity,
+                worldPoint = eEntity:LocalToWorld(tOtherEntitySnapPoint.point),
+            })
+        end
+    end
 
-            local vSelfWorldPoint = self:LocalToWorld( tSnapPoint.point )
+    -- Find snaps for our entity
+    for _, tSnapPoint in pairs(tSnapPoints) do
+        local vSelfWorldPoint = self:LocalToWorld(tSnapPoint.point)
 
-            -- three ... three for loops ... ah ah ah
-            for _, tOtherEntitySnapPoint in pairs( tOtherEntitySnapPoints ) do
-                local iOtherUnsnappedIndex = table.insert( tUnsnappedPoints, {
-                    snapPoint = tOtherEntitySnapPoint,
-                    entity = eEntity,
-                } )
+        for i, tPotentialSnap in ipairs(tUnsnappedPoints) do
+            local eEntity = tPotentialSnap.entity
+            local tOtherSnapPoint = tPotentialSnap.snapPoint
 
-                if tSnappedPoints then continue end
+            local vOtherWorldPoint = eEntity:LocalToWorld(tOtherSnapPoint.point)
 
-                -- We check this here too so that we can get all unsnapped points if bReturnUnsnapped == true
-                if bReturnUnsnapped and tSnapPoint.selfOnly and eEntity:GetModel() ~= self:GetModel() then continue end
-                if tOtherEntitySnapPoint.selfOnly and eEntity:GetModel() ~= self:GetModel() then continue end
+            if vSelfWorldPoint:DistToSqr(vOtherWorldPoint) < PLUGIN.config.snapDistanceSqr then
+                tSnappedPoints = {
+                    ours = {
+                        snapPoint = tSnapPoint,
+                        worldPoint = vSelfWorldPoint,
+                        entity = self,
+                    },
+                    theirs = {
+                        snapPoint = tOtherSnapPoint,
+                        worldPoint = vOtherWorldPoint,
+                        entity = eEntity,
+                    },
+                }
 
-                local vOtherWorldPoint = eEntity:LocalToWorld( tOtherEntitySnapPoint.point )
+                table.insert(indicesToRemove, {selfIdx = #tUnsnappedPoints + 1, otherIdx = i})
 
-                if vSelfWorldPoint:DistToSqr( vOtherWorldPoint ) < PLUGIN.config.snapDistanceSqr then
-                    bFoundSnap = true
-                    tSnappedPoints = {
-                        ours = {
-                            snapPoint = tSnapPoint,
-                            entity = self,
-                        },
-                        theirs = {
-                            snapPoint = tOtherEntitySnapPoint,
-                            entity = eEntity,
-                        }
-                    }
-
-                    if not bReturnUnsnapped then
-                        return tSnappedPoints
-                    end
-
-                    -- Remove the snapped point from the unsnapped points
-                    table.remove( tUnsnappedPoints, iOtherUnsnappedIndex )
+                if not bReturnUnsnapped then
+                    return tSnappedPoints
                 end
             end
         end
 
-        bSeenAllSnapPoints = true
-
-        if bFoundSnap then continue end
-
-        table.insert( tUnsnappedPoints, {
-            snapPoint = tSnapPoint,
-            entity = self,
-        } )
+        if bReturnUnsnapped then
+            table.insert(tUnsnappedPoints, {
+                snapPoint = tSnapPoint,
+                entity = self,
+                worldPoint = vSelfWorldPoint,
+            })
+        end
     end
 
-    return tSnappedPoints or {}, tUnsnappedPoints
+    -- Remove snapped points from unsnapped points list
+    for i = #indicesToRemove, 1, -1 do
+        local pair = indicesToRemove[i]
+        table.remove(tUnsnappedPoints, pair.selfIdx)
+        table.remove(tUnsnappedPoints, pair.otherIdx)
+    end
+
+    return tSnappedPoints, tUnsnappedPoints
 end
+

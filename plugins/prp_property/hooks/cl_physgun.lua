@@ -14,20 +14,17 @@ function PLUGIN:PhysgunDrop( pPlayer, eEntity )
 end
 
 function PLUGIN:PostDrawTranslucentRenderables()
-    -- Print( "PhysgunnedEntity:", PRP.Prop.PhysgunnedEntity )
     if not IsValid( PRP.Prop.PhysgunnedEntity ) then return end
-
     if not PRP.Prop.PhysgunnedEntity:GetProperty() then return end
 
     local oProperty = PRP.Prop.PhysgunnedEntity:GetProperty()
-    local sCategory = PRP.Prop.PhysgunnedEntity:GetNW2String( "PRP.Prop.Category", "" )
-    local bIsDefensiveProp = string.StartsWith( sCategory, "defensive_props" )
-    -- local vPos = PRP.Prop.PhysgunnedEntity:GetPos()
+    local oCategory = PRP.Prop.PhysgunnedEntity:GetCategory()
+    -- local bIsDefensiveProp = string.StartsWith( sCategory, "defensive_props" )
+
     local vTargetPos = PRP.Prop.PhysgunnedEntity:GetPos()
     local vTargetAng = PRP.Prop.PhysgunnedEntity:GetAngles()
-    local iFloorZ = oProperty:GetFloorZ()
 
-    Print( sCategory )
+    local iFloorZ = oProperty:GetFloorZ()
 
     local vHitBoxMin, vHitBoxMax = PRP.Prop.PhysgunnedEntity:GetCollisionBounds()
     local vHitBoxMinWorld = PRP.Prop.PhysgunnedEntity:LocalToWorld( vHitBoxMin )
@@ -40,18 +37,54 @@ function PLUGIN:PostDrawTranslucentRenderables()
 
     local bIntersectingAny = false
 
+    local tSnappedPoints, tUnsnappedPoints = PRP.Prop.PhysgunnedEntity:CalcSnapping( true )
+
     render.SetColorMaterial()
+
+    -- Unsnapped Points
+    for _, tUnsnappedPoint in pairs( tUnsnappedPoints ) do
+        if tUnsnappedPoint.worldPoint:DistToSqr( LocalPlayer():GetPos() ) > 262144 then continue end
+
+        render.DrawSphere(
+            tUnsnappedPoint.worldPoint,
+            2,
+            8,
+            8,
+            Color( 255, 255, 255 )
+        )
+    end
+
+    -- Snapped Points
+    if tSnappedPoints then
+        for _, tSnappedPoint in pairs( tSnappedPoints ) do
+            render.DrawSphere(
+                tSnappedPoint.worldPoint,
+                2,
+                8,
+                8,
+                Color( 50, 200, 150 )
+            )
+        end
+
+        -- Draw line
+        render.DrawLine(
+            tSnappedPoints.ours.worldPoint,
+            tSnappedPoints.theirs.worldPoint,
+            Color( 50, 200, 150 ),
+            false
+        )
+    end
+
+    if true then return end
 
     --------------------
     -- SNAP POINTS :) --
     --------------------
     local tAllSnapPoints = {}
     local tHeldSnapPoints = {}
-    for k, v in pairs( ents.GetAll() ) do
-        if not IsValid( v ) then continue end
-        if v:GetClass() ~= "prop_physics" then continue end
-        if not v:GetProperty() then continue end
-        if not v:GetProperty():HasAccess( LocalPlayer():GetCharacter() ) then continue end
+    for _, eEntity in pairs( oProperty:GetProps() or {} ) do
+        if not IsValid( eEntity ) then continue end
+
         -- if v == PRP.Prop.PhysgunnedEntity then continue end
 
         local tCategoryExploded = string.Explode( "/", sCategory )
@@ -269,11 +302,4 @@ net.Receive( "PRP.Property.OnPhysgunPickup", function( iLen )
     -- @TODO: Call our own hook here
 
     PRP.Prop.PhysgunnedEntity = eEntity
-    Print( "PRP.Prop.PhysgunnedEntity: ", PRP.Prop.PhysgunnedEntity )
-
-    local sCategory = eEntity:GetNW2String( "PRP.Prop.Category", nil )
-    if not sCategory then return end
-
-    -- eEntity.m_iOriginalCollisionGroup = eEntity.m_iOriginalCollisionGroup or eEntity:GetCollisionGroup()
-    -- eEntity:SetCollisionGroup( COLLISION_GROUP_WEAPON )
 end )
