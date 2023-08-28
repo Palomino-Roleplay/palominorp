@@ -37,7 +37,7 @@ function PLUGIN:PostDrawTranslucentRenderables()
 
     local bIntersectingAny = false
 
-    local tSnappedPoints, tUnsnappedPoints = PRP.Prop.PhysgunnedEntity:CalcSnapping( true )
+    local tSnappedPoints, tUnsnappedPoints = PRP.Prop.PhysgunnedEntity:CalcSnappingPoints( true )
 
     render.SetColorMaterial()
 
@@ -73,78 +73,95 @@ function PLUGIN:PostDrawTranslucentRenderables()
             Color( 50, 200, 150 ),
             false
         )
+
+        local vSnappedPos, aSnappedAng = PRP.Prop.PhysgunnedEntity:CalcSnappingPos( vTargetPos, vTargetAng, tSnappedPoints )
+
+        Print( "Pos/Ang:" )
+        Print( vSnappedPos )
+        -- Print( "Ang:" )
+        Print( aSnappedAng )
+
+        render.DrawWireframeBox(
+            vSnappedPos,
+            aSnappedAng,
+            vHitBoxMin,
+            vHitBoxMax,
+            Color( 50, 200, 150 ),
+            false
+        )
     end
+
+    -- --------------------
+    -- -- SNAP POINTS :) --
+    -- --------------------
+    -- local tAllSnapPoints = {}
+    -- local tHeldSnapPoints = {}
+    -- for _, eEntity in pairs( oProperty:GetProps() or {} ) do
+    --     if not IsValid( eEntity ) then continue end
+
+    --     -- if v == PRP.Prop.PhysgunnedEntity then continue end
+
+    --     local tCategoryExploded = string.Explode( "/", sCategory )
+
+    --     -- @TODO: Fuck this. Hell no.
+    --     local tPropCategoryData = PLUGIN.config.props[tCategoryExploded[1]].subcategories[tCategoryExploded[2]].models[v:GetModel()]
+    --     if not tPropCategoryData.snapPoints then continue end
+
+    --     for _, tSnapPointData in pairs( tPropCategoryData.snapPoints ) do
+    --         -- Draw snap points
+    --         table.insert( v == PRP.Prop.PhysgunnedEntity and tHeldSnapPoints or tAllSnapPoints, {
+    --             ent = v,
+    --             snap = tSnapPointData
+    --         } )
+    --     end
+    -- end
+
+    -- local oSnapPointNormalColor = Color( 255, 255, 255 )
+    -- local oSnapPointDisplayColor = Color( 50, 200, 150 )
+
+    -- -- @TODO: Study leetcode so we're not doing O(n^2) in a render hook...
+    -- local tDisplayedSnapPoints = {}
+    -- for _, tSnapPoint1 in pairs( tAllSnapPoints ) do
+    --     for _, tSnapPoint2 in pairs( tHeldSnapPoints ) do
+    --         if #tDisplayedSnapPoints > 0 then break end
+    --         -- @TODO: Perhaps we should be indexing based on entity and not all snap points...
+    --         if tSnapPoint1.ent == tSnapPoint2.ent then continue end
+
+    --         if tSnapPoint1.ent:LocalToWorld( tSnapPoint1.snap.point ):DistToSqr( tSnapPoint2.ent:LocalToWorld( tSnapPoint2.snap.point ) ) < 4096 then
+    --             tDisplayedSnapPoints = {
+    --                 tSnapPoint1,
+    --                 tSnapPoint2
+    --             }
+
+    --             tSnapPoint1.displayed = true
+    --             tSnapPoint2.displayed = true
+    --         end
+    --     end
+
+    --     render.DrawSphere(
+    --         tSnapPoint1.ent:LocalToWorld( tSnapPoint1.snap.point ),
+    --         2,
+    --         8,
+    --         8,
+    --         tSnapPoint1.displayed and oSnapPointDisplayColor or oSnapPointNormalColor
+    --     )
+    -- end
+
+    -- for _, tSnapPoint in pairs( tHeldSnapPoints ) do
+    --     -- if tSnapPoint.displayed then continue end
+
+    --     render.DrawSphere(
+    --         tSnapPoint.ent:LocalToWorld( tSnapPoint.snap.point ),
+    --         2,
+    --         8,
+    --         8,
+    --         tSnapPoint.displayed and oSnapPointDisplayColor or oSnapPointNormalColor
+    --     )
+    -- end
+    -- We have a pair of eligible snap points!
 
     if true then return end
 
-    --------------------
-    -- SNAP POINTS :) --
-    --------------------
-    local tAllSnapPoints = {}
-    local tHeldSnapPoints = {}
-    for _, eEntity in pairs( oProperty:GetProps() or {} ) do
-        if not IsValid( eEntity ) then continue end
-
-        -- if v == PRP.Prop.PhysgunnedEntity then continue end
-
-        local tCategoryExploded = string.Explode( "/", sCategory )
-
-        -- @TODO: Fuck this. Hell no.
-        local tPropCategoryData = PLUGIN.config.props[tCategoryExploded[1]].subcategories[tCategoryExploded[2]].models[v:GetModel()]
-        if not tPropCategoryData.snapPoints then continue end
-
-        for _, tSnapPointData in pairs( tPropCategoryData.snapPoints ) do
-            -- Draw snap points
-            table.insert( v == PRP.Prop.PhysgunnedEntity and tHeldSnapPoints or tAllSnapPoints, {
-                ent = v,
-                snap = tSnapPointData
-            } )
-        end
-    end
-
-    local oSnapPointNormalColor = Color( 255, 255, 255 )
-    local oSnapPointDisplayColor = Color( 50, 200, 150 )
-
-    -- @TODO: Study leetcode so we're not doing O(n^2) in a render hook...
-    local tDisplayedSnapPoints = {}
-    for _, tSnapPoint1 in pairs( tAllSnapPoints ) do
-        for _, tSnapPoint2 in pairs( tHeldSnapPoints ) do
-            if #tDisplayedSnapPoints > 0 then break end
-            -- @TODO: Perhaps we should be indexing based on entity and not all snap points...
-            if tSnapPoint1.ent == tSnapPoint2.ent then continue end
-
-            if tSnapPoint1.ent:LocalToWorld( tSnapPoint1.snap.point ):DistToSqr( tSnapPoint2.ent:LocalToWorld( tSnapPoint2.snap.point ) ) < 4096 then
-                tDisplayedSnapPoints = {
-                    tSnapPoint1,
-                    tSnapPoint2
-                }
-
-                tSnapPoint1.displayed = true
-                tSnapPoint2.displayed = true
-            end
-        end
-
-        render.DrawSphere(
-            tSnapPoint1.ent:LocalToWorld( tSnapPoint1.snap.point ),
-            2,
-            8,
-            8,
-            tSnapPoint1.displayed and oSnapPointDisplayColor or oSnapPointNormalColor
-        )
-    end
-
-    for _, tSnapPoint in pairs( tHeldSnapPoints ) do
-        -- if tSnapPoint.displayed then continue end
-
-        render.DrawSphere(
-            tSnapPoint.ent:LocalToWorld( tSnapPoint.snap.point ),
-            2,
-            8,
-            8,
-            tSnapPoint.displayed and oSnapPointDisplayColor or oSnapPointNormalColor
-        )
-    end
-    -- We have a pair of eligible snap points!
     if #tDisplayedSnapPoints > 0 then
         local tSnapPoint1 = tDisplayedSnapPoints[ 1 ]
         local tSnapPoint2 = tDisplayedSnapPoints[ 2 ]

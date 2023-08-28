@@ -77,7 +77,7 @@ end
 -- This looks worse than it is, I promise
 -- On client, it's only run when the LocalPlayer()'s physgun is physgunning an entity. 
 -- On server, it's only run once on physgun drop.
-function ENTITY:CalcSnapping(bReturnUnsnapped)
+function ENTITY:CalcSnappingPoints(bReturnUnsnapped)
     local tSnapPoints = self:GetSnapPoints()
     if not tSnapPoints then return false end
 
@@ -154,3 +154,41 @@ function ENTITY:CalcSnapping(bReturnUnsnapped)
     return tSnappedPoints, tUnsnappedPoints
 end
 
+-- @TODO: This might not work for rotation in more than one axis. Test.
+local function SnapToGrid(angle, grid)
+    return (grid == 360) and 0 or math.Round(angle / grid) * grid
+end
+
+function ENTITY:CalcSnappingPos( vTargetPos, aTargetAng, tSnappedPoints )
+    local tOurSnapPoint = tSnappedPoints.theirs
+    local tTheirSnapPoint = tSnappedPoints.ours
+
+    -- Initial angles and grid
+    local targetAng = tOurSnapPoint.entity:GetAngles()
+    local angleGrid = tTheirSnapPoint.snapPoint.angleGrid
+
+    -- Local angle difference
+    local angleDiff = aTargetAng - targetAng
+    angleDiff:Normalize()
+
+    -- Snap angles
+    angleDiff:SetUnpacked(
+        SnapToGrid(angleDiff.p, angleGrid.p),
+        SnapToGrid(angleDiff.y, angleGrid.y),
+        SnapToGrid(angleDiff.r, angleGrid.r)
+    )
+
+    local finalAng = targetAng + angleDiff
+    finalAng:Normalize()
+
+    local mat = Matrix()
+    mat:SetAngles(finalAng)
+    local vSnapPoint2Local = tTheirSnapPoint.snapPoint.point
+    local vSnapPoint2WorldAdjusted = mat * vSnapPoint2Local + self:GetPos()
+
+    -- Calculate position offset
+    local vSnapPoint1World = tOurSnapPoint.worldPoint
+    local vAlignVector = vSnapPoint1World - vSnapPoint2WorldAdjusted
+
+    return self:GetPos() + vAlignVector, finalAng
+end
