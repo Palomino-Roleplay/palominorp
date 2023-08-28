@@ -18,23 +18,9 @@ function PLUGIN:PostDrawTranslucentRenderables()
     if not PRP.Prop.PhysgunnedEntity:GetProperty() then return end
 
     local oProperty = PRP.Prop.PhysgunnedEntity:GetProperty()
-    local oCategory = PRP.Prop.PhysgunnedEntity:GetCategory()
-    -- local bIsDefensiveProp = string.StartsWith( sCategory, "defensive_props" )
-
-    local vTargetPos = PRP.Prop.PhysgunnedEntity:GetPos()
-    local vTargetAng = PRP.Prop.PhysgunnedEntity:GetAngles()
-
-    local iFloorZ = oProperty:GetFloorZ()
 
     local vHitBoxMin, vHitBoxMax = PRP.Prop.PhysgunnedEntity:OBBMins(), PRP.Prop.PhysgunnedEntity:OBBMaxs()
-    local vHitBoxMinWorld = PRP.Prop.PhysgunnedEntity:LocalToWorld( vHitBoxMin )
-    local vHitBoxMaxWorld = PRP.Prop.PhysgunnedEntity:LocalToWorld( vHitBoxMax )
-
-    -- @TODO: I'm sure we can do this better than hardcoding it.
-    if string.StartsWith( oCategory:GetID(), "defensive_props" ) then
-        vTargetPos.z = iFloorZ
-        vHitBoxMinWorld.z = iFloorZ
-    end
+    local vTargetPos, vTargetAng = PRP.Prop.PhysgunnedEntity:CalcFloor()
 
     render.SetColorMaterial()
 
@@ -54,15 +40,44 @@ function PLUGIN:PostDrawTranslucentRenderables()
         )
     end
 
+    local tIntersectingEntities
+
     -- Snapped Points
     if tSnappedPoints then
+        local vSnappedPos, aSnappedAng = PRP.Prop.PhysgunnedEntity:CalcSnappingPos( vTargetPos, vTargetAng, tSnappedPoints )
+
+        -- Draw intersecting entities
+        local tFilter = { [tSnappedPoints.theirs.entity:EntIndex()] = true }
+        tIntersectingEntities = PRP.Prop.PhysgunnedEntity:CalcIntersect( vSnappedPos, vTargetAng, tFilter )
+        for _, eEntity in pairs( tIntersectingEntities ) do
+            render.DrawWireframeBox(
+                eEntity:GetPos(),
+                eEntity:GetAngles(),
+                eEntity:OBBMins(),
+                eEntity:OBBMaxs(),
+                Color( 255, 0, 0 ),
+                false
+            )
+        end
+
+        local oColor = #tIntersectingEntities > 0 and Color( 255, 0, 0 ) or Color( 50, 200, 150 )
+
+        render.DrawWireframeBox(
+            vSnappedPos,
+            aSnappedAng,
+            vHitBoxMin,
+            vHitBoxMax,
+            oColor,
+            false
+        )
+
         for _, tSnappedPoint in pairs( tSnappedPoints ) do
             render.DrawSphere(
                 tSnappedPoint.worldPoint,
                 2,
                 8,
                 8,
-                Color( 50, 200, 150 )
+                oColor
             )
         end
 
@@ -70,63 +85,50 @@ function PLUGIN:PostDrawTranslucentRenderables()
         render.DrawLine(
             tSnappedPoints.ours.worldPoint,
             tSnappedPoints.theirs.worldPoint,
-            Color( 50, 200, 150 ),
+            oColor,
             false
         )
-
-        local vSnappedPos, aSnappedAng = PRP.Prop.PhysgunnedEntity:CalcSnappingPos( vTargetPos, vTargetAng, tSnappedPoints )
-
-        Print( "Pos/Ang:" )
-        Print( vSnappedPos )
-        -- Print( "Ang:" )
-        Print( aSnappedAng )
-
-        render.DrawWireframeBox(
-            vSnappedPos,
-            aSnappedAng,
-            vHitBoxMin,
-            vHitBoxMax,
-            Color( 50, 200, 150 ),
-            false
-        )
+    else
+        tIntersectingEntities = PRP.Prop.PhysgunnedEntity:CalcIntersect( vTargetPos, vTargetAng )
+        for _, eEntity in pairs( tIntersectingEntities ) do
+            render.DrawWireframeBox(
+                eEntity:GetPos(),
+                eEntity:GetAngles(),
+                eEntity:OBBMins(),
+                eEntity:OBBMaxs(),
+                Color( 255, 0, 0 ),
+                false
+            )
+        end
     end
 
     -- Draw property blacklist zones
     local tBlacklistZones = oProperty:GetZonesOfType("prop_blacklist")
+    local bInBlacklistZone = PRP.Prop.PhysgunnedEntity:IsInZoneOfType( "prop_blacklist", vTargetPos, vTargetAng )
     for _, tZone in pairs(tBlacklistZones) do
         render.DrawWireframeBox(
             tZone.pos[1],
             Angle(0, 0, 0),
             Vector(0, 0, 0),
             tZone.pos[2] - tZone.pos[1],
-            Color(255, 0, 0),
+            Color(164, 0, 0),
             true
         )
     end
 
-    local tIntersectingEntities = PRP.Prop.PhysgunnedEntity:CalcIntersect( vTargetPos, vTargetAng )
+    local bValidTarget = #tIntersectingEntities == 0 and not bInBlacklistZone
 
-    -- Draw intersecting entities
-    for _, eEntity in pairs( tIntersectingEntities ) do
+    -- Draw the physgunned entity wireframe box.
+    if not tSnappedPoints then
         render.DrawWireframeBox(
-            eEntity:GetPos(),
-            eEntity:GetAngles(),
-            eEntity:OBBMins(),
-            eEntity:OBBMaxs(),
-            Color( 255, 0, 0 ),
+            vTargetPos,
+            vTargetAng,
+            vHitBoxMin,
+            vHitBoxMax,
+            bValidTarget and Color( 255, 255, 255 ) or Color( 255, 0, 0 ),
             false
         )
     end
-
-    -- Draw the physgunned entity wireframe box.
-    render.DrawWireframeBox(
-        vTargetPos,
-        vTargetAng,
-        vHitBoxMin,
-        vHitBoxMax,
-        Color( 255, 255, 255 ),
-        false
-    )
 end
 
 net.Receive( "PRP.Property.OnPhysgunPickup", function( iLen )
