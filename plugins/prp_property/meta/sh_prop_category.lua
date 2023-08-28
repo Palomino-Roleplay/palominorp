@@ -37,6 +37,7 @@ AccessorFunc(CATEGORY, "m_sName", "Name", FORCE_STRING)
 AccessorFunc(CATEGORY, "m_sIcon", "Icon", FORCE_STRING)
 AccessorFunc(CATEGORY, "m_tModels", "Models")
 AccessorFunc(CATEGORY, "m_tChildren", "Children")
+AccessorFunc(CATEGORY, "m_tHooks", "Hooks")
 
 AccessorFunc(CATEGORY, "m_oParent", "Parent")
 
@@ -94,6 +95,27 @@ function CATEGORY:FindPath(sCategoryPath)
     if not self.m_tChildrenHash then return nil end
     if not self.m_tChildrenHash[sNextCategoryID] then return nil end
     return self.m_tChildrenHash[sNextCategoryID]:FindPath(table.concat(tPath, "/", 2))
+end
+
+function CATEGORY:AddHook( sHook, fnFunction )
+    self.m_tHooks = self.m_tHooks or {}
+    self.m_tHooks[sHook] = self.m_tHooks[sHook] or {}
+
+    self.m_tHooks[sHook] = fnFunction
+end
+
+function CATEGORY:HasHook( sHook )
+    return self.m_tHooks and self.m_tHooks[sHook] ~= nil
+end
+
+function CATEGORY:CallHook( sHook, ... )
+    self.m_tHooks = self.m_tHooks or {}
+
+    if self:GetParent() then
+        self:GetParent():CallHook( sHook, ... )
+    end
+
+    return self.m_tHooks[sHook] and self.m_tHooks[sHook]( ... ) or nil
 end
 
 PRP.Prop.Category.Metatable = CATEGORY
