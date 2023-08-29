@@ -159,10 +159,6 @@ function PLUGIN:PostDrawTranslucentRenderables()
             -- mask = MASK_SHOT_HULL,
         })
 
-        Print( "Trace:" )
-        Print( tTrace.Entity )
-        Print( tTrace.Hit )
-
         if tTrace.Entity ~= pPlayer then continue end
 
         -- Drawing below this point.
@@ -182,7 +178,6 @@ function PLUGIN:PostDrawTranslucentRenderables()
         local iAimDiff = vUnitPos:Dot( vOurAimVector )
 
         local iOurMinAimDiff = 0.6
-        print("heh")
         if iAimDiff < iOurMinAimDiff then continue end
 
         -- Condition 2: Other player looking at LocalPlayer
@@ -195,10 +190,7 @@ function PLUGIN:PostDrawTranslucentRenderables()
         local theirAimDiff = vLookAtLocalPlayer:Dot( vTheirAimVector )
 
         local iTheirMinAimDiff = -0.5
-        print("huh")
         if ( pPlayer:VoiceVolume() == 0 and not pPlayer:GetNetVar( "actionString", nil ) ) and theirAimDiff < iTheirMinAimDiff then continue end  -- -1 for exact opposite, < -0.99 gives a tiny bit of leeway
-
-        print("bruh")
 
         local iAlpha = 255
 
@@ -206,14 +198,8 @@ function PLUGIN:PostDrawTranslucentRenderables()
         local iOurAimDiffAlphaMultiplier = (iAimDiff - iOurMinAimDiff) / (1 - iOurMinAimDiff)
         iAlpha = iAlpha * iOurAimDiffAlphaMultiplier
 
-        Print( "iOurAimDiffAlphaMultiplier" )
-        Print( iOurAimDiffAlphaMultiplier )
-
         local iTheirAimDiffAlphaMultiplier = ( pPlayer:GetNetVar( "actionString", nil ) and 1 or math.max( math.ease.OutExpo( pPlayer:VoiceVolume() ), (theirAimDiff - iTheirMinAimDiff) / (1 - iTheirMinAimDiff) ) )
         iAlpha = iAlpha * iTheirAimDiffAlphaMultiplier
-
-        Print( "iTheirAimDiffAlphaMultiplier" )
-        Print( iTheirAimDiffAlphaMultiplier )
 
         local aAngles = (vOurEyePos - vNametagPos):Angle()
         aAngles.p = 0
