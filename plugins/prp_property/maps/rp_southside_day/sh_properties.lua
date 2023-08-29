@@ -21,25 +21,26 @@ function PRP.Property.RegisterProperties()
     )
     PROPERTY:SetLockOnStart( true )
     PROPERTY:SetPublicDoors( {
-        -- PD Front doors
-        [2926] = true,
-        [2927] = true,
+        -- @TODO: Update for rp_southside_day
+        -- -- PD Front doors
+        -- [2926] = true,
+        -- [2927] = true,
 
-        -- PD gate doors,
-        [2953] = true,
-        [2957] = true,
+        -- -- PD gate doors,
+        -- [2953] = true,
+        -- [2957] = true,
 
-        -- Elevator doors
-        [3026] = true,
-        [3027] = true,
+        -- -- Elevator doors
+        -- [3026] = true,
+        -- [3027] = true,
 
-        -- Elevator outside doors
-        [2949] = true,
-        [2950] = true,
-        [2930] = true,
-        [2931] = true,
-        [2951] = true,
-        [2952] = true,
+        -- -- Elevator outside doors
+        -- [2949] = true,
+        -- [2950] = true,
+        -- [2930] = true,
+        -- [2931] = true,
+        -- [2951] = true,
+        -- [2952] = true,
     } )
 
     PRP.Property.Register( PROPERTY )

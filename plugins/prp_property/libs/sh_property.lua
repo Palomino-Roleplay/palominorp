@@ -6,7 +6,6 @@ PRP.Property.Rentable = PRP.Property.Rentable or {}
 function PRP.Property.Register( oProperty )
     PRP.Property.List[oProperty:GetID()] = oProperty
 
-    Print(oProperty:GetID())
     if oProperty:GetRentable() then
         PRP.Property.Rentable[oProperty:GetID()] = oProperty
     end

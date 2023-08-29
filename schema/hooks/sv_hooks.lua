@@ -108,3 +108,7 @@ end
 
 local HELIX = baseclass.Get( "gamemode_helix" )
 HELIX.PlayerUse = nil
+
+function Schema:PlayerSpray()
+    return true
+end
