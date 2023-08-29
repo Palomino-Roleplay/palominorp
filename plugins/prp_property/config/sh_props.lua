@@ -16,7 +16,8 @@ local DefensiveProps = PRP.Prop.Category.New("defensive_props", "Defensive Props
                 point = Vector( 0, -42, 44 ),
                 angleGrid = Angle( 360, 180, 360 ),
             },
-        }
+        },
+        bboxMult = Vector( 1.25, 1.75, 1 ),
     } )
 
     local DefensiveProps_Medium = DefensiveProps:NewChild("medium", "Medium")

@@ -269,6 +269,14 @@ function ENTITY:CalcIntersect(vTargetPos, aTargetAng, tFilter)
     aTargetAng = aTargetAng or self:GetAngles()
 
     local vOBBMins, vOBBMaxs = self:OBBMins(), self:OBBMaxs()
+
+    local oCategory = self:GetCategory()
+    local tModelTable = oCategory:GetModel( self:GetModel() )
+    if tModelTable.cfg.bboxMult then
+        vOBBMins:Mul( tModelTable.cfg.bboxMult )
+        vOBBMaxs:Mul( tModelTable.cfg.bboxMult )
+    end
+
     local iBoundingRadius = self:BoundingRadius()
 
     -- @TODO: This isn't really perfect, but it's good enough for now.

@@ -20,6 +20,14 @@ function PLUGIN:PostDrawTranslucentRenderables()
     local oProperty = PRP.Prop.PhysgunnedEntity:GetProperty()
 
     local vHitBoxMin, vHitBoxMax = PRP.Prop.PhysgunnedEntity:OBBMins(), PRP.Prop.PhysgunnedEntity:OBBMaxs()
+
+    local oCategory = PRP.Prop.PhysgunnedEntity:GetCategory()
+    local tModelTable = oCategory:GetModel( PRP.Prop.PhysgunnedEntity:GetModel() )
+    if tModelTable.cfg.bboxMult then
+        vHitBoxMin:Mul( tModelTable.cfg.bboxMult )
+        vHitBoxMax:Mul( tModelTable.cfg.bboxMult )
+    end
+
     local vTargetPos, vTargetAng = PRP.Prop.PhysgunnedEntity:CalcFloor()
 
     render.SetColorMaterial()
