@@ -109,32 +109,86 @@ function PRP.UI.Nameplates.Draw( pPlayer, tScreenPos )
     end
 end
 
+local oHeartNoAlphatest = Material( "prp/icons/hud/heart.png" )
+
+local oGradientLeft = Material( "prp/icons/hud/gradient_left.png" )
+local oHealthbarPill = Material( "prp/icons/hud/healthbar_pill_5pxc.png" )
+
 hook.Add( "HUDPaint", "PRP.UI.Nameplates.HUDPaint", function()
-    for k, pPlayer in pairs( player.GetAll() ) do
-        if not IsValid( pPlayer ) then continue end
-        if pPlayer == LocalPlayer() then continue end
-        if not pPlayer:Alive() then continue end
-        if not pPlayer:GetCharacter() then continue end
-        if pPlayer:GetNoDraw() then continue end
-        if pPlayer:IsDormant() then continue end
-        if pPlayer:GetColor().a == 0 and ( pPlayer:GetRenderMode() == RENDERMODE_TRANSALPHA or pPlayer:GetRenderMode() == RENDERMODE_TRANSCOLOR ) then continue end
-        if pPlayer:GetPos():DistToSqr( LocalPlayer():GetPos() ) > iNameplateDrawDistanceSqr then continue end
+    if true then return end
 
-        local vNametagPos, vHeadPos = GetNametagPos( pPlayer )
+	local iXPadding = 16
+	local iYPadding = 20
 
-        -- @TODO: Probably a little too expensive for HUDPaint. Can we do this some other way?
-        -- Don't display if player obstructed
-        local tTrace = util.TraceLine({
-            start = LocalPlayer():EyePos(),
-            endpos = vHeadPos,
-            filter = LocalPlayer(),
-            mask = MASK_SHOT_HULL,
-        })
+	local iXGap = 16
 
-        if tTrace.Entity ~= pPlayer then continue end
+	local iHealth = LocalPlayer():Health()
+	local iMaxHealth = LocalPlayer():GetMaxHealth()
+	local iHealthPercentage = iHealth / iMaxHealth
 
-        -- PRP.UI.Nameplates.Draw( pPlayer )
-    end
+	-- Heart Icon
+	local iHeartWidth = oHeartNoAlphatest:Width()
+	local iHeartHeight = oHeartNoAlphatest:Height()
+	local iHeartX = iXPadding
+	local iHeartY = ScrH() - ( iHeartHeight / 2 ) - iYPadding
+
+	surface.SetMaterial( oHeartNoAlphatest )
+	surface.SetDrawColor( 255, 255, 255, 32 )
+	surface.DrawTexturedRect( iHeartX, iHeartY, iHeartWidth, iHeartHeight )
+
+	-- Healthbar background
+	local iHealthbarWidth = 350
+	local iHealthbarHeight = 5
+	local iHealthbarX = iHeartX + iHeartWidth + iXGap
+	local iHealthbarY = ScrH() - ( iHealthbarHeight / 2 ) - iYPadding
+
+    -- Give a touch of contrast in dark areas
+    surface.SetDrawColor( 255, 255, 255, 1 )
+    surface.DrawRect( iHealthbarX, iHealthbarY, iHealthbarWidth, iHealthbarHeight )
+
+    -- Overlay background
+	render.OverrideBlend(
+		true,
+		BLEND_DST_COLOR,
+		BLEND_SRC_COLOR,
+		BLENDFUNC_ADD
+	)
+
+	surface.SetDrawColor( 255, 255, 255, 255 )
+	surface.DrawRect( iHealthbarX, iHealthbarY, iHealthbarWidth, iHealthbarHeight )
+
+	render.OverrideBlend( false )
+
+	-- Healthbar Progress
+
+	-- Healthbar Progress - Gradient
+	surface.SetMaterial( oGradientLeft )
+	surface.SetDrawColor( 255, 255, 255, 32 )
+	surface.DrawTexturedRectUV(
+		iHealthbarX,
+		iHealthbarY,
+		iHealthbarWidth * iHealthPercentage,
+		iHealthbarHeight,
+		-- u1
+        1 - iHealthPercentage,
+        -- v1
+		0,
+        -- u2
+		1,
+        -- v2
+		1
+	)
+
+	-- Healthbar Progress - Pill
+	local iHealthbarPillWidth = oHealthbarPill:Width()
+	local iHealthbarPillHeight = oHealthbarPill:Height()
+
+	local iHealthbarPillX = iHealthbarX + iHealthbarWidth * iHealthPercentage - iHealthbarPillWidth / 2
+	local iHealthbarPillY = iHealthbarY
+
+	surface.SetMaterial( oHealthbarPill )
+	surface.SetDrawColor( 255, 255, 255, 255 )
+	surface.DrawTexturedRect( iHealthbarPillX, iHealthbarPillY, iHealthbarPillWidth, iHealthbarPillHeight )
 end )
 
 function PLUGIN:PostDrawTranslucentRenderables()
