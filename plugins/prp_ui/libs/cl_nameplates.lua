@@ -10,7 +10,7 @@ function PLUGIN:InitializedPlugins()
         weight = 700,
         antialias = true,
     } )
-    
+
     surface.CreateFont( "PRP.UI.Nameplates.Name.Blurred", {
         font = "Inter",
         size = 26 * PRP.UI.ScaleFactor,
@@ -18,13 +18,13 @@ function PLUGIN:InitializedPlugins()
         weight = 700,
         antialias = true,
     } )
-    
+
     surface.CreateFont( "PRP.UI.Nameplates.ID", {
         font = "Oxygen Mono",
         size = 18 * PRP.UI.ScaleFactor,
         antialias = true,
     } )
-    
+
     surface.CreateFont( "PRP.UI.Nameplates.Tag", {
         font = "Oxygen",
         weight = 700,
@@ -33,7 +33,7 @@ function PLUGIN:InitializedPlugins()
         additive = true,
         -- shadow = true,
     } )
-    
+
     surface.CreateFont( "PRP.UI.Nameplates.Tag.Blurred", {
         font = "Oxygen",
         weight = 700,
@@ -48,16 +48,29 @@ local iNameplateDrawDistance = math.pow( 400, 2 )
 local iNameplateFadeDistance = math.pow( 350, 2 )
 
 
+-- See: https://wiki.facepunch.com/gmod/Entity:GetBonePosition
+local function GetNametagPos( pPlayer )
+    local iValveBipedHeadIndex = pPlayer:LookupBone( "ValveBiped.Bip01_Head1" )
+    if not iValveBipedHeadIndex then return pPlayer:GetPos() end
+
+    local vEyePos = pPlayer:GetBonePosition( iValveBipedHeadIndex )
+    if vEyePos == pPlayer:GetPos() then
+        vEyePos = pPlayer:GetBoneMatrix( iValveBipedHeadIndex ):GetTranslation()
+    end
+
+    return vEyePos
+end
+
 function PRP.UI.Nameplates.Draw( pPlayer )
-    local vPos = pPlayer:GetPos() + Vector( 0, 0, 64 + 10 )
-    
+    local vPos = GetNametagPos( pPlayer ) + Vector( 0, 0, 10 )
+
     local iDistanceSqr = LocalPlayer():GetPos():DistToSqr( pPlayer:GetPos() )
-    
+
     local iDistanceMultiplier = math.Clamp( 1 - ( ( iDistanceSqr - (iNameplateDrawDistance - iNameplateFadeDistance) ) / iNameplateFadeDistance ), 0, 1 )
     local iVoiceMultiplier = math.Clamp( pPlayer:VoiceVolume() * 2, 0, 1 )
-    
+
     local iAlpha = math.Clamp( ( (iDistanceMultiplier * 0.25) + (0.75 * iVoiceMultiplier) ) * 255, 0, 255 )
-    
+
     -- draw.SimpleText( "NEW PLAYER", "PRP.UI.Nameplates.Tag", vPos:ToScreen().x, vPos:ToScreen().y - (20 + 4 + 26 * PRP.UI.ScaleFactor), Color( 255, 255, 255, iAlpha * 1 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
     -- draw.SimpleText( "NEW PLAYER", "PRP.UI.Nameplates.Tag.Blurred", vPos:ToScreen().x, vPos:ToScreen().y - (20 + 4 + 26 * PRP.UI.ScaleFactor), Color( 0, 255, 0, iAlpha * 1 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
 
@@ -71,7 +84,7 @@ function PRP.UI.Nameplates.Draw( pPlayer )
     -- ID #
     local iYPos = vPos:ToScreen().y
     draw.SimpleText( "#" .. string.format( "%06d", pPlayer:GetCharacter():GetID() ), "PRP.UI.Nameplates.ID", vPos:ToScreen().x, vPos:ToScreen().y, Color( 255, 255, 255, iAlpha * 0.45 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
-    
+
     -- RP Name
     iYPos = iYPos - ((18 + 4) * PRP.UI.ScaleFactor)
     if pPlayer:GetNetVar( "actionString", nil ) then
@@ -88,8 +101,8 @@ function PRP.UI.Nameplates.Draw( pPlayer )
 
         draw.SimpleText( string.upper( sActionString ), "PRP.UI.Nameplates.Tag.Blurred", vPos:ToScreen().x, iYPos, Color( 0, 0, 0, iDistanceMultiplier * 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
         draw.SimpleText( string.upper( sActionString ), "PRP.UI.Nameplates.Tag", vPos:ToScreen().x, iYPos, Color( 255, 206, 73, iDistanceMultiplier * 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
-    
-    else    
+
+    else
         draw.SimpleText( pPlayer:Nick(), "PRP.UI.Nameplates.Name", vPos:ToScreen().x, iYPos, Color( 137 + ( 118 * pPlayer:VoiceVolume() ), 191 + ( 64 * pPlayer:VoiceVolume() ), 255, iAlpha ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
     end
 
