@@ -21,6 +21,7 @@ AccessorFunc( PROPERTY, "m_cTenant", "Tenant" )
 AccessorFunc( PROPERTY, "m_tFactions", "Factions" )
 AccessorFunc( PROPERTY, "m_tClasses", "Classes" )
 
+AccessorFunc( PROPERTY, "m_tSpawnEntities", "SpawnEntities" )
 AccessorFunc( PROPERTY, "m_tBounds", "Bounds" )
 AccessorFunc( PROPERTY, "m_tZones", "Zones" )
 
@@ -38,8 +39,8 @@ function PROPERTY:Init()
     self:SetEntities( {} )
     self:SetDoors( {} )
 
-    for _, tBound in ipairs( self:GetBounds() ) do
-        for _, eEntity in ipairs( ents.FindInBox( tBound[ 1 ], tBound[ 2 ] ) ) do
+    for _, tBound in pairs( self:GetBounds() or {} ) do
+        for _, eEntity in pairs( ents.FindInBox( tBound[ 1 ], tBound[ 2 ] ) ) do
             table.insert( self:GetEntities(), eEntity )
 
             if eEntity:IsDoor() then
@@ -50,6 +51,10 @@ function PROPERTY:Init()
 
             eEntity:SetProperty( self )
         end
+    end
+
+    for _, tEntity in pairs( self:GetSpawnEntities() or {} ) do
+        self:SpawnEntity( tEntity.class, tEntity.pos, tEntity.angles, tEntity.callback )
     end
 end
 
@@ -202,6 +207,28 @@ function PROPERTY:GetPropsByCategory( sCategory )
     return self.m_tPropsCategorized[ sCategory ] or {}
 end
 
+function PROPERTY:AddZone( tZoneData )
+    self.m_tZones = self.m_tZones or {}
+
+    table.insert( self.m_tZones, tZoneData )
+
+    if SERVER then
+        if string.StartsWith( tZoneData.type, "cinema" ) then
+            if not tZoneData.screen then return end
+            self:AddSpawnEntity( "mediaplayer_tv", tZoneData.screen.pos, tZoneData.screen.ang, function( eEntity )
+                eEntity.m_tZoneData = tZoneData
+                eEntity.m_bIsCinema = true
+            end )
+        end
+
+        -- if tZoneData.type == "cinema_public" then
+ 
+        -- elseif tZoneData.type == "cinema_playlist" then
+
+        -- end
+    end
+end
+
 if SERVER then
     function PROPERTY:SetupDoor( eEntity )
         -- @TODO: Ugly. Have it support multiple factions.
@@ -286,12 +313,42 @@ if SERVER then
             net.WriteEntity( self:GetRenter() and self:GetRenter():GetPlayer() or NULL )
         if pPlayer then net.Send( pPlayer ) else net.Broadcast() end
     end
+
+    function PROPERTY:AddSpawnEntity( sClass, vPos, aAngles, fnCallback )
+        self.m_tSpawnEntities = self.m_tSpawnEntities or {}
+
+        table.insert( self.m_tSpawnEntities, {
+            class = sClass,
+            pos = vPos,
+            angles = aAngles,
+            callback = fnCallback
+        } )
+    end
+
+    function PROPERTY:SpawnEntity( sClass, vPos, aAngles, fnCallback )
+        local eEntity = ents.Create( sClass )
+        eEntity:SetPos( vPos )
+        eEntity:SetAngles( aAngles )
+        eEntity:Spawn()
+
+        eEntity:SetProperty( self )
+        self.m_tEntities = self.m_tEntities or {}
+        table.insert( self.m_tEntities, eEntity )
+
+        if fnCallback then fnCallback( eEntity ) end
+
+        return eEntity
+    end
 elseif CLIENT then
     function PROPERTY:Rent()
 
     end
 
     function PROPERTY:UnRent()
+
+    end
+
+    function PROPERTY:AddSpawnEntity()
 
     end
 end
