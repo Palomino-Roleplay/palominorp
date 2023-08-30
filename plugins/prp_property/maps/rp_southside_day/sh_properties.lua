@@ -194,6 +194,83 @@ function PRP.Property.RegisterProperties()
         }
     )
     PRP.Property.Register( PROPERTY )
+
+    -- Hospital
+    PROPERTY:SetID( "hospital" )
+    PROPERTY:SetName( "Hospital" )
+    PROPERTY:SetRentable( false )
+    PROPERTY:SetLeasable( false )
+    PROPERTY:SetPublicDoors( {
+        [3026] = true,
+        [3027] = true,
+    } )
+    PROPERTY:SetBounds(
+        {
+            {
+                Vector( 6400, 4863, -63 ),
+                Vector( 8128, 5760, 736 )
+            }
+        }
+    )
+    PROPERTY:AddZone( {
+        type = "cinema_public",
+        name = "Room 202",
+        pos = {
+            Vector( 7664, 4592, 224),
+            Vector( 7936, 4832, 368 )
+        },
+        screen = {
+            class = "mediaplayer_tv",
+            pos = Vector( 7790, 4603, 224 ),
+            ang = Angle( 0, 90, 0 ),
+        },
+    } )
+    PROPERTY:AddZone( {
+        type = "cinema_public",
+        name = "Room 204",
+        pos = {
+            Vector( 7520, 4832, 224 ),
+            Vector( 7280, 4592, 368 )
+        },
+        screen = {
+            class = "mediaplayer_tv",
+            pos = Vector( 7408, 4603, 224 ),
+            ang = Angle( 0, 90, 0 ),
+        },
+    } )
+    PROPERTY:AddZone( {
+        type = "cinema_public",
+        name = "Room 202",
+        pos = {
+            Vector( 7664, 4592, 224),
+            Vector( 7936, 4832, 368 )
+        },
+        screen = {
+            class = "mediaplayer_tv",
+            pos = Vector( 7790, 4603, 224 ),
+            ang = Angle( 0, 90, 0 ),
+        },
+    } )
+    PROPERTY:AddZone( {
+        type = "cinema_playlist",
+        name = "Room 201",
+        pos = {
+            Vector( 7776, 5008, 224 ),
+            Vector( 8112, 5744, 368 )
+        },
+        screen = {
+            class = "mediaplayer_tv",
+            pos = Vector( 7829, 5384, 224 ),
+            ang = Angle( 0, -42, 0 ),
+        },
+    } )
+    PROPERTY:SetLockOnStart( true )
+    -- PROPERTY:AddSpawnEntity( "mediaplayer_tv", Vector( 7790, 4603, 224 ), Angle( 0, 90, 0 ) )
+    -- PROPERTY:AddSpawnEntity( "mediaplayer_tv", Vector( 7408, 4603, 224 ), Angle( 0, 90, 0 ) )
+    -- PROPERTY:AddSpawnEntity( "mediaplayer_tv", Vector( 7026, 4603, 224 ), Angle( 0, 90, 0 ) )
+    -- PROPERTY:AddSpawnEntity( "mediaplayer_tv", Vector( 6534, 4931, 224 ), Angle( 0, 0, 0 ) )
+    -- PROPERTY:AddSpawnEntity( "mediaplayer_tv", Vector( 7829, 5384, 224 ), Angle( 0, -42, 0 ) )
+    PRP.Property.Register( PROPERTY )
 end
 hook.Add( "InitializedPlugins", "PRP.Property.InitializedPlugins.CreateProperties", PRP.Property.RegisterProperties )
 
