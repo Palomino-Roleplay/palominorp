@@ -6,7 +6,7 @@ PRP.Property = PRP.Property or {}
 util.AddNetworkString( "PRP.Property.OnPhysgunPickup" )
 
 function PLUGIN:OnPhysgunFreeze( eWeapon, oPhysics, eTarget, pPlayer )
-    if CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.BypassPhysgunLimits" ) then return true end
+    if CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.BypassPhysgunLimits" ) then return end
 
     -- @TODO: Let them freeze *some* props like decor props or w/e (maybe make it part of prop config?)
     return false
