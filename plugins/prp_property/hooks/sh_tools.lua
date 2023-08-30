@@ -27,14 +27,14 @@ PRP.Property.Tools.Blacklist = {
 
 -- @TODO: Remove the debug prints in here.
 function PLUGIN:CanTool( pPlayer, tTrace, sToolName, tTool, iButton )
-    if CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.BypassToolLimitsDangerous", nil ) then return true end
+    if CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.BypassToolLimitsDangerous", nil ) then return end
 
     local cCharacter = pPlayer:GetCharacter()
-    if not cCharacter then return end
+    if not cCharacter then return false end
 
     if PRP.Property.Tools.Blacklist[sToolName] then Print("blacklisted") return false end
 
-    if CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.BypassToolLimits", nil ) then return true end
+    if CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.BypassToolLimits", nil ) then return end
 
     local eEntity = tTrace.Entity
     if eEntity and eEntity:GetClass() ~= "prop_physics" then Print("not prop_physics") return false end
@@ -60,7 +60,7 @@ function PLUGIN:CanTool( pPlayer, tTrace, sToolName, tTool, iButton )
 
     if not oProperty:HasAccess( cCharacter ) then Print("no ply property access") return false end
 
-    if PRP.Property.Tools.Global[sToolName] then return true end
+    if PRP.Property.Tools.Global[sToolName] then return end
 
     -- @TODO: Allow the situational tools to be used w/ allowed props.
 
