@@ -304,6 +304,9 @@ function PRP.Property.RegisterProperties()
 
         -- Security Gates
         [3141] = true, -- Apparently it's just one entity lmao
+
+        -- Vault
+        [3125] = true,
     } )
     -- Terminals
     PROPERTY:AddSpawnEntity( "prp_heist_terminal", Vector( -410, 2503, -104 ), Angle( 0, -180, 0 ), function( eEntity )
