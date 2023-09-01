@@ -21,7 +21,10 @@ function ENT:Initialize()
 	self:SetSolid( SOLID_VPHYSICS )
 
 	-- Init physics only on server, so it doesn't mess up physgun beam
-	if ( SERVER ) then self:PhysicsInit( SOLID_VPHYSICS ) end
+	if SERVER then
+		self:PhysicsInit( SOLID_VPHYSICS )
+		self:SetUseType( SIMPLE_USE )
+	end
 
 	-- Make prop to fall on spawn
 	self:PhysWake()
