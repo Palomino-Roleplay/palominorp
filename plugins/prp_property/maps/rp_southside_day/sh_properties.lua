@@ -289,8 +289,16 @@ function PRP.Property.RegisterProperties()
     })
     PROPERTY:SetLockOnStart( true )
     PROPERTY:SetPublicDoors( {
+        -- Front Doors
         [3210] = true,
         [3211] = true,
+
+        -- Outer Vault Doors
+        [3212] = true,
+        [3213] = true,
+
+        -- Security Gates
+        [3141] = true, -- Apparently it's just one entity lmao
     } )
     -- Terminals
     PROPERTY:AddSpawnEntity( "prp_heist_terminal", Vector( -410, 2503, -104 ), Angle( 0, -180, 0 ), function( eEntity )
