@@ -318,6 +318,12 @@ function PRP.Property.RegisterProperties()
         -- eEntity:SetTerminal( "vault_2" )
     end )
 
+    -- Buttons
+    PROPERTY:AddSpawnEntity( "prp_heist_button", Vector( -585, 2559, -45 ), Angle( 90, 90, 180 ), function( eEntity )
+        -- eEntity:SetHeist( "bank" )
+        -- eEntity:SetTerminal( "vault_2" )
+    end )
+
     -- Turrets
     local function fnTurretCallback( eEntity )
         eEntity:SetKeyValue( "SquadName", "bank" )
