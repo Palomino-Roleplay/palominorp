@@ -232,6 +232,8 @@ end
 if SERVER then
     function PROPERTY:SetupDoor( eEntity )
         -- @TODO: Ugly. Have it support multiple factions.
+        if self:GetLockOnStart() then eEntity:Fire("lock") end
+
         if self:GetFactions() then
             if self:GetPublicDoors() and eEntity:CreatedByMap() and self:GetPublicDoors()[eEntity:MapCreationID()] then
                 eEntity:Fire("unlock")
@@ -242,18 +244,10 @@ if SERVER then
             eEntity:SetNetVar("faction", self:GetFactions()[1])
             eEntity:SetNetVar("visible", true)
             eEntity:SetNetVar("name", self:GetName())
-
-            if self:GetLockOnStart() then
-                eEntity:Fire("lock")
-            end
         elseif self:GetRentable() then
             eEntity:SetNetVar("visible", true)
             eEntity:SetNetVar("name", self:GetName())
             eEntity:SetNetVar("ownable", true)
-
-            if self:GetLockOnStart() then
-                eEntity:Fire("lock")
-            end
         end
     end
 
