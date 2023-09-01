@@ -12,6 +12,8 @@ ENT.Instructions	= "Use with care. Always handle with gloves."
 ENT.Spawnable		= true
 ENT.AdminOnly		= true
 
+AccessorFunc( ENT, "m_oHeist", "Heist" )
+
 function ENT:Initialize()
 	-- Sets what model to use
 	self:SetModel( self.Model or "models/props_combine/combine_interface001.mdl" )
