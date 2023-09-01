@@ -319,41 +319,18 @@ function PRP.Property.RegisterProperties()
     end )
 
     -- Turrets
-    PROPERTY:AddSpawnEntity( "npc_turret_ceiling", Vector( -1865, 3008, -120 ), Angle( 0, 64, 0 ), function( eEntity )
+    local function fnTurretCallback( eEntity )
         eEntity:SetKeyValue( "SquadName", "bank" )
 
         local iSpawnFlags = bit.bor( SF_NPC_FADE_CORPSE, SF_NPC_ALWAYSTHINK )
         iSpawnFlags = bit.bor( iSpawnFlags, 32 )
         eEntity:SetKeyValue( "spawnflags", iSpawnFlags )
         eEntity.SpawnFlags = iSpawnFlags
-    end )
-
-    PROPERTY:AddSpawnEntity( "npc_turret_ceiling", Vector( -1773, 3008, -120 ), Angle( 0, 128, 0 ), function( eEntity )
-        eEntity:SetKeyValue( "SquadName", "bank" )
-
-        local iSpawnFlags = bit.bor( SF_NPC_FADE_CORPSE, SF_NPC_ALWAYSTHINK )
-        iSpawnFlags = bit.bor( iSpawnFlags, 32 )
-        eEntity:SetKeyValue( "spawnflags", iSpawnFlags )
-        eEntity.SpawnFlags = iSpawnFlags
-    end )
-
-    PROPERTY:AddSpawnEntity( "npc_turret_ceiling", Vector( -1865, 3505, -120 ), Angle( 0, -64, 0 ), function( eEntity )
-        eEntity:SetKeyValue( "SquadName", "bank" )
-
-        local iSpawnFlags = bit.bor( SF_NPC_FADE_CORPSE, SF_NPC_ALWAYSTHINK )
-        iSpawnFlags = bit.bor( iSpawnFlags, 32 )
-        eEntity:SetKeyValue( "spawnflags", iSpawnFlags )
-        eEntity.SpawnFlags = iSpawnFlags
-    end )
-
-    PROPERTY:AddSpawnEntity( "npc_turret_ceiling", Vector( -1773, 3505, -120 ), Angle( 0, -128, 0 ), function( eEntity )
-        eEntity:SetKeyValue( "SquadName", "bank" )
-
-        local iSpawnFlags = bit.bor( SF_NPC_FADE_CORPSE, SF_NPC_ALWAYSTHINK )
-        iSpawnFlags = bit.bor( iSpawnFlags, 32 )
-        eEntity:SetKeyValue( "spawnflags", iSpawnFlags )
-        eEntity.SpawnFlags = iSpawnFlags
-    end )
+    end
+    PROPERTY:AddSpawnEntity( "npc_turret_ceiling", Vector( -1865, 3008, -120 ), Angle( 0, 64, 0 ), fnTurretCallback )
+    PROPERTY:AddSpawnEntity( "npc_turret_ceiling", Vector( -1773, 3008, -120 ), Angle( 0, 128, 0 ), fnTurretCallback )
+    PROPERTY:AddSpawnEntity( "npc_turret_ceiling", Vector( -1865, 3505, -120 ), Angle( 0, -64, 0 ), fnTurretCallback )
+    PROPERTY:AddSpawnEntity( "npc_turret_ceiling", Vector( -1773, 3505, -120 ), Angle( 0, -128, 0 ), fnTurretCallback )
 
 
     PRP.Property.Register( PROPERTY )
