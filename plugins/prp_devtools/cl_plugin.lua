@@ -339,3 +339,42 @@ concommand.Add( "prp_bugreport", function( pPlayer, sCmd, tArgs )
 
     PRP.Dev.BugReport( bSendScreenshot, bSendTrace, "Quick Bug Report", "Sent via prp_bugreport", bSendConsoleScreenshot )
 end )
+
+local oConvarShowMapEnts = CreateClientConVar( "prp_dev_showmapents", "0", true, false, "Show map entities on the screen." )
+
+function PLUGIN:PostDrawTranslucentRenderables()
+    local bShowMapEnts = oConvarShowMapEnts:GetBool()
+
+    if bShowMapEnts then
+        for _, eEntity in ipairs( ents.GetAll() ) do
+            if not IsValid( eEntity ) then continue end
+            if eEntity:MapCreationID() == 0 then continue end -- Skip viewmodel
+            if not eEntity:CreatedByMap() then continue end
+
+            local iDistanceSqr = eEntity:GetPos():DistToSqr( LocalPlayer():GetPos() )
+            if iDistanceSqr > 2000000 then continue end
+
+            local iAlpha = math.Clamp( 255 - ( iDistanceSqr / 2000000 ) * 255, 0, 255 )
+
+            local vMins, vMaxs = eEntity:GetCollisionBounds()
+            local vPos = eEntity:GetPos()
+            local vAng = eEntity:GetAngles()
+
+            render.DrawWireframeBox( vPos, vAng, vMins, vMaxs, Color( 150, 200, 255, iAlpha ), false )
+
+            local tScreenPos = vPos:ToScreen()
+
+            cam.Start2D()
+                draw.SimpleText(
+                    eEntity:GetClass() .. " (" .. eEntity:MapCreationID() .. ")",
+                    "DebugFixed",
+                    tScreenPos.x,
+                    tScreenPos.y,
+                    Color( 150, 200, 255, iAlpha ),
+                    TEXT_ALIGN_CENTER,
+                    TEXT_ALIGN_CENTER
+                )
+            cam.End2D()
+        end
+    end
+end
