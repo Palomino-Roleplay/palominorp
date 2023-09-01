@@ -1,7 +1,7 @@
 ENT.Type            = "anim"
-ENT.Base            = "base_gmodentity"
+ENT.Base            = "base_anim"
 
-ENT.PrintName		= "Terminal"
+ENT.PrintName		= "Base"
 ENT.Author			= "sil"
 ENT.Category        = "Palomino: Heists"
 ENT.Purpose			= "Heists Plugin"
