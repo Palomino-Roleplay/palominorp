@@ -349,7 +349,6 @@ function PRP.Property.RegisterProperties()
 
 
     PRP.Property.Register( PROPERTY )
-    PROPERTY:Init()
 end
 hook.Add( "InitializedPlugins", "PRP.Property.InitializedPlugins.CreateProperties", PRP.Property.RegisterProperties )
 
