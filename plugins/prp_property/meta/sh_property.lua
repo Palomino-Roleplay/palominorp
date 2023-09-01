@@ -32,6 +32,8 @@ AccessorFunc( PROPERTY, "m_tEntities", "Entities" )
 AccessorFunc( PROPERTY, "m_tDoors", "Doors" )
 AccessorFunc( PROPERTY, "m_tProps", "Props" )
 
+AccessorFunc( PROPERTY, "m_tPermaProps", "PermaProps" )
+
 AccessorFunc( PROPERTY, "m_bLockOnStart", "LockOnStart" )
 AccessorFunc( PROPERTY, "m_tPublicDoors", "PublicDoors" )
 
@@ -54,7 +56,11 @@ function PROPERTY:Init()
     end
 
     for _, tEntity in pairs( self:GetSpawnEntities() or {} ) do
-        self:SpawnEntity( tEntity.class, tEntity.pos, tEntity.angles, tEntity.callback )
+        self:SpawnEntity( tEntity.class, tEntity.pos, tEntity.angles, nil, tEntity.callback )
+    end
+
+    for _, tPermaProp in pairs( self:GetPermaProps() or {} ) do
+        self:SpawnEntity( "prop_physics", tPermaProp.pos, tPermaProp.angles, tPermaProp.model )
     end
 end
 
@@ -318,8 +324,14 @@ if SERVER then
         } )
     end
 
-    function PROPERTY:SpawnEntity( sClass, vPos, aAngles, fnCallback )
+    function PROPERTY:SpawnEntity( sClass, vPos, aAngles, sModel, fnCallback )
         local eEntity = ents.Create( sClass )
+
+        -- @TODO: Log this error well.
+        if not IsValid( eEntity ) then return end
+
+        if sModel then eEntity:SetModel( sModel ) end
+
         eEntity:SetPos( vPos )
         eEntity:SetAngles( aAngles )
         eEntity:SetProperty( self )
@@ -349,6 +361,10 @@ elseif CLIENT then
     end
 
     function PROPERTY:AddSpawnEntity()
+
+    end
+
+    function PROPERTY:SpawnEntity()
 
     end
 end
