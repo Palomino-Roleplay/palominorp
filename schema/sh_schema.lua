@@ -11,7 +11,6 @@ PRP.API_KEY = "aFp2bC5P3bhVHWqNTdI7SXljJOtIu2gb"
 
 ix.util.Include("cl_schema.lua")
 
-ix.util.IncludeDir("libs/thirdparty")
 ix.util.IncludeDir("meta")
 ix.util.IncludeDir("hooks")
 
