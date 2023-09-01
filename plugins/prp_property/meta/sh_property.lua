@@ -329,8 +329,6 @@ if SERVER then
         local eEntity = ents.Create( sClass )
         eEntity:SetPos( vPos )
         eEntity:SetAngles( aAngles )
-        eEntity:SetMoveType( MOVETYPE_NONE )
-
         eEntity:SetProperty( self )
         self.m_tEntities = self.m_tEntities or {}
         table.insert( self.m_tEntities, eEntity )
@@ -339,6 +337,8 @@ if SERVER then
 
         eEntity:Spawn()
         eEntity:Activate()
+
+        eEntity:SetMoveType( MOVETYPE_NONE )
 
         return eEntity
     end
