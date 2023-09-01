@@ -330,6 +330,7 @@ if SERVER then
         eEntity:SetPos( vPos )
         eEntity:SetAngles( aAngles )
         eEntity:SetProperty( self )
+
         self.m_tEntities = self.m_tEntities or {}
         table.insert( self.m_tEntities, eEntity )
 
@@ -338,7 +339,10 @@ if SERVER then
         eEntity:Spawn()
         eEntity:Activate()
 
-        eEntity:SetMoveType( MOVETYPE_NONE )
+        local oPhysics = eEntity:GetPhysicsObject()
+        if IsValid( oPhysics ) then
+            oPhysics:EnableMotion( false )
+        end
 
         return eEntity
     end
