@@ -196,6 +196,7 @@ function PRP.Property.RegisterProperties()
     PRP.Property.Register( PROPERTY )
 
     -- Hospital
+    PROPERTY = setmetatable( {}, { __index = PRP.Property.Meta } )
     PROPERTY:SetID( "hospital" )
     PROPERTY:SetName( "Hospital" )
     PROPERTY:SetRentable( false )
@@ -271,6 +272,61 @@ function PRP.Property.RegisterProperties()
     -- PROPERTY:AddSpawnEntity( "mediaplayer_tv", Vector( 6534, 4931, 224 ), Angle( 0, 0, 0 ) )
     -- PROPERTY:AddSpawnEntity( "mediaplayer_tv", Vector( 7829, 5384, 224 ), Angle( 0, -42, 0 ) )
     PRP.Property.Register( PROPERTY )
+
+    -- Bank
+    PROPERTY = setmetatable( {}, { __index = PRP.Property.Meta } )
+    PROPERTY:SetID( "bank" )
+    PROPERTY:SetName( "Bank" )
+    PROPERTY:SetBounds({
+        {
+            Vector(-192.21844482422,2164.1379394531,512.03125),
+            Vector(-1983.9479980469,3551.96875,-279.94430541992),
+        },
+        {
+            Vector(-1152.03125,3071.8728027344,703.93206787109),
+            Vector(-1280.0834960938,2815.96875,512.16235351563),
+        },
+    })
+    PROPERTY:SetLockOnStart( true )
+    PROPERTY:SetPublicDoors( {
+        [3210] = true,
+        [3211] = true,
+    } )
+    -- Terminals
+    PROPERTY:AddSpawnEntity( "prp_heists_terminal", Vector( -410, 2503, -104 ), Angle( 0, -180, 0 ), function( eEntity )
+        -- eEntity:SetHeist( "bank" )
+        -- eEntity:SetTerminal( "lasers" )
+    end )
+    PROPERTY:AddSpawnEntity( "prp_heists_terminal", Vector( -1125, 3048, -104 ), Angle( 0, 0, 0 ), function( eEntity )
+        -- eEntity:SetHeist( "bank" )
+        -- eEntity:SetTerminal( "security" )
+    end )
+    PROPERTY:AddSpawnEntity( "prp_heists_terminal", Vector( -1221, 3322, -280 ), Angle( 0, 0, 0 ), function( eEntity )
+        -- eEntity:SetHeist( "bank" )
+        -- eEntity:SetTerminal( "vault_1" )
+    end )
+    PROPERTY:AddSpawnEntity( "prp_heists_terminal", Vector( -1221, 3073 -280 ), Angle( 0, 0, 0 ), function( eEntity )
+        -- eEntity:SetHeist( "bank" )
+        -- eEntity:SetTerminal( "vault_2" )
+    end )
+
+    -- Turrets
+    PROPERTY:AddSpawnEntity( "npc_turret_ceiling", Vector( -1865, 3008, -120 ), Angle( 0, 64, 0 ), function( eEntity )
+        -- eEntity:SetHeist( "bank" )
+
+        Print( "what in the fuck?!" )
+
+        eEntity:SetKeyValue( "SquadName", "overwatch" )
+
+        local iSpawnFlags = bit.bor( SF_NPC_FADE_CORPSE, SF_NPC_ALWAYSTHINK )
+        iSpawnFlags = bit.bor( iSpawnFlags, 32 )
+        eEntity:SetKeyValue( "spawnflags", iSpawnFlags )
+        eEntity.SpawnFlags = iSpawnFlags
+
+        Print( eEntity )
+    end )
+    PRP.Property.Register( PROPERTY )
+    PROPERTY:Init()
 end
 hook.Add( "InitializedPlugins", "PRP.Property.InitializedPlugins.CreateProperties", PRP.Property.RegisterProperties )
 
