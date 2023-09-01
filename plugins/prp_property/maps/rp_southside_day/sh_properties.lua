@@ -312,19 +312,42 @@ function PRP.Property.RegisterProperties()
 
     -- Turrets
     PROPERTY:AddSpawnEntity( "npc_turret_ceiling", Vector( -1865, 3008, -120 ), Angle( 0, 64, 0 ), function( eEntity )
-        -- eEntity:SetHeist( "bank" )
-
-        Print( "what in the fuck?!" )
-
-        eEntity:SetKeyValue( "SquadName", "overwatch" )
+        eEntity:SetKeyValue( "SquadName", "bank" )
 
         local iSpawnFlags = bit.bor( SF_NPC_FADE_CORPSE, SF_NPC_ALWAYSTHINK )
         iSpawnFlags = bit.bor( iSpawnFlags, 32 )
         eEntity:SetKeyValue( "spawnflags", iSpawnFlags )
         eEntity.SpawnFlags = iSpawnFlags
-
-        Print( eEntity )
     end )
+
+    PROPERTY:AddSpawnEntity( "npc_turret_ceiling", Vector( -1773, 3008, -120 ), Angle( 0, 128, 0 ), function( eEntity )
+        eEntity:SetKeyValue( "SquadName", "bank" )
+
+        local iSpawnFlags = bit.bor( SF_NPC_FADE_CORPSE, SF_NPC_ALWAYSTHINK )
+        iSpawnFlags = bit.bor( iSpawnFlags, 32 )
+        eEntity:SetKeyValue( "spawnflags", iSpawnFlags )
+        eEntity.SpawnFlags = iSpawnFlags
+    end )
+
+    PROPERTY:AddSpawnEntity( "npc_turret_ceiling", Vector( -1865, 3505, -120 ), Angle( 0, -64, 0 ), function( eEntity )
+        eEntity:SetKeyValue( "SquadName", "bank" )
+
+        local iSpawnFlags = bit.bor( SF_NPC_FADE_CORPSE, SF_NPC_ALWAYSTHINK )
+        iSpawnFlags = bit.bor( iSpawnFlags, 32 )
+        eEntity:SetKeyValue( "spawnflags", iSpawnFlags )
+        eEntity.SpawnFlags = iSpawnFlags
+    end )
+
+    PROPERTY:AddSpawnEntity( "npc_turret_ceiling", Vector( -1773, 3505, -120 ), Angle( 0, -128, 0 ), function( eEntity )
+        eEntity:SetKeyValue( "SquadName", "bank" )
+
+        local iSpawnFlags = bit.bor( SF_NPC_FADE_CORPSE, SF_NPC_ALWAYSTHINK )
+        iSpawnFlags = bit.bor( iSpawnFlags, 32 )
+        eEntity:SetKeyValue( "spawnflags", iSpawnFlags )
+        eEntity.SpawnFlags = iSpawnFlags
+    end )
+
+
     PRP.Property.Register( PROPERTY )
     PROPERTY:Init()
 end
