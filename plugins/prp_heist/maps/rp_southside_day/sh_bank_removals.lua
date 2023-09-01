@@ -8,12 +8,21 @@ local tRemoveEnts = {
     [3194] = true,
     [5096] = true,
 
+    -- Security Office Button Sprites
+    [3420] = true,
+    [3421] = true,
+    [3422] = true,
+    [3423] = true,
+
     -- Vault Wheel Things
     [3127] = true,
     [3128] = true,
 
-    -- Vault Door Button
+    -- Inner Vault Door Button
     [3198] = true,
+
+    -- Outer Vault Door Button
+    [3123] = true,
 }
 
 function PLUGIN:InitPostEntity()
