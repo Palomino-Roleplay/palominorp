@@ -5,6 +5,17 @@ function PRP.Util.GetModelBase( sModel )
     return string.match( sModel, "female_%d%d" ) or string.match( sModel, "male_%d%d" ) or false
 end
 
+-- Yeah, yeah, Color isn't supposed to be called a lot, but this'll be fine if used rarely.
+-- @TODO: Move to UI library prob
+function PRP.Util.LerpColor( iFraction, oFrom, oTo )
+    return Color(
+        Lerp( iFraction, oFrom.r, oTo.r ),
+        Lerp( iFraction, oFrom.g, oTo.g ),
+        Lerp( iFraction, oFrom.b, oTo.b ),
+        Lerp( iFraction, oFrom.a, oTo.a )
+    )
+end
+
 local PLY = FindMetaTable( "Player" )
 
 function PLY:GetModelBase()
