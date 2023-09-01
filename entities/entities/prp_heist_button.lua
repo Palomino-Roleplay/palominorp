@@ -19,8 +19,6 @@ ENT.AdminOnly		= true
 -- @TODO: Change to a better button
 ENT.Model           = "models/maxofs2d/button_02.mdl"
 
-PrintTable( BaseClass )
-
 function ENT:Initialize()
     BaseClass.Initialize( self )
 end

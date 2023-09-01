@@ -12,8 +12,6 @@ ENT.Instructions	= "Use with care. Always handle with gloves."
 ENT.Spawnable		= true
 ENT.AdminOnly		= true
 
-print( "prp_heist_base" )
-
 function ENT:Initialize()
 	-- Sets what model to use
 	self:SetModel( self.Model or "models/props_combine/combine_interface001.mdl" )
