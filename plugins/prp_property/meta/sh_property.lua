@@ -329,13 +329,16 @@ if SERVER then
         local eEntity = ents.Create( sClass )
         eEntity:SetPos( vPos )
         eEntity:SetAngles( aAngles )
-        eEntity:Spawn()
+        eEntity:SetMoveType( MOVETYPE_NONE )
 
         eEntity:SetProperty( self )
         self.m_tEntities = self.m_tEntities or {}
         table.insert( self.m_tEntities, eEntity )
 
         if fnCallback then fnCallback( eEntity ) end
+
+        eEntity:Spawn()
+        eEntity:Activate()
 
         return eEntity
     end
