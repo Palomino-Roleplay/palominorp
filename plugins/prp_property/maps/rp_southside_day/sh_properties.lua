@@ -350,7 +350,7 @@ function PRP.Property.RegisterProperties()
 
     PRP.Property.Register( PROPERTY )
 end
-hook.Add( "InitializedPlugins", "PRP.Property.InitializedPlugins.CreateProperties", PRP.Property.RegisterProperties )
+hook.Add( "InitPostEntity", "PRP.Property.InitPostEntity.CreateProperties", PRP.Property.RegisterProperties )
 
 if SERVER then
     concommand.Add( "prp_properties_register", function( pPlayer )

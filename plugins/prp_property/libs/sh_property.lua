@@ -10,9 +10,7 @@ function PRP.Property.Register( oProperty )
         PRP.Property.Rentable[oProperty:GetID()] = oProperty
     end
 
-    if ix.config.Get("DeveloperMode", false) then
-        oProperty:Init()
-    end
+    oProperty:Init()
 
     -- @TODO: Refuse to register properties that don't have required data (name, id, category, etc.)
 end
