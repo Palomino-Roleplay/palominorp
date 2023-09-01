@@ -12,6 +12,7 @@ function PLUGIN:InitializedPlugins()
         size = iLargeFontSize * PRP.UI.ScaleFactor,
         weight = 700,
         antialias = true,
+        additive = true,
     } )
 
     surface.CreateFont( "PRP.UI.Nameplates.Name.Blurred", {
@@ -20,12 +21,23 @@ function PLUGIN:InitializedPlugins()
         blursize = ( iLargeFontSize * PRP.UI.ScaleFactor ) / 8,
         weight = 700,
         antialias = true,
+        additive = true,
+    } )
+
+    surface.CreateFont( "PRP.UI.Nameplates.Name.VeryBlurred", {
+        font = "Inter",
+        size = iLargeFontSize * PRP.UI.ScaleFactor,
+        blursize = ( iLargeFontSize * PRP.UI.ScaleFactor ) / 3,
+        weight = 700,
+        antialias = true,
+        additive = true,
     } )
 
     surface.CreateFont( "PRP.UI.Nameplates.ID", {
         font = "Oxygen Mono",
         size = iSmallFontSize * PRP.UI.ScaleFactor,
         antialias = true,
+        additive = true,
     } )
 
     surface.CreateFont( "PRP.UI.Nameplates.Tag", {
@@ -43,6 +55,7 @@ function PLUGIN:InitializedPlugins()
         size = iSmallFontSize * PRP.UI.ScaleFactor,
         blursize = ( iSmallFontSize * PRP.UI.ScaleFactor ) / 4,
         antialias = true,
+        additive = true,
     } )
 end
 
@@ -68,10 +81,13 @@ function PRP.UI.Nameplates.Draw( pPlayer, tScreenPos )
 
     local iDistanceSqr = LocalPlayer():GetPos():DistToSqr( pPlayer:GetPos() )
 
+    -- @TODO: Apply the alpha multiplayer in the original function since we did the distance check there
     local iDistanceMultiplier = math.Clamp( 1 - ( ( iDistanceSqr - (iNameplateDrawDistanceSqr - iNameplateFadeDistanceSqr) ) / iNameplateFadeDistanceSqr ), 0, 1 )
     local iVoiceMultiplier = math.ease.OutCubic( pPlayer:VoiceVolume() )
 
     local iAlpha = math.Clamp( ( (iDistanceMultiplier * 0.25) + (0.75 * iVoiceMultiplier) ) * 255, 0, 255 )
+
+    local bContextOpen = IsValid( g_ContextMenu ) and g_ContextMenu:IsVisible()
 
     -- draw.SimpleText( "NEW PLAYER", "PRP.UI.Nameplates.Tag", tScreenPos.x, tScreenPos.y - (20 + 4 + iLargeFontSize * PRP.UI.ScaleFactor), Color( 255, 255, 255, iAlpha * 1 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
     -- draw.SimpleText( "NEW PLAYER", "PRP.UI.Nameplates.Tag.Blurred", tScreenPos.x, tScreenPos.y - (20 + 4 + iLargeFontSize * PRP.UI.ScaleFactor), Color( 0, 255, 0, iAlpha * 1 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
@@ -83,29 +99,87 @@ function PRP.UI.Nameplates.Draw( pPlayer, tScreenPos )
     -- draw.SimpleText( "EQUIPPING MP5", "PRP.UI.Nameplates.Tag.Blurred", tScreenPos.x, tScreenPos.y - ((20 + 4 + 3) * PRP.UI.ScaleFactor), Color( 0, 0, 0, iDistanceMultiplier * 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
     -- draw.SimpleText( "EQUIPPING MP5", "PRP.UI.Nameplates.Tag", tScreenPos.x, tScreenPos.y - ((20 + 4 + 3) * PRP.UI.ScaleFactor), Color( 255, 40, 40, iDistanceMultiplier * 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
 
-    -- ID #
     local iYPos = tScreenPos.y
-    draw.SimpleText( "#" .. string.format( "%06d", pPlayer:GetCharacter():GetID() ), "PRP.UI.Nameplates.ID", tScreenPos.x, tScreenPos.y, Color( 255, 255, 255, iAlpha * 0.45 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+    --
+    -- Character ID
+    --
+    local oIDColor = bContextOpen and Color( 255, 255, 255, iAlpha ) or Color( 255, 255, 255, iAlpha / 2 )
+    draw.SimpleText(
+        "#" .. string.format( "%04d", pPlayer:GetCharacter():GetID() ),
+        "PRP.UI.Nameplates.ID",
+        tScreenPos.x,
+        tScreenPos.y,
+        oIDColor,
+        TEXT_ALIGN_CENTER,
+        TEXT_ALIGN_BOTTOM
+    )
 
-    -- RP Name
+
     iYPos = iYPos - ((iSmallFontSize + 4) * PRP.UI.ScaleFactor)
+    --
+    -- Nametag
+    --
+    local oNametagColor = bContextOpen and Color( 255, 255, 255, iAlpha ) or Color(
+        137 + ( 118 * pPlayer:VoiceVolume() ),
+        191 + ( 64 * pPlayer:VoiceVolume() ),
+        255,
+        iAlpha / 2
+    )
+    local oActionColor = Color( 255, 206, 73, iDistanceMultiplier * 255 )
+    local oShadowColor = oNametagColor
     if pPlayer:GetNetVar( "actionString", nil ) then
         -- Name (Blurred)
         draw.SimpleText( pPlayer:Nick(), "PRP.UI.Nameplates.Name.Blurred", tScreenPos.x, iYPos, Color( 255, 255, 255, iAlpha ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
 
-        -- Action
-        iYPos = iYPos - (3 * PRP.UI.ScaleFactor)
-        local sActionString = pPlayer:GetNetVar( "actionString", "" )
 
+        -- Action
+
+        -- Center it over the name
+        iYPos = iYPos - ( ( iLargeFontSize - iSmallFontSize ) / 2 )
+
+        local sActionString = pPlayer:GetNetVar( "actionString", "" )
         if (sActionString:sub(1, 1) == "@") then
             sActionString = L2(sActionString:sub(2)) or sActionString
         end
 
-        draw.SimpleText( string.upper( sActionString ), "PRP.UI.Nameplates.Tag.Blurred", tScreenPos.x, iYPos, Color( 0, 0, 0, iDistanceMultiplier * 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
-        draw.SimpleText( string.upper( sActionString ), "PRP.UI.Nameplates.Tag", tScreenPos.x, iYPos, Color( 255, 206, 73, iDistanceMultiplier * 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+        draw.SimpleText( string.upper( sActionString ), "PRP.UI.Nameplates.Tag.Blurred", tScreenPos.x, iYPos, oActionColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+        draw.SimpleText( string.upper( sActionString ), "PRP.UI.Nameplates.Tag", tScreenPos.x, iYPos, oActionColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
 
     else
-        draw.SimpleText( pPlayer:Nick(), "PRP.UI.Nameplates.Name", tScreenPos.x, iYPos, Color( 137 + ( 26 * pPlayer:VoiceVolume() ), 191 + ( 64 * pPlayer:VoiceVolume() ), 255, iAlpha ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+        if pPlayer:IsDisguised() then
+            -- Draw a blur if the player is disguised (has a mask on)
+            draw.SimpleText(
+                pPlayer:Nick(),
+                "PRP.UI.Nameplates.Name.VeryBlurred",
+                tScreenPos.x,
+                iYPos,
+                oNametagColor,
+                TEXT_ALIGN_CENTER,
+                TEXT_ALIGN_BOTTOM
+            )
+        else
+            -- Glow
+            draw.SimpleText(
+                pPlayer:Nick(),
+                "PRP.UI.Nameplates.Name.Blurred",
+                tScreenPos.x,
+                iYPos,
+                oShadowColor,
+                TEXT_ALIGN_CENTER,
+                TEXT_ALIGN_BOTTOM
+            )
+
+            -- Name
+            draw.SimpleText(
+                pPlayer:Nick(),
+                "PRP.UI.Nameplates.Name",
+                tScreenPos.x,
+                iYPos,
+                oNametagColor,
+                TEXT_ALIGN_CENTER,
+                TEXT_ALIGN_BOTTOM
+            )
+        end
     end
 end
 
@@ -213,7 +287,8 @@ function PLUGIN:PostDrawTranslucentRenderables()
             -- mask = MASK_SHOT_HULL,
         })
 
-        if tTrace.Entity ~= pPlayer then continue end
+        if tTrace.Entity ~= pPlayer then
+            Print(tTrace.Entity) continue end
 
         -- Drawing below this point.
 
@@ -227,12 +302,12 @@ function PLUGIN:PostDrawTranslucentRenderables()
         local vUnitPos = (vNametagPos - vOurEyePos)
         vUnitPos.z = 0
         vUnitPos:Normalize()
-        local vOurAimVector = LocalPlayer():GetAimVector()
+        local vOurAimVector = EyeVector()
         vOurAimVector.z = 0
         local iAimDiff = vUnitPos:Dot( vOurAimVector )
 
         local iOurMinAimDiff = 0.6
-        if iAimDiff < iOurMinAimDiff then continue end
+        if iAimDiff < iOurMinAimDiff then Print("2") continue end
 
         -- Condition 2: Other player looking at LocalPlayer
         local vLookAtLocalPlayer = vOurEyePos - vTheirEyePos
@@ -244,7 +319,7 @@ function PLUGIN:PostDrawTranslucentRenderables()
         local theirAimDiff = vLookAtLocalPlayer:Dot( vTheirAimVector )
 
         local iTheirMinAimDiff = -0.5
-        if ( pPlayer:VoiceVolume() == 0 and not pPlayer:GetNetVar( "actionString", nil ) ) and theirAimDiff < iTheirMinAimDiff then continue end  -- -1 for exact opposite, < -0.99 gives a tiny bit of leeway
+        if ( pPlayer:VoiceVolume() == 0 and not pPlayer:GetNetVar( "actionString", nil ) ) and theirAimDiff < iTheirMinAimDiff then Print("3") continue end  -- -1 for exact opposite, < -0.99 gives a tiny bit of leeway
 
         local iAlpha = 255
 
