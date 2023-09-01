@@ -14,7 +14,7 @@ end
 
 function PLUGIN:OnPhysgunPickup( pPlayer, eEntity )
     -- @TODO: Make this (& other construction admin checks) permissions based
-    -- if pPlayer:IsSuperAdmin() then return end
+    if CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.BypassPhysgunLimits" ) then return end
     if not IsValid( eEntity ) then return end
 
     if not eEntity:GetProperty() then return end
@@ -50,6 +50,7 @@ end
 
 function PLUGIN:PhysgunDrop( pPlayer, eEntity )
     -- if pPlayer:IsAdmin() then return end
+    if CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.BypassPhysgunLimits" ) then return end
     if not IsValid( eEntity ) then return end
 
     if not eEntity:GetProperty() then return end
