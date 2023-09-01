@@ -277,6 +277,11 @@ function PRP.Property.RegisterProperties()
     PROPERTY = setmetatable( {}, { __index = PRP.Property.Meta } )
     PROPERTY:SetID( "bank" )
     PROPERTY:SetName( "Bank" )
+    PROPERTY:SetPermaProps( {
+        { pos = Vector( -1949, 3411, -280 ), angles = Angle( 0, 11, 0 ), model = "models/props/cs_militia/crate_extrasmallmill.mdl" },
+        { pos = Vector( -1947, 3353, -280 ), angles = Angle( 0, 0, 0 ), model = "models/props/cs_militia/crate_extrasmallmill.mdl" },
+        { pos = Vector( -1949, 3353, -231 ), angles = Angle( 0, 0, 0 ), model = "models/props/cs_militia/crate_extrasmallmill.mdl" },
+    } )
     PROPERTY:SetBounds({
         {
             Vector(-192.21844482422,2164.1379394531,512.03125),
@@ -294,8 +299,8 @@ function PRP.Property.RegisterProperties()
         [3211] = true,
 
         -- Outer Vault Doors
-        [3212] = true,
-        [3213] = true,
+        [3112] = true,
+        [3113] = true,
 
         -- Security Gates
         [3141] = true, -- Apparently it's just one entity lmao
@@ -320,8 +325,17 @@ function PRP.Property.RegisterProperties()
 
     -- Buttons
     PROPERTY:AddSpawnEntity( "prp_heist_button", Vector( -585, 2559, -45 ), Angle( 90, 90, 180 ), function( eEntity )
-        -- eEntity:SetHeist( "bank" )
-        -- eEntity:SetTerminal( "vault_2" )
+        eEntity.Use = function( pPlayer )
+            if not IsValid( pPlayer ) then return end
+
+            eEntity:EmitSound( "buttons/blip1.wav", 60 )
+
+            timer.Simple( 1, function()
+                ents.GetMapCreatedEntity( 3112 ):Fire( "toggle" )
+                ents.GetMapCreatedEntity( 3113 ):Fire( "toggle" )
+            end )
+
+        end
     end )
 
     -- Turrets
