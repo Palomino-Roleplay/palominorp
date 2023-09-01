@@ -16,6 +16,7 @@ end
 function PLUGIN:PostDrawTranslucentRenderables()
     if not IsValid( PRP.Prop.PhysgunnedEntity ) then return end
     if not PRP.Prop.PhysgunnedEntity:GetProperty() then return end
+    if not PRP.Prop.PhysgunnedEntity:GetCategory() then return end
 
     local oProperty = PRP.Prop.PhysgunnedEntity:GetProperty()
 
