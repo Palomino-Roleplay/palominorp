@@ -1,4 +1,4 @@
-PLUGIN.name = "Heist"
+PLUGIN.name = "Palomino: Heist"
 PLUGIN.author = "sil"
 PLUGIN.description = ""
 

@@ -1,6 +1,6 @@
 local PLUGIN = PLUGIN
 
-PLUGIN.name = "Property System"
+PLUGIN.name = "Palomino: Property System"
 PLUGIN.author = "sil"
 PLUGIN.description = ""
 

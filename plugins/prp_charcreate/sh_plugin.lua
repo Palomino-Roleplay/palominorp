@@ -1,6 +1,7 @@
 local PLUGIN = PLUGIN
 
-PLUGIN.name = "Character Creation Menu"
+-- @TODO: Remove this module when we make our own
+PLUGIN.name = "Palomino: Character Creation Menu"
 PLUGIN.author = "sil"
 PLUGIN.description = "Edits to the character creation menu & process."
 

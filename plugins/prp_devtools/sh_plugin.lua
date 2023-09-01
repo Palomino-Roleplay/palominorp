@@ -1,6 +1,6 @@
 local PLUGIN = PLUGIN
 
-PLUGIN.name = "Dev Tools"
+PLUGIN.name = "Palomino: Dev Tools"
 PLUGIN.author = "sil"
 PLUGIN.description = "Tools for debugging and development."
 

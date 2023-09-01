@@ -1,6 +1,6 @@
 local PLUGIN = PLUGIN
 
-PLUGIN.name = "User Interface"
+PLUGIN.name = "Palomino: UI"
 PLUGIN.author = "sil"
 PLUGIN.description = ""
 

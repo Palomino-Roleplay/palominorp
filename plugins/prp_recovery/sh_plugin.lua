@@ -1,4 +1,4 @@
-PLUGIN.name = "Recovery"
+PLUGIN.name = "Palomino: Recovery"
 PLUGIN.author = "sil"
 PLUGIN.description = "Recovery in hospital after death"
 

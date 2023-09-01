@@ -1,6 +1,6 @@
 local PLUGIN = PLUGIN
 
-PLUGIN.name = "Police"
+PLUGIN.name = "Palomino: Police"
 PLUGIN.author = "sil"
 PLUGIN.description = "Adds basic police functionality."
 
