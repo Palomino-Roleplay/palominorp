@@ -7,7 +7,7 @@ DEFINE_BASECLASS( "prp_heist_base" )
 ENT.Type            = "anim"
 ENT.Base            = "prp_heist_base"
 
-ENT.PrintName		= "Terminal"
+ENT.PrintName		= "Button"
 ENT.Author			= "sil"
 ENT.Category        = "Palomino: Heists"
 ENT.Purpose			= "Heists Plugin"
