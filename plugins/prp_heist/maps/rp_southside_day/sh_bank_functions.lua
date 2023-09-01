@@ -30,3 +30,23 @@ function PRP.Heist.Southside.ToggleAlarm()
     local eEntity = ents.GetMapCreatedEntity( iAlarmButtonID )
     eEntity:Fire("use")
 end
+
+
+local iVaultButtonID = 5095
+function PRP.Heist.Southside.ToggleVault()
+    local eEntity = ents.GetMapCreatedEntity( iVaultButtonID )
+    eEntity:Fire("use")
+end
+
+
+local iOuterDoor1 = 3112
+local iOuterDoor2 = 3113
+function PRP.Heist.Southside.ToggleOuterDoors()
+    local eEntity1 = ents.GetMapCreatedEntity( iOuterDoor1 )
+    local eEntity2 = ents.GetMapCreatedEntity( iOuterDoor2 )
+
+    if not eEntity1 or not eEntity2 then return end
+
+    eEntity1:Fire("toggle")
+    eEntity2:Fire("toggle")
+end
