@@ -21,7 +21,7 @@ function PLUGIN:InitializedPlugins()
         blursize = ( iLargeFontSize * PRP.UI.ScaleFactor ) / 8,
         weight = 700,
         antialias = true,
-        additive = true,
+        additive = false,
     } )
 
     surface.CreateFont( "PRP.UI.Nameplates.Name.VeryBlurred", {
@@ -77,29 +77,19 @@ local function GetNametagPos( pPlayer )
 end
 
 function PRP.UI.Nameplates.Draw( pPlayer, tScreenPos )
-    -- local vPos = GetNametagPos( pPlayer ) + Vector( 0, 0, 10 )
-
     local iDistanceSqr = LocalPlayer():GetPos():DistToSqr( pPlayer:GetPos() )
 
     -- @TODO: Apply the alpha multiplayer in the original function since we did the distance check there
     local iDistanceMultiplier = math.Clamp( 1 - ( ( iDistanceSqr - (iNameplateDrawDistanceSqr - iNameplateFadeDistanceSqr) ) / iNameplateFadeDistanceSqr ), 0, 1 )
     local iVoiceMultiplier = math.ease.OutCubic( pPlayer:VoiceVolume() )
-
     local iAlpha = math.Clamp( ( (iDistanceMultiplier * 0.25) + (0.75 * iVoiceMultiplier) ) * 255, 0, 255 )
 
     local bContextOpen = IsValid( g_ContextMenu ) and g_ContextMenu:IsVisible()
 
-    -- draw.SimpleText( "NEW PLAYER", "PRP.UI.Nameplates.Tag", tScreenPos.x, tScreenPos.y - (20 + 4 + iLargeFontSize * PRP.UI.ScaleFactor), Color( 255, 255, 255, iAlpha * 1 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
-    -- draw.SimpleText( "NEW PLAYER", "PRP.UI.Nameplates.Tag.Blurred", tScreenPos.x, tScreenPos.y - (20 + 4 + iLargeFontSize * PRP.UI.ScaleFactor), Color( 0, 255, 0, iAlpha * 1 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
 
-    -- Equipping
-    -- draw.SimpleText( pPlayer:Nick(), "PRP.UI.Nameplates.Name.Blurred", tScreenPos.x, tScreenPos.y - ((20 + 4) * PRP.UI.ScaleFactor), Color( 255, 255, 255, iAlpha ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
-    -- draw.SimpleText( "#" .. string.format( "%06d", pPlayer:GetCharacter():GetID() ), "PRP.UI.Nameplates.ID", tScreenPos.x, tScreenPos.y, Color( 255, 255, 255, iAlpha * 0.45 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
-
-    -- draw.SimpleText( "EQUIPPING MP5", "PRP.UI.Nameplates.Tag.Blurred", tScreenPos.x, tScreenPos.y - ((20 + 4 + 3) * PRP.UI.ScaleFactor), Color( 0, 0, 0, iDistanceMultiplier * 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
-    -- draw.SimpleText( "EQUIPPING MP5", "PRP.UI.Nameplates.Tag", tScreenPos.x, tScreenPos.y - ((20 + 4 + 3) * PRP.UI.ScaleFactor), Color( 255, 40, 40, iDistanceMultiplier * 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
 
     local iYPos = tScreenPos.y
+
     --
     -- Character ID
     --
@@ -115,7 +105,8 @@ function PRP.UI.Nameplates.Draw( pPlayer, tScreenPos )
     )
 
 
-    iYPos = iYPos - ((iSmallFontSize + 4) * PRP.UI.ScaleFactor)
+
+    iYPos = iYPos - iSmallFontSize + 16 * PRP.UI.ScaleFactor
     --
     -- Nametag
     --
@@ -127,6 +118,29 @@ function PRP.UI.Nameplates.Draw( pPlayer, tScreenPos )
     )
     local oActionColor = Color( 255, 206, 73, iDistanceMultiplier * 255 )
     local oShadowColor = oNametagColor
+
+    local iMinHealthForEffect = 50
+    if pPlayer:Health() < iMinHealthForEffect then
+        local iLowHealthEffectMultiplier = ( iMinHealthForEffect - pPlayer:Health() ) / iMinHealthForEffect
+
+        local oMaxColor = Color( 255, 137, 137, iAlpha / 2 )
+
+        -- I know, I know. I'm sorry.
+        -- This does a couple things:
+        -- 1. Makes the color pulse
+        -- 2. Pulse increases frequency with iLowHealthEffectMultiplier
+        -- 3. Pulse is more intense with iLowHealthEffectMultiplier
+        oShadowColor = PRP.Util.LerpColor(
+            math.abs( math.sin( CurTime() * ( 3 + ( 4 * iLowHealthEffectMultiplier ) ) ) * iLowHealthEffectMultiplier
+        ), oNametagColor, oMaxColor )
+
+        -- Make main nametag more "red"
+        -- local iNametagOldRed = oNametagColor.r
+        -- oNametagColor.r = Lerp( iLowHealthEffectMultiplier, oNametagColor.r, oNametagColor.b )
+        -- oNametagColor.g = Lerp( iLowHealthEffectMultiplier, oNametagColor.b, iNametagOldRed )
+    end
+
+
     if pPlayer:GetNetVar( "actionString", nil ) then
         -- Name (Blurred)
         draw.SimpleText( pPlayer:Nick(), "PRP.UI.Nameplates.Name.Blurred", tScreenPos.x, iYPos, Color( 255, 255, 255, iAlpha ), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
@@ -149,7 +163,7 @@ function PRP.UI.Nameplates.Draw( pPlayer, tScreenPos )
         if pPlayer:IsDisguised() then
             -- Draw a blur if the player is disguised (has a mask on)
             draw.SimpleText(
-                pPlayer:Nick(),
+                "Unknown Person",
                 "PRP.UI.Nameplates.Name.VeryBlurred",
                 tScreenPos.x,
                 iYPos,
@@ -181,6 +195,17 @@ function PRP.UI.Nameplates.Draw( pPlayer, tScreenPos )
             )
         end
     end
+
+    iYPos = iYPos - iLargeFontSize + 0 * PRP.UI.ScaleFactor
+    --
+    -- New Player
+    --
+
+    -- local oNewPlayerTextColor = Color( 255, 255, 255, iAlpha / 2 )
+    -- local oNewPlayerShadowColor = Color( 128, 255, 128, iAlpha / 2 )
+    -- draw.SimpleText( "NEW PLAYER", "PRP.UI.Nameplates.Tag", tScreenPos.x, iYPos, oNewPlayerTextColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+    -- draw.SimpleText( "NEW PLAYER", "PRP.UI.Nameplates.Tag.Blurred", tScreenPos.x, iYPos, oNewPlayerShadowColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+
 end
 
 local oHeartNoAlphatest = Material( "prp/icons/hud/heart.png" )
