@@ -309,13 +309,21 @@ function PRP.Property.RegisterProperties()
         [3125] = true,
     } )
     -- Terminals
-    PROPERTY:AddSpawnEntity( "prp_heist_terminal", Vector( -410, 2503, -104 ), Angle( 0, -180, 0 ), function( eEntity )
-        -- eEntity:SetHeist( "bank" )
-        -- eEntity:SetTerminal( "lasers" )
-    end )
     PROPERTY:AddSpawnEntity( "prp_heist_terminal", Vector( -1125, 3048, -104 ), Angle( 0, 0, 0 ), function( eEntity )
         -- eEntity:SetHeist( "bank" )
         -- eEntity:SetTerminal( "security" )
+
+        eEntity.OnSuccess = function( this )
+            PRP.Heist.Southside.ToggleOuterDoors()
+        end
+    end )
+    PROPERTY:AddSpawnEntity( "prp_heist_terminal", Vector( -410, 2503, -104 ), Angle( 0, -180, 0 ), function( eEntity )
+        -- eEntity:SetHeist( "bank" )
+        -- eEntity:SetTerminal( "lasers" )
+
+        eEntity.OnSuccess = function( this )
+            PRP.Heist.Southside.ToggleBankLasers()
+        end
     end )
     PROPERTY:AddSpawnEntity( "prp_heist_terminal", Vector( -1221, 3322, -280 ), Angle( 0, 0, 0 ), function( eEntity )
         -- eEntity:SetHeist( "bank" )
@@ -354,6 +362,7 @@ function PRP.Property.RegisterProperties()
     PROPERTY:AddSpawnEntity( "npc_turret_ceiling", Vector( -1773, 3008, -120 ), Angle( 0, 128, 0 ), fnTurretCallback )
     PROPERTY:AddSpawnEntity( "npc_turret_ceiling", Vector( -1865, 3505, -120 ), Angle( 0, -64, 0 ), fnTurretCallback )
     PROPERTY:AddSpawnEntity( "npc_turret_ceiling", Vector( -1773, 3505, -120 ), Angle( 0, -128, 0 ), fnTurretCallback )
+    PROPERTY:AddSpawnEntity( "prp_heist_switch", Vector( -1654, 3251, -217 ), Angle( 0, -90, 0 ) )
 
 
     PRP.Property.Register( PROPERTY )
