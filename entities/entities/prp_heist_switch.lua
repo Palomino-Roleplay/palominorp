@@ -47,6 +47,21 @@ if CLIENT then
 elseif SERVER then
     if SERVER then util.AddNetworkString( "PRP_Heist_Switch.KeypadType" ) end
 
+    function ENT:Toggle()
+        local bStatus = self:GetNetVar( "state", false )
+        self:SetNetVar( "state", not bStatus )
+
+        if not self:GetHeist() then return end
+        local oHeist = self:GetHeist()
+        local tTurrets = oHeist:GetTurrets() or {}
+
+        for _, eTurret in pairs( tTurrets ) do
+            if not IsValid( eTurret ) then continue end
+
+            eTurret:Fire( bStatus and "enable" or "disable" )
+        end
+    end
+
     function ENT:KeypadType( iKey )
         local sCode = self:GetNetVar( "code", "" )
 
@@ -56,7 +71,13 @@ elseif SERVER then
         self:SetNetVar( "code", sNewCode )
 
         if #sNewCode >= 4 then
-            self:EmitSound( "buttons/button8.wav" )
+            if sNewCode == "1337" then
+                self:EmitSound( "buttons/button3.wav" )
+                self:Toggle()
+            else
+                self:EmitSound( "buttons/button8.wav" )
+            end
+
             timer.Simple( 1, function()
                 self:SetNetVar( "code", "" )
             end )
@@ -150,7 +171,7 @@ function ENT:DrawTranslucent( iFlags )
     end
 
     -- Turrets
-    for i, eTurret in ipairs( self.tTurrets or {} ) do
+    for i, eTurret in ipairs( self:GetHeist():GetTurrets() or {} ) do
         if not IsValid( eTurret ) then continue end
 
         local iSequence = eTurret:GetSequence()
