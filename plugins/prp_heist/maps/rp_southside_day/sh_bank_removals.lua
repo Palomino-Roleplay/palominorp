@@ -18,6 +18,10 @@ local tRemoveEnts = {
     -- Random shit (weird key lock things at the bank vault pre-room)
     [5075] = true,
     [5076] = true,
+
+    -- Bank blinking lasers
+    [3196] = true,
+    [3143] = true,
 }
 
 local tHideEnts = {
@@ -54,9 +58,25 @@ function PLUGIN:InitPostEntity()
     if eBankFloor then
         eBankFloor:SetPos( Vector( -1788, 3180, -304 ) )
     end
+
+    -- Enable bank lasers on init
+    if SERVER then PRP.Heist.Southside.SetBankLasers( true ) end
 end
 
 function PLUGIN:AcceptInput( eReceiver, sInput, eActivator, eCaller, xValue )
+    -- Disable the blinking laser at the back
+    if IsValid( eCaller ) and eCaller:MapCreationID() == 3208 then
+        return true
+    end
+
+    -- Print("Input:")
+    -- Print("Receiver: ", eReceiver, " (", eReceiver:GetName(), ")", " [", eReceiver:MapCreationID(), "]")
+    -- Print("Input: ", sInput)
+    -- Print("Activator: ", eActivator, " (", eActivator:MapCreationID(), ")")
+    -- Print("Caller: ", eCaller, " [", eCaller:MapCreationID(), "] ", " (", eCaller:GetName(), ")")
+    -- Print("Value: ", xValue)
+    -- Print("\n")
+
     if sInput ~= "Use" then return end
     if IsValid( eReceiver ) and eReceiver:CreatedByMap() and tHideEnts[eReceiver:MapCreationID()] then
         -- Do some logging here maybe
@@ -65,3 +85,9 @@ function PLUGIN:AcceptInput( eReceiver, sInput, eActivator, eCaller, xValue )
         end
     end
 end
+
+-- 3196: Clientside displayed end bank lasers
+
+-- 3218: Trigger for full bank lasers
+-- 3143: Trigger for end bank lasers?
+-- 3208: End bank lasers logic timer
