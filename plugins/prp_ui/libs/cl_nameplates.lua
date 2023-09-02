@@ -214,7 +214,7 @@ local oGradientLeft = Material( "prp/icons/hud/gradient_left.png" )
 local oHealthbarPill = Material( "prp/icons/hud/healthbar_pill_5pxc.png" )
 
 hook.Add( "HUDPaint", "PRP.UI.Nameplates.HUDPaint", function()
-    if true then return end
+    -- if true then return end
 
 	local iXPadding = 16
 	local iYPadding = 20
