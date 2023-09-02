@@ -40,6 +40,8 @@ local tHideEnts = {
 }
 
 function PLUGIN:InitPostEntity()
+    if CLIENT then return end
+
     for _, eEntity in pairs(ents.GetAll()) do
         if not IsValid( eEntity ) then continue end
         if tRemoveEnts[eEntity:MapCreationID()] then eEntity:Remove() end
@@ -60,7 +62,11 @@ function PLUGIN:InitPostEntity()
     end
 
     -- Enable bank lasers on init
-    if SERVER then PRP.Heist.Southside.SetBankLasers( true ) end
+    PRP.Heist.Southside.SetBankLasers( true )
+
+    -- Set inner bank vault door (gate) to highest lockpicking level
+    local eBankInnerDoor = ents.GetMapCreatedEntity( 3201 )
+    eBankInnerDoor:SetNWInt( "lockpeekLevel", 3 )
 end
 
 function PLUGIN:AcceptInput( eReceiver, sInput, eActivator, eCaller, xValue )
