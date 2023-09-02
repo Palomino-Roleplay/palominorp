@@ -33,16 +33,22 @@ function ENT:OnRemove()
     end
 end
 
+local iBankLaserTriggerID = 3218
+local iBankLaserDisplayID = 3221
 function ENT:Use( pPlayer )
+    local bLasersHidden = ents.GetMapCreatedEntity( iBankLaserDisplayID ):GetNoDraw()
     if self:GetNetVar( "emitting", false ) then
         self:SetNetVar( "emitting", false )
         if self.sound then self:StopLoopingSound( self.sound ) end
+
+        ents.GetMapCreatedEntity( iBankLaserTriggerID ):Fire( bLasersHidden and "disable" or "enable" )
         return
     end
 
     self:SetNetVar( "emitting", true )
     self:SetNetVar( "emitStart", CurTime() )
     self.sound = self:StartLoopingSound( "ambient/gas/steam2.wav" )
+    ents.GetMapCreatedEntity( iBankLaserTriggerID ):Fire( "disable" )
 end
 
 local tLaserZone = {
