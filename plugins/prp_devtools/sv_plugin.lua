@@ -70,3 +70,19 @@ function PLUGIN.Print( sText, pPlayer )
         "\n"
     )
 end
+
+concommand.Add( "prp_dev_findentsbyname", function( pPlayer, sCommand, tArgs, sArgs )
+    if CLIENT then return end
+    local sName = string.lower( tArgs[1] )
+    if not sName then return end
+
+    -- local tFound = {}
+    for _, ent in ipairs( ents.GetAll() ) do
+        if not IsValid( ent ) then continue end
+        if string.match( string.lower( ent:GetName() ), sName ) then
+            Print( ent, ": ", ent:GetName(), " (" .. ent:MapCreationID() .. ")" )
+        end
+    end
+
+    -- Print( tFound )
+end )
