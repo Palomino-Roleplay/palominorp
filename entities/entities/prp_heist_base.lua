@@ -12,7 +12,16 @@ ENT.Instructions	= "Use with care. Always handle with gloves."
 ENT.Spawnable		= true
 ENT.AdminOnly		= true
 
-AccessorFunc( ENT, "m_oHeist", "Heist" )
+function ENT:SetHeist( oHeist )
+	self.m_oHeist = oHeist
+
+	if SERVER then self:SetNetVar( "heistID", oHeist:GetID() ) end
+end
+
+function ENT:GetHeist()
+	local sHeistID = self:GetNetVar( "heistID" )
+	return self.m_oHeist or ( sHeistID and PRP.Heist.Get( sHeistID ) or nil )
+end
 
 function ENT:Initialize()
 	-- Sets what model to use
