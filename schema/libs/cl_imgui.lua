@@ -1,4 +1,4 @@
-local imgui = {}
+imgui = {}
 
 imgui.skin = {
 	background = Color(0, 0, 0, 0),
@@ -473,5 +473,3 @@ function imgui.xTextButton(text, font, x, y, w, h, borderWidth, color, hoverClr,
 
 	return clicked
 end
-
-return imgui
