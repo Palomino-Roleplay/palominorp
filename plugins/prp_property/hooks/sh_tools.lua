@@ -60,7 +60,7 @@ function PLUGIN:CanTool( pPlayer, tTrace, sToolName, tTool, iButton )
 
     if not oProperty:HasAccess( cCharacter ) then Print("no ply property access") return false end
 
-    if PRP.Property.Tools.Global[sToolName] then return end
+    if PRP.Property.Tools.Global[sToolName] then Print("wtf") return true end
 
     -- @TODO: Allow the situational tools to be used w/ allowed props.
 
