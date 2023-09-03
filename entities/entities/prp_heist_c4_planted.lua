@@ -105,16 +105,23 @@ function ENT:Explode( sPosition )
 	net.Send( oRecipientsFar )
 
 	local eVaultFloor = ents.GetMapCreatedEntity( iSouthsideVaultFloorID )
-	SafeRemoveEntity( eVaultFloor )
+	-- SafeRemoveEntity( eVaultFloor )
 
 	-- SafeRemoveEntity( self )
 
-	BankAlarmStart()
+	-- BankAlarmStart()
 
 	timer.Simple( 4, function()
 		-- game.CleanUpMap()
 	end )
 end
+
+local tBankSmokePos = {
+    hallway = {
+        min = Vector( -1430, 3124, -280 ),
+        max = Vector( -1692, 3256, -168 ),
+    }
+}
 
 function ENT:ExplodeEffects()
 	-- local oExplosionEffect1 = self:CreateParticleEffect( "explosion_hegrenade_interior" )
@@ -133,15 +140,15 @@ function ENT:ExplodeEffects()
 
 	self.effects = {}
 
-	for _, vPosition in pairs( tBankSmokePositions or {} ) do
-		-- @TODO: It seems it might not be drawing when the position is not in view. We should render this manually with :Render().
-		local oSmokeEffect = CreateParticleSystem( self, "explosion_smokegrenade_fallback", PATTACH_ABSORIGIN, 0, self:WorldToLocal( vPosition ) )
-		oSmokeEffect:SetShouldDraw( true )
-		oSmokeEffect:StartEmission()
-		oSmokeEffect:SetSortOrigin( vPosition )
+	-- for _, vPosition in pairs( tBankSmokePositions or {} ) do
+	-- 	-- @TODO: It seems it might not be drawing when the position is not in view. We should render this manually with :Render().
+	-- 	local oSmokeEffect = CreateParticleSystem( self, "explosion_smokegrenade_fallback", PATTACH_ABSORIGIN, 0, self:WorldToLocal( vPosition ) )
+	-- 	oSmokeEffect:SetShouldDraw( true )
+	-- 	oSmokeEffect:StartEmission()
+	-- 	oSmokeEffect:SetSortOrigin( vPosition )
 
-		table.insert( self.effects, oSmokeEffect )
-	end
+	-- 	table.insert( self.effects, oSmokeEffect )
+	-- end
 
 	self:EmitSound( "weapons/c4/c4_explode1.wav", 150, 100, 1, CHAN_AUTO, 0, 1 )
 end
