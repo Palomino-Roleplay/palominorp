@@ -1,6 +1,6 @@
 local PLUGIN = PLUGIN
 
-PLUGIN.name = "Property System"
+PLUGIN.name = "Palomino: Property System"
 PLUGIN.author = "sil"
 PLUGIN.description = ""
 
@@ -14,6 +14,8 @@ PLUGIN.config = {
             ["industrial"] = 1
         }
     },
+
+    snapDistanceSqr = 64 * 64,
 
     props = {
         ["defensive_props"] = {
@@ -29,6 +31,16 @@ PLUGIN.config = {
                     models = {
                         ["models/mosi/fallout4/props/fortifications/gravelwall.mdl"] = {
                             bodygroups = "010000000",
+                            snapPoints = {
+                                {
+                                    point = Vector( 0, 40, 44 ),
+                                    angleGrid = Angle( 360, 180, 360 ),
+                                },
+                                {
+                                    point = Vector( 0, -42, 44 ),
+                                    angleGrid = Angle( 360, 180, 360 ),
+                                },
+                            }
                         },
                     },
                 },
@@ -59,7 +71,7 @@ PLUGIN.config = {
             },
 
             OnSpawn = function( eProp, pPlayer, sModel, tModelConfig )
-                constraint.Keepupright( eProp, Angle( 0, 90, 0 ), 0, 999999 )
+                constraint.Keepupright( eProp, Angle( 0, 90, 0 ), 0, 9999999 )
 
                 local oPhysics = eProp:GetPhysicsObject()
                 if not oPhysics then return end
@@ -242,22 +254,26 @@ PLUGIN.config = {
     }
 }
 
-ix.util.Include( "meta/cl_property.lua" )
+
 ix.util.Include( "meta/cl_spawnmenu.lua" )
 ix.util.Include( "meta/sh_character.lua" )
 ix.util.Include( "meta/sh_entity.lua" )
+ix.util.Include( "meta/sh_prop_category.lua" )
 ix.util.Include( "meta/sh_property.lua" )
 ix.util.Include( "meta/sv_entity.lua" )
 ix.util.Include( "meta/sv_property.lua" )
 
+ix.util.Include( "hooks/cl_entity.lua" )
 ix.util.Include( "hooks/cl_physgun.lua" )
-ix.util.Include( "hooks/cl_property.lua" )
+ix.util.Include( "hooks/sh_physgun.lua" )
 ix.util.Include( "hooks/sh_property.lua" )
 ix.util.Include( "hooks/sh_props.lua" )
-ix.util.Include( "hooks/sh_physgun.lua" )
+ix.util.Include( "hooks/sh_tools.lua" )
 ix.util.Include( "hooks/sv_physgun.lua" )
 ix.util.Include( "hooks/sv_property.lua" )
-ix.util.Include( "hooks/sv_props.lua" )
+-- ix.util.Include( "hooks/sv_props.lua" )
+
+ix.util.Include( "config/sh_props.lua" )
 
 ix.config.Add("propertyRentPaymentInterval", 15, "How many minutes are there between the rent payments? (Needs map change to update)", nil, {
     data = {min = 1, max = 60, decimals = 0},
@@ -267,4 +283,66 @@ ix.config.Add("propertyRentPaymentInterval", 15, "How many minutes are there bet
 ix.config.Add("propertySpawnmenuCooldown", 3, "How many seconds before players can attempt to spawn a prop via the spawnmenu again?", nil, {
     data = {min = 1, max = 10, decimals = 0},
     category = "Palomino: Property"
+})
+
+-- @TODO: Make sure we actually *disallow* using stuff from the spawnmenu/tools.
+ix.config.Add("doSpawnmenuHiding", true, "Should we hide stuff from the spawnmenu?", function()
+        if CLIENT and PRP.Property.SpawnmenuInitialized then RunConsoleCommand( "spawnmenu_reload" ) end
+    end, {
+    category = "Palomino: Property"
+})
+
+CAMI.RegisterPrivilege({
+    Name = "Palomino.Property.BypassPropLimits",
+    MinAccess = "superadmin"
+})
+
+CAMI.RegisterPrivilege({
+    Name = "Palomino.Property.BypassPhysgunLimits",
+    MinAccess = "admin"
+})
+
+CAMI.RegisterPrivilege({
+    Name = "Palomino.Property.BypassToolLimits",
+    MinAccess = "admin"
+})
+
+CAMI.RegisterPrivilege({
+    Name = "Palomino.Property.BypassToolLimitsDangerous",
+    MinAccess = "admin"
+})
+
+CAMI.RegisterPrivilege({
+    Name = "Palomino.Property.Spawn.Effect",
+    MinAccess = "admin"
+})
+
+CAMI.RegisterPrivilege({
+    Name = "Palomino.Property.Spawn.NPC",
+    MinAccess = "admin"
+})
+
+CAMI.RegisterPrivilege({
+    Name = "Palomino.Property.Spawn.Prop",
+    MinAccess = "admin"
+})
+
+CAMI.RegisterPrivilege({
+    Name = "Palomino.Property.Spawn.Ragdoll",
+    MinAccess = "admin"
+})
+
+CAMI.RegisterPrivilege({
+    Name = "Palomino.Property.Spawn.SENT",
+    MinAccess = "admin"
+})
+
+CAMI.RegisterPrivilege({
+    Name = "Palomino.Property.Spawn.SWEP",
+    MinAccess = "admin"
+})
+
+CAMI.RegisterPrivilege({
+    Name = "Palomino.Property.Spawn.Vehicle",
+    MinAccess = "admin"
 })

@@ -21,25 +21,26 @@ function PRP.Property.RegisterProperties()
     )
     PROPERTY:SetLockOnStart( true )
     PROPERTY:SetPublicDoors( {
-        -- PD Front doors
-        [2926] = true,
-        [2927] = true,
+        -- @TODO: Update for rp_southside_day
+        -- -- PD Front doors
+        -- [2926] = true,
+        -- [2927] = true,
 
-        -- PD gate doors,
-        [2953] = true,
-        [2957] = true,
+        -- -- PD gate doors,
+        -- [2953] = true,
+        -- [2957] = true,
 
-        -- Elevator doors
-        [3026] = true,
-        [3027] = true,
+        -- -- Elevator doors
+        -- [3026] = true,
+        -- [3027] = true,
 
-        -- Elevator outside doors
-        [2949] = true,
-        [2950] = true,
-        [2930] = true,
-        [2931] = true,
-        [2951] = true,
-        [2952] = true,
+        -- -- Elevator outside doors
+        -- [2949] = true,
+        -- [2950] = true,
+        -- [2930] = true,
+        -- [2931] = true,
+        -- [2951] = true,
+        -- [2952] = true,
     } )
 
     PRP.Property.Register( PROPERTY )
@@ -193,8 +194,88 @@ function PRP.Property.RegisterProperties()
         }
     )
     PRP.Property.Register( PROPERTY )
+
+    -- Hospital
+    PROPERTY = setmetatable( {}, { __index = PRP.Property.Meta } )
+    PROPERTY:SetID( "hospital" )
+    PROPERTY:SetName( "Hospital" )
+    PROPERTY:SetRentable( false )
+    PROPERTY:SetLeasable( false )
+    PROPERTY:SetPublicDoors( {
+        [3026] = true,
+        [3027] = true,
+    } )
+    PROPERTY:SetBounds(
+        {
+            {
+                Vector( 6400, 4863, -63 ),
+                Vector( 8128, 5760, 736 )
+            }
+        }
+    )
+    PROPERTY:AddZone( {
+        type = "cinema_public",
+        name = "Room 202",
+        pos = {
+            Vector( 7664, 4592, 224),
+            Vector( 7936, 4832, 368 )
+        },
+        screen = {
+            class = "mediaplayer_tv",
+            pos = Vector( 7790, 4603, 224 ),
+            ang = Angle( 0, 90, 0 ),
+        },
+    } )
+    PROPERTY:AddZone( {
+        type = "cinema_public",
+        name = "Room 204",
+        pos = {
+            Vector( 7520, 4832, 224 ),
+            Vector( 7280, 4592, 368 )
+        },
+        screen = {
+            class = "mediaplayer_tv",
+            pos = Vector( 7408, 4603, 224 ),
+            ang = Angle( 0, 90, 0 ),
+        },
+    } )
+    PROPERTY:AddZone( {
+        type = "cinema_public",
+        name = "Room 202",
+        pos = {
+            Vector( 7664, 4592, 224),
+            Vector( 7936, 4832, 368 )
+        },
+        screen = {
+            class = "mediaplayer_tv",
+            pos = Vector( 7790, 4603, 224 ),
+            ang = Angle( 0, 90, 0 ),
+        },
+    } )
+    PROPERTY:AddZone( {
+        type = "cinema_playlist",
+        name = "Room 201",
+        pos = {
+            Vector( 7776, 5008, 224 ),
+            Vector( 8112, 5744, 368 )
+        },
+        screen = {
+            class = "mediaplayer_tv",
+            pos = Vector( 7829, 5384, 224 ),
+            ang = Angle( 0, -42, 0 ),
+        },
+    } )
+    PROPERTY:SetLockOnStart( true )
+    -- PROPERTY:AddSpawnEntity( "mediaplayer_tv", Vector( 7790, 4603, 224 ), Angle( 0, 90, 0 ) )
+    -- PROPERTY:AddSpawnEntity( "mediaplayer_tv", Vector( 7408, 4603, 224 ), Angle( 0, 90, 0 ) )
+    -- PROPERTY:AddSpawnEntity( "mediaplayer_tv", Vector( 7026, 4603, 224 ), Angle( 0, 90, 0 ) )
+    -- PROPERTY:AddSpawnEntity( "mediaplayer_tv", Vector( 6534, 4931, 224 ), Angle( 0, 0, 0 ) )
+    -- PROPERTY:AddSpawnEntity( "mediaplayer_tv", Vector( 7829, 5384, 224 ), Angle( 0, -42, 0 ) )
+    PRP.Property.Register( PROPERTY )
+
+    hook.Run( "InitializedProperties" )
 end
-hook.Add( "InitializedPlugins", "PRP.Property.InitializedPlugins.CreateProperties", PRP.Property.RegisterProperties )
+hook.Add( "InitPostEntity", "PRP.Property.InitPostEntity.CreateProperties", PRP.Property.RegisterProperties )
 
 if SERVER then
     concommand.Add( "prp_properties_register", function( pPlayer )

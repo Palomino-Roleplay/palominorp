@@ -45,3 +45,8 @@ function Schema:CanCreateCharacterInfo( tSuppress )
     tSuppress.attributes = true
     tSuppress.description = true
 end
+
+-- Prevent accidental shooting while clicking in C menu
+function Schema:PreventScreenClicks()
+    return true
+end

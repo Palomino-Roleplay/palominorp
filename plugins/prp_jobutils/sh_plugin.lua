@@ -1,6 +1,6 @@
 local PLUGIN = PLUGIN
 
-PLUGIN.name = "Job Utilities"
+PLUGIN.name = "Palomino: Job Utilities"
 PLUGIN.author = "sil"
 PLUGIN.description = "Adds a job NPC and job car spawner."
 

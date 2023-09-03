@@ -1,7 +1,7 @@
 Schema.name = "PRP"
 Schema.author = "sil"
 Schema.description = ""
-Schema.version = "0.1.1"
+Schema.version = "0.3"
 
 PRP = PRP or {}
 
@@ -11,13 +11,8 @@ PRP.API_KEY = "aFp2bC5P3bhVHWqNTdI7SXljJOtIu2gb"
 
 ix.util.Include("cl_schema.lua")
 
-ix.util.Include("meta/sh_character.lua")
-ix.util.Include("meta/sh_player.lua")
-
--- Hooks
-ix.util.Include("hooks/sv_hooks.lua")
-ix.util.Include("hooks/sh_hooks.lua")
-ix.util.Include("hooks/cl_hooks.lua")
+ix.util.IncludeDir("meta")
+ix.util.IncludeDir("hooks")
 
 -- Default config values
 ix.config.SetDefault( "intro", false )

@@ -1,8 +1,8 @@
 local PLUGIN = PLUGIN
 
-PLUGIN.name = "Death"
+PLUGIN.name = "Palomino: Death"
 PLUGIN.author = "sil"
-PLUGIN.description = "Handles death & respawning."
+PLUGIN.description = "Handles death."
 
 ix.util.Include("hooks/sv_hooks.lua")
 ix.util.Include("hooks/cl_hooks.lua")

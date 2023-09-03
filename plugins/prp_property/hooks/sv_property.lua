@@ -1,25 +1,52 @@
 local PLUGIN = PLUGIN
 
+-- @TODO: Do staff limits & such
+function PLUGIN:PlayerSpawnEffect( pPlayer, sModel )
+    return CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.Spawn.Effect" )
+end
+
+function PLUGIN:PlayerSpawnNPC( pPlayer, sNPCType, sWeapon )
+    return CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.Spawn.NPC" )
+end
+
+function PLUGIN:PlayerSpawnProp( pPlayer, sModel )
+    return CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.Spawn.Prop" )
+end
+
+function PLUGIN:PlayerSpawnRagdoll( pPlayer, sModel )
+    return CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.Spawn.Ragdoll" )
+end
+
+function PLUGIN:PlayerSpawnSENT( pPlayer, sClass )
+    return CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.Spawn.SENT" )
+end
+
+function PLUGIN:PlayerSpawnSWEP( pPlayer, sClass, tWeapon )
+    return CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.Spawn.SWEP" )
+end
+
+function PLUGIN:PlayerGiveSWEP( pPlayer, sClass, tWeapon )
+    return CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.Spawn.SWEP" )
+end
+
+function PLUGIN:PlayerSpawnVehicle( pPlayer, sModel, tVehicleTable )
+    return CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.Spawn.Vehicle" )
+end
+
 -- @TODO: Find a better hook for this.
 hook.Add( "InitializedPlugins", "PRP.Property.InitializedPlugins", function()
     local iRentInterval = ix.config.Get( "propertyRentPaymentInterval", 15 ) * 60
 
     timer.Create( "PRP.Property.RentPayments", iRentInterval, 0, function()
-        print( "Processing rent payments..." )
-
         for _, pPlayer in ipairs( player.GetAll() ) do
-            print( "Processing rent payments for " .. pPlayer:Name() .. "..." )
             if not pPlayer:GetCharacter() then continue end
 
             local cCharacter = pPlayer:GetCharacter()
             local iRent = 0
 
             for _, oProperty in pairs( cCharacter:GetRentedProperties() ) do
-                print( "Processing rent payment for " .. oProperty:GetName() .. "..." )
                 iRent = iRent + oProperty:GetRent()
             end
-
-            print( "Rent to pay: " .. iRent )
 
             if iRent > 0 then
                 -- @TODO: Possible way to exploit and achieve 1/2 rent by going back and forth between having and not having money. Not that big of a deal imo.
@@ -74,6 +101,7 @@ end
 -- F2 hook
 function PLUGIN:ShowTeam( pPlayer )
     if not pPlayer:GetCharacter() then return end
+    local cCharacter = pPlayer:GetCharacter()
 
     local tTrace = util.TraceLine( {
         start = pPlayer:GetShootPos(),
@@ -92,6 +120,6 @@ function PLUGIN:ShowTeam( pPlayer )
         oProperty:UnRent()
     else
         -- Attempt to rent the property.
-        oProperty:Rent( pPlayer )
+        oProperty:Rent( cCharacter )
     end
 end

@@ -1,6 +1,6 @@
 local PLUGIN = PLUGIN
 
-PLUGIN.name = "Vehicle Utilities"
+PLUGIN.name = "Palomino: Vehicle Utilities"
 PLUGIN.author = "sil"
 PLUGIN.description = ""
 

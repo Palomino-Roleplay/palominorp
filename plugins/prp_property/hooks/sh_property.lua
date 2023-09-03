@@ -1,14 +1,22 @@
 local PLUGIN = PLUGIN
 
 function PLUGIN:InitPostEntity()
+    -- @TODO: We should probably do this in a different hook.
     for sPropertyID, oProperty in pairs( PRP.Property.GetAll() ) do
         oProperty:Init()
     end
 end
 
--- @TODO: We probably want to make our own way of checking door access & rip out helix's entirely
-function PLUGIN:CanPlayerAccessDoor( pPlayer, eEntity, iAccessType )
-    if eEntity:GetProperty() then
-        return eEntity:GetProperty():HasAccess( pPlayer )
+function PLUGIN:CanPlayerAccessDoor( pPlayer, eDoor, iAccess )
+    if not IsValid( eDoor ) then return end
+
+    local oProperty = eDoor:GetProperty()
+    if not oProperty then return end
+
+    local cCharacter = pPlayer:GetCharacter()
+    if not cCharacter then return end
+
+    if oProperty:HasAccess( cCharacter ) then
+        return true
     end
 end

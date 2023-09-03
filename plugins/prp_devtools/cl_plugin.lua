@@ -339,3 +339,127 @@ concommand.Add( "prp_bugreport", function( pPlayer, sCmd, tArgs )
 
     PRP.Dev.BugReport( bSendScreenshot, bSendTrace, "Quick Bug Report", "Sent via prp_bugreport", bSendConsoleScreenshot )
 end )
+
+local oConvarShowMapEnts = CreateClientConVar( "prp_dev_showmapents", "0", true, false, "Show map entities on the screen." )
+local oConvarShowProperties = CreateClientConVar( "prp_dev_showproperties", "0", true, false, "Show properties on the screen." )
+
+local function DrawEntityInfo( eEntity, iX, iY, oColor )
+    oColor = oColor or Color( 150, 255, 200, 255 )
+
+    draw.SimpleText(
+        eEntity:GetClass() .. " (" .. eEntity:MapCreationID() .. ")",
+        "DebugOverlay",
+        iX,
+        iY,
+        oColor,
+        TEXT_ALIGN_LEFT,
+        TEXT_ALIGN_CENTER
+    )
+
+    iY = iY + 15
+
+    if eEntity:GetProperty() then
+        draw.SimpleText(
+            "Property: " .. eEntity:GetProperty():GetID(),
+            "DebugFixed",
+            iX,
+            iY,
+            oColor,
+            TEXT_ALIGN_LEFT,
+            TEXT_ALIGN_CENTER
+        )
+
+        iY = iY + 15
+    end
+end
+
+local function DrawPropertyInfo( oProperty )
+    for iBoundIndex, tBound in pairs( oProperty:GetBounds() or {} ) do
+        local vMins, vMaxs = tBound[1], tBound[2]
+        local oColor = Color( 100, 255, 100, 255 )
+
+        render.DrawWireframeBox( vMins, Angle( 0, 0, 0 ), Vector( 0, 0, 0 ), vMaxs - vMins, oColor, false )
+
+        local vMidpoint = ( vMins + vMaxs ) / 2
+
+        local tScreenPos = vMidpoint:ToScreen()
+
+        cam.Start2D()
+            local iY = tScreenPos.y
+            draw.SimpleText( oProperty:GetName() .. " (" .. oProperty:GetID() .. ")", "DefaultFixedDropShadow", tScreenPos.x, iY, oColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
+            iY = iY + 15
+            draw.SimpleText( "Index: " .. iBoundIndex, "DefaultFixed", tScreenPos.x, iY, oColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
+        cam.End2D()
+    end
+
+    for iZoneIndex, tZoneInfo in pairs( oProperty:GetZones() or {} ) do
+        local vMins, vMaxs = tZoneInfo.pos[1], tZoneInfo.pos[2]
+        local oColor = Color( 200, 200, 128, 255 )
+
+        render.DrawWireframeBox( vMins, Angle( 0, 0, 0 ), Vector( 0, 0, 0 ), vMaxs - vMins, oColor, false )
+
+        local vMidpoint = ( vMins + vMaxs ) / 2
+
+        local tScreenPos = vMidpoint:ToScreen()
+
+        cam.Start2D()
+            local iY = tScreenPos.y
+            draw.SimpleText( "Type: " .. tZoneInfo.type, "DefaultFixedDropShadow", tScreenPos.x, iY, oColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
+            iY = iY + 15
+            draw.SimpleText( "Index: " .. iZoneIndex, "DefaultFixed", tScreenPos.x, iY, oColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
+        cam.End2D()
+    end
+
+    for _, eEntity in pairs( oProperty:GetEntities() or {} ) do
+        if not IsValid( eEntity ) then continue end
+        if not eEntity:GetProperty() then continue end
+
+        local tScreenPos = eEntity:GetPos():ToScreen()
+
+        cam.Start2D()
+            local iY = tScreenPos.y
+            draw.SimpleText( eEntity:GetClass() .. " (" .. eEntity:EntIndex() .. ")", "DefaultFixedDropShadow", tScreenPos.x, iY, Color( 150, 255, 200, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
+            iY = iY + 15
+            draw.SimpleText( "Map ID: " .. ( eEntity:MapCreationID() > 0 and eEntity:MapCreationID() or "N/A" ), "DefaultFixed", tScreenPos.x, iY, Color( 150, 255, 200, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
+            iY = iY + 15
+            draw.SimpleText( "Property: " .. ( eEntity:GetProperty():GetID() ), "DefaultFixed", tScreenPos.x, iY, Color( 150, 255, 200, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
+        cam.End2D()
+    end
+end
+
+function PLUGIN:PostDrawTranslucentRenderables()
+    local bShowMapEnts = oConvarShowMapEnts:GetBool()
+    local bShowProperties = oConvarShowProperties:GetBool()
+
+    if bShowMapEnts then
+        for _, eEntity in ipairs( ents.GetAll() ) do
+            if not IsValid( eEntity ) then continue end
+            if eEntity:MapCreationID() == 0 then continue end -- Skip viewmodel
+            if not eEntity:CreatedByMap() then continue end
+
+            local iDistanceSqr = eEntity:GetPos():DistToSqr( LocalPlayer():GetPos() )
+            if iDistanceSqr > 2000000 then continue end
+
+            local vMins, vMaxs = eEntity:GetCollisionBounds()
+            local vPos = eEntity:GetPos()
+            local vAng = eEntity:GetAngles()
+
+            local oColor = Color( 150, 200, 255, 255 )
+            if string.StartsWith( eEntity:GetClass(), "func_door" ) then oColor = Color( 150, 255, 255, 255 ) end
+
+            render.DrawWireframeBox( vPos, vAng, vMins, vMaxs, oColor, false )
+
+            local tScreenPos = vPos:ToScreen()
+
+            cam.Start2D()
+                DrawEntityInfo( eEntity, tScreenPos.x, tScreenPos.y, oColor )
+            cam.End2D()
+        end
+    end
+
+    if bShowProperties then
+        for _, oProperty in pairs( PRP.Property.GetAll() ) do
+            DrawPropertyInfo( oProperty )
+        end
+    end
+end

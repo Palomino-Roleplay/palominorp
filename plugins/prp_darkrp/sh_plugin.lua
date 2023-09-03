@@ -1,6 +1,6 @@
 local PLUGIN = PLUGIN
 
-PLUGIN.name = "DarkRP Functions"
+PLUGIN.name = "Palomino: DarkRP Functions"
 PLUGIN.author = "sil"
 PLUGIN.description = "Wrapper for DarkRP addons."
 

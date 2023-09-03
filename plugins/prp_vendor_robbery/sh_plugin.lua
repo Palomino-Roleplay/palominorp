@@ -1,4 +1,4 @@
-PLUGIN.name = "Vendor Robbery"
+PLUGIN.name = "Palomino: Vendor Robbery"
 PLUGIN.author = "sil"
 PLUGIN.description = "Allows players to rob vendors."
 

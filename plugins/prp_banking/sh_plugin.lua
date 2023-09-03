@@ -1,6 +1,6 @@
 local PLUGIN = PLUGIN
 
-PLUGIN.name = "Banking"
+PLUGIN.name = "Palomino: Banking"
 PLUGIN.author = "sil"
 PLUGIN.description = "Introduces ATMs & Bank storage."
 

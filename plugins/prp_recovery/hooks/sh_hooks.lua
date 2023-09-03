@@ -1,6 +1,8 @@
 local PLUGIN = PLUGIN
 
 function PLUGIN:SetupMove( pPlayer, oMove, oCommand )
+    if pPlayer:InVehicle() then return end
+
     local iRecoveryEndTime = pPlayer:GetLocalVar( "recoveryTimeEnd", false )
     local iRecoveryDuration = pPlayer:GetLocalVar( "recoveryTimeDuration", 30 )
 

@@ -1,6 +1,6 @@
 local PLUGIN = PLUGIN
 
-PLUGIN.name = "Radio"
+PLUGIN.name = "Palomino: Radio"
 PLUGIN.author = "sil"
 PLUGIN.description = "Adds a 2-way radio"
 
