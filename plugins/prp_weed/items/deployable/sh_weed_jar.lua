@@ -6,3 +6,7 @@ ITEM.height = 1
 ITEM.description = "A jar to store totally legal stuff in."
 ITEM.category = "Weed"
 ITEM.entClass = "zgo2_jar"
+
+function ITEM:OnSpawn( eEntity, pPlayer )
+    zclib.Player.SetOwner( eEntity, pPlayer )
+end

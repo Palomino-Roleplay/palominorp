@@ -6,3 +6,7 @@ ITEM.height = 1
 ITEM.description = "Power!"
 ITEM.category = "Weed"
 ITEM.entClass = "zgo2_battery"
+
+function ITEM:OnSpawn( eEntity, pPlayer )
+    zclib.Player.SetOwner( eEntity, pPlayer )
+end

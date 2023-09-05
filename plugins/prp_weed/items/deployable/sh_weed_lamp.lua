@@ -6,3 +6,7 @@ ITEM.height = 2
 ITEM.description = "Light that closely matches the sun."
 ITEM.category = "Weed"
 ITEM.entClass = "zgo2_lamp"
+
+function ITEM:OnSpawn( eEntity, pPlayer )
+    zclib.Player.SetOwner( eEntity, pPlayer )
+end

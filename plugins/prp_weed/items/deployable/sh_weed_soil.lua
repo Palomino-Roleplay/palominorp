@@ -6,3 +6,7 @@ ITEM.height = 1
 ITEM.description = "Soil for growing plants."
 ITEM.category = "Weed"
 ITEM.entClass = "zgo2_soil"
+
+function ITEM:OnSpawn( eEntity, pPlayer )
+    zclib.Player.SetOwner( eEntity, pPlayer )
+end
