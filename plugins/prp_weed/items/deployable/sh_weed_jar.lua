@@ -9,4 +9,8 @@ ITEM.entClass = "zgo2_jar"
 
 function ITEM:OnSpawn( eEntity, pPlayer )
     zclib.Player.SetOwner( eEntity, pPlayer )
+
+    eEntity:SetWeedID( self:GetData( "WeedID", 1 ) )
+    eEntity:SetWeedAmount( self:GetData( "WeedAmount", 0 ) )
+    eEntity:SetWeedTHC( self:GetData( "WeedTHC", 0 ) )
 end
