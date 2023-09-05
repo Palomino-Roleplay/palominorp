@@ -33,9 +33,16 @@ function ITEM:Spawn(position, angles)
             entity:SetNetVar("owner", entity.ixCharID)
         end
 
+        if self.OnSpawn then
+            self:OnSpawn(entity, client)
+        end
+
         hook.Run("OnItemDeployed", entity)
         return entity
     end
+end
+
+function ITEM:OnSpawn()
 end
 
 function ITEM:OnRegistered()
