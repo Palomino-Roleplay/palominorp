@@ -45,6 +45,9 @@ end
 function ITEM:OnSpawn()
 end
 
+function ITEM:OnPickup()
+end
+
 function ITEM:OnRegistered()
     local tEntTable = scripted_ents.GetStored( self.entClass )
     if not tEntTable then return end
@@ -54,6 +57,10 @@ function ITEM:OnRegistered()
             local bSuccess, error = pPlayer:GetCharacter():GetInventory():Add( self.uniqueID, 1 )
 
             if bSuccess then
+                local x, y = bSuccess, error
+
+                pPlayer:GetCharacter():GetInventory():GetItemAt( x, y ):OnPickup( eEntity, pPlayer )
+
                 pPlayer:EmitSound( "npc/zombie/foot_slide" .. math.random( 1, 3 ) .. ".wav", 75, math.random( 90, 120 ), 1 )
                 eEntity:Remove()
             else
