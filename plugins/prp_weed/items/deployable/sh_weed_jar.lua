@@ -14,3 +14,9 @@ function ITEM:OnSpawn( eEntity, pPlayer )
     eEntity:SetWeedAmount( self:GetData( "WeedAmount", 0 ) )
     eEntity:SetWeedTHC( self:GetData( "WeedTHC", 0 ) )
 end
+
+function ITEM:OnPickup( eEntity, pPlayer )
+    self:SetData( "WeedID", eEntity:GetWeedID() )
+    self:SetData( "WeedAmount", eEntity:GetWeedAmount() )
+    self:SetData( "WeedTHC", eEntity:GetWeedTHC() )
+end
