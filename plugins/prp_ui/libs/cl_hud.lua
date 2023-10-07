@@ -27,7 +27,6 @@ surface.CreateFont( "PRP.UI.Timer.Time", {
     antialias = true
 } )
 
-
 surface.CreateFont( "PRP.UI.Watermark.Header", {
     font = "Inter",
     size = 16,
