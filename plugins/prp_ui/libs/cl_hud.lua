@@ -17,17 +17,30 @@ surface.CreateFont( "PRP.UI.Timer.Label", {
     font = "Inter",
     size = 14,
     weight = 600,
-    antialias = true,
-    shadow = true
+    antialias = true
 })
 
 surface.CreateFont( "PRP.UI.Timer.Time", {
     font = "Inter",
     size = 24,
     weight = 700,
-    antialias = true,
-    shadow = true
+    antialias = true
 } )
+
+
+surface.CreateFont( "PRP.UI.Watermark.Header", {
+    font = "Inter",
+    size = 16,
+    weight = 700,
+    antialias = true
+})
+
+surface.CreateFont( "PRP.UI.Watermark.Subtext", {
+    font = "Inter",
+    size = 12,
+    weight = 300,
+    antialias = true
+})
 
 function PRP.UI.DrawTimer( iX, iY, sLabel, iTime )
     local sTime = string.FormattedTime( iTime, "%02i:%02i" )
@@ -122,13 +135,14 @@ hook.Add( "HUDPaint", "PRP.UI.HUDPaint", function()
     -- Drawn bottom to top
 
     -- Health
+    local iX = 15
     local iY = ScrH() - ( oHeartNoAlphatest:Height() + 10 )
-    PRP.UI.DrawBar( oHeartNoAlphatest, 15, ScrH() - ( oHeartNoAlphatest:Height() + 10 ), fnHealthPercentSmoothed )
+    PRP.UI.DrawBar( oHeartNoAlphatest, iX, iY, fnHealthPercentSmoothed )
 
     -- Armor
     if LocalPlayer():Armor() > 0 then
         iY = iY - ( oHeartNoAlphatest:Height() + 10 )
-        PRP.UI.DrawBar( oHeartNoAlphatest, 15, iY, fnArmorPercentSmoothed )
+        PRP.UI.DrawBar( oHeartNoAlphatest, iX, iY, fnArmorPercentSmoothed )
     end
 
     -- Recovery Timer
@@ -137,8 +151,21 @@ hook.Add( "HUDPaint", "PRP.UI.HUDPaint", function()
         local iRecoveryTimeRemaining = math.max( iRecoveryTime - CurTime(), 0 )
 
         iY = iY - ( oHeartNoAlphatest:Height() + 10 )
-        PRP.UI.DrawTimer( 15, iY, "RECOVERING", iRecoveryTimeRemaining )
+        PRP.UI.DrawTimer( iX, iY, "RECOVERING", iRecoveryTimeRemaining )
     end
+
+
+    -- Palomino Watermark
+    surface.SetFont( "PRP.UI.Watermark.Header" )
+    surface.SetTextPos( 15, 15 )
+    surface.SetTextColor( 255, 255, 255, 32 )
+    surface.DrawText( "PALOMINO.GG" )
+    local iHeaderWidth, iHeaderHeight = surface.GetTextSize( "PALOMINO.GG" )
+
+    surface.SetFont( "PRP.UI.Watermark.Subtext" )
+    surface.SetDrawColor( 255, 255, 255, 32 )
+    surface.SetTextPos( 15, 15 + iHeaderHeight )
+    surface.DrawText( "PRE-ALPHA" )
 
     -- if true then return end
 
