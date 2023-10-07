@@ -15,3 +15,8 @@ function ITEM:OnSpawn( eEntity, pPlayer )
 
     zclib.Player.SetOwner( eEntity, pPlayer )
 end
+
+function ITEM:OnPickup( eEntity, pPlayer )
+    self:SetData( "PlantID", eEntity:GetPlantID() )
+    self:SetData( "Count", eEntity:GetCount() )
+end
