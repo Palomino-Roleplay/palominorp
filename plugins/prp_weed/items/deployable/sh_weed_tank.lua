@@ -9,4 +9,10 @@ ITEM.entClass = "zgo2_watertank"
 
 function ITEM:OnSpawn( eEntity, pPlayer )
     zclib.Player.SetOwner( eEntity, pPlayer )
+
+    eEntity:SetWater( self:GetData( "Water", 0 ) )
+end
+
+function ITEM:OnPickup( eEntity, pPlayer )
+    self:SetData( "Water", eEntity:GetWater() )
 end
