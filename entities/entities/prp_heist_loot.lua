@@ -19,11 +19,6 @@ ENT.AdminOnly		= true
 -- @TODO: Change to a better button
 ENT.Model           = "models/models/bkr_prop_bkr_cashpile_04.mdl"
 
-ix.config.Add( "heistLootTime", 10, "Number of seconds it takes to grab money.", nil, {
-    data = { min = 1, max = 30 },
-    category = "Palomino: Heist"
-} )
-
 function ENT:Initialize()
     BaseClass.Initialize( self )
 
@@ -45,9 +40,27 @@ function ENT:Use( pPlayer )
     pPlayer:DoStaredAction( self, function()
         SafeRemoveEntity( self )
 
-        local iMoney = pPlayer:GetNW2Int( "PRP.Heist.Money", 0 )
-        pPlayer:SetNW2Int( "PRP.Heist.Money", iMoney + self:GetMoney() )
+        pPlayer:AddLoot( self:GetMoney(), "bank" )
     end, iTime, function()
         pPlayer:SetAction()
     end )
 end
+
+-- @TODO: Move to UI module
+hook.Add( "HUDPaint", "PRP.Heists.Loot.HUDPaint", function()
+    local oBank = PRP.Heist.Get( "bank" )
+    local iLoot = LocalPlayer():GetNW2Int( "PRP.Heist.Loot", 0 )
+
+    if not oBank or not oBank:GetPos() then return end
+    if not iLoot or iLoot == 0 then return end
+
+    local bNear = LocalPlayer():GetPos():DistToSqr( oBank:GetPos() ) < 15000000
+
+    draw.SimpleText( "Loot: " .. iLoot, "DebugOverlay", ScrW() * 0.5, ScrH() * 0.95, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+    draw.SimpleText( "Near Bank: " .. tostring( bNear ), "DebugOverlay", ScrW() * 0.5, ScrH() * 0.95 + 14, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+
+    if not LocalPlayer():GetLocalVar( "PRP.Heist.Safe", 0 ) then return end
+    local iSecondsUntilLootGet = math.max( LocalPlayer():GetLocalVar( "PRP.Heist.Safe", 0 ) - CurTime(), 0 )
+    local sTimer = string.FormattedTime( iSecondsUntilLootGet, "%02i:%02i" )
+    draw.SimpleText( "Timer: " .. sTimer, "DebugOverlay", ScrW() * 0.5, ScrH() * 0.95 + 28, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+end )
