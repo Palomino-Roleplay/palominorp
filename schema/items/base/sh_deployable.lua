@@ -31,6 +31,7 @@ function ITEM:Spawn(position, angles)
             entity.ixSteamID = client:SteamID()
             entity.ixCharID = client:GetCharacter():GetID()
             entity:SetNetVar("owner", entity.ixCharID)
+            entity:CPPISetOwner( client )
         end
 
         if self.OnSpawn then
