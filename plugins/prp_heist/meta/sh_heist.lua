@@ -16,6 +16,7 @@ AccessorFunc( HEIST, "m_iAlarmState", "AlarmState", FORCE_NUMBER )
 
 AccessorFunc( HEIST, "m_tEntities", "Entities" )
 AccessorFunc( HEIST, "m_tTurrets", "Turrets" )
+AccessorFunc( HEIST, "m_vPos", "Pos" )
 
 if SERVER then util.AddNetworkString( "PRP.Heist.NetworkTurrets" ) end
 

@@ -8,6 +8,7 @@ function PLUGIN:InitializedPlugins()
     HEIST:SetName( "Bank" )
     HEIST:SetCategory( "major" )
     HEIST:SetDescription( "Good luck, you'll need it." )
+    HEIST:SetPos( Vector( -1549, 3192, -280 ) )
     PRP.Heist.Register( HEIST )
 end
 
