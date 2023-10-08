@@ -37,3 +37,15 @@ end
 function DarkRP.textWrap( sText, sFont, iWidth )
     return table.concat( ix.util.WrapText( sText, iWidth, sFont ), "\n" )
 end
+
+function DarkRP.notify( xPlayer, iMessageType, iTime, sMessage )
+    if istable( xPlayer ) then
+        for _, pPlayer in ipairs( xPlayer ) do
+            if not IsValid( pPlayer ) then continue end
+            if not pPlayer:IsPlayer() then continue end
+            DarkRP.notify( pPlayer, iMessageType, iTime, sMessage )
+        end
+    else
+        xPlayer:Notify( sMessage )
+    end
+end

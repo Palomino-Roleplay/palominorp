@@ -16,7 +16,3 @@ end
 function PRP.Heist.GetAll()
     return PRP.Heist.List
 end
-
-function PRP.Heist.GetRentable()
-    return PRP.Heist.Rentable
-end

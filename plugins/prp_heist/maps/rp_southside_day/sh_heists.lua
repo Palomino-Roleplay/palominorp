@@ -8,6 +8,7 @@ function PLUGIN:InitializedPlugins()
     HEIST:SetName( "Bank" )
     HEIST:SetCategory( "major" )
     HEIST:SetDescription( "Good luck, you'll need it." )
+    HEIST:SetPos( Vector( -1549, 3192, -280 ) )
     PRP.Heist.Register( HEIST )
 end
 
@@ -106,8 +107,11 @@ function PLUGIN:InitializedProperties()
     end
     PROPERTY:AddSpawnEntity( "npc_turret_ceiling", Vector( -1865, 3008, -120 ), Angle( 0, 64, 0 ), fnTurretCallback )
     PROPERTY:AddSpawnEntity( "npc_turret_ceiling", Vector( -1773, 3008, -120 ), Angle( 0, 128, 0 ), fnTurretCallback )
-    PROPERTY:AddSpawnEntity( "npc_turret_ceiling", Vector( -1865, 3505, -120 ), Angle( 0, -64, 0 ), fnTurretCallback )
-    PROPERTY:AddSpawnEntity( "npc_turret_ceiling", Vector( -1773, 3505, -120 ), Angle( 0, -128, 0 ), fnTurretCallback )
+
+    PROPERTY:AddSpawnEntity( "npc_turret_ceiling", Vector( -1730, 3361, -120 ), Angle( 0, 180, 0 ), fnTurretCallback )
+    PROPERTY:AddSpawnEntity( "npc_turret_ceiling", Vector( -1759, 3446, -120 ), Angle( 0, 224, 0 ), fnTurretCallback )
+    PROPERTY:AddSpawnEntity( "npc_turret_ceiling", Vector( -1844, 3449, -120 ), Angle( 0, 271, 0 ), fnTurretCallback )
+
     PROPERTY:AddSpawnEntity( "prp_heist_switch", Vector( -1654, 3251, -217 ), Angle( 0, -90, 0 ), function( eEntity )
         eEntity:SetHeist( oHeistBank )
     end )
