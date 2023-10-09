@@ -69,8 +69,8 @@ function PRP.UI.DrawBar( oMaterial, iX, iY, fnPercent )
     local iIconWidth = oMaterial:Width()
     local iIconHeight = oMaterial:Height()
 
-    Print("IconHeight: " .. iIconHeight)
-    Print("IconWidth: " .. iIconWidth)
+    -- Print("IconHeight: " .. iIconHeight)
+    -- Print("IconWidth: " .. iIconWidth)
     local iIconX = iX
     local iIconY = iY
 
