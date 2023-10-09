@@ -2,6 +2,8 @@ PRP.UI = PRP.UI or {}
 
 local oHeartNoAlphatest = Material( "prp/icons/hud/heart.png" )
 
+local oMaterialHeart = Material( "prp/icons/hud/heart_shadow.png" )
+
 local oGradientLeft = Material( "prp/icons/hud/gradient_left.png" )
 
 local function fnHealthPercentSmoothed()
@@ -67,6 +69,8 @@ function PRP.UI.DrawBar( oMaterial, iX, iY, fnPercent )
     local iIconWidth = oMaterial:Width()
     local iIconHeight = oMaterial:Height()
 
+    Print("IconHeight: " .. iIconHeight)
+    Print("IconWidth: " .. iIconWidth)
     local iIconX = iX
     local iIconY = iY
 
@@ -76,7 +80,7 @@ function PRP.UI.DrawBar( oMaterial, iX, iY, fnPercent )
 
     -- Bar background
 
-    local iBarWidth = 420
+    local iBarWidth = 350
     local iBarHeight = 5
     local iBarX = iIconX + iIconWidth + iXGap
     local iBarY = iIconY + ( iIconHeight / 2 ) - ( iBarHeight / 2 )
@@ -133,15 +137,17 @@ end
 hook.Add( "HUDPaint", "PRP.UI.HUDPaint", function()
     -- Drawn bottom to top
 
+    -- PUI.Box( 0, 0, ScrW(), ScrH(), COLOR_WHITE )
+
     -- Health
     local iX = 15
-    local iY = ScrH() - ( oHeartNoAlphatest:Height() + 10 )
-    PRP.UI.DrawBar( oHeartNoAlphatest, iX, iY, fnHealthPercentSmoothed )
+    local iY = ScrH() - ( oMaterialHeart:Height() + 10 )
+    PRP.UI.DrawBar( oMaterialHeart, iX, iY, fnHealthPercentSmoothed )
 
     -- Armor
     if LocalPlayer():Armor() > 0 then
-        iY = iY - ( oHeartNoAlphatest:Height() + 10 )
-        PRP.UI.DrawBar( oHeartNoAlphatest, iX, iY, fnArmorPercentSmoothed )
+        iY = iY - ( oMaterialHeart:Height() + 10 )
+        PRP.UI.DrawBar( oMaterialHeart, iX, iY, fnArmorPercentSmoothed )
     end
 
     -- Recovery Timer
@@ -149,7 +155,7 @@ hook.Add( "HUDPaint", "PRP.UI.HUDPaint", function()
     if iRecoveryTime then
         local iRecoveryTimeRemaining = math.max( iRecoveryTime - CurTime(), 0 )
 
-        iY = iY - ( oHeartNoAlphatest:Height() + 10 )
+        iY = iY - ( oMaterialHeart:Height() + 10 )
         PRP.UI.DrawTimer( iX, iY, "RECOVERING", iRecoveryTimeRemaining )
     end
 
@@ -178,12 +184,12 @@ hook.Add( "HUDPaint", "PRP.UI.HUDPaint", function()
 	-- local iHealthPercentage = iHealth / iMaxHealth
 
 	-- -- Heart Icon
-	-- local iHeartWidth = oHeartNoAlphatest:Width()
-	-- local iHeartHeight = oHeartNoAlphatest:Height()
+	-- local iHeartWidth = oMaterialHeart:Width()
+	-- local iHeartHeight = oMaterialHeart:Height()
 	-- local iHeartX = iXPadding
 	-- local iHeartY = ScrH() - ( iHeartHeight / 2 ) - iYPadding
 
-	-- surface.SetMaterial( oHeartNoAlphatest )
+	-- surface.SetMaterial( oMaterialHeart )
 	-- surface.SetDrawColor( 255, 255, 255, 32 )
 	-- surface.DrawTexturedRect( iHeartX, iHeartY, iHeartWidth, iHeartHeight )
 
