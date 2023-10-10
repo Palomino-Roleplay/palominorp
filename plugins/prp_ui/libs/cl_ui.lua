@@ -1,20 +1,15 @@
-PRP.Color = PRP.Color or {}
+PUI = PUI or {}
 
-PRP.Color.GREEN = Color( 43, 195, 140 )
-PRP.Color.BLUE = Color( 0, 165, 207 )
-PRP.Color.PURPLE = Color( 141, 106, 159 )
-PRP.Color.GRAY = Color( 57, 62, 65 )
-PRP.Color.GREY = PRP.Color.GRAY
-PRP.Color.YELLOW = Color( 252, 236, 82 )
-PRP.Color.RED = Color( 233, 79, 55 )
+PUI.GREEN = Color( 43, 195, 140 )
+PUI.BLUE = Color( 0, 165, 207 )
+PUI.PURPLE = Color( 141, 106, 159 )
+PUI.GRAY = Color( 57, 62, 65 )
+PUI.GREY = PUI.GRAY
+PUI.YELLOW = Color( 252, 236, 82 )
+PUI.RED = Color( 255, 90, 90 )
 
-PRP.Color.WHITE = Color( 255, 255, 255 )
-PRP.Color.BLACK = Color( 0, 0, 0 )
-
-PRP.Color.PRIMARY = PRP.Color.GREEN
-PRP.Color.SECONDARY = PRP.Color.BLUE
-PRP.Color.TERTIARY = PRP.Color.PURPLE
-
+PUI.WHITE = Color( 255, 255, 255 )
+PUI.BLACK = Color( 0, 0, 0 )
 
 
 PRP.m_tMaterials = PRP.m_tMaterials or {}
@@ -27,11 +22,6 @@ function PRP.Material( sMaterial, sParameters )
 
     return PRP.m_tMaterials[ sHash ]
 end
-
-
--- Maybe this instead?
-
-PUI = PUI or {}
 
 function PUI.Box( iX, iY, iW, iH, cColor )
     surface.SetDrawColor( cColor )
@@ -94,13 +84,16 @@ hook.Add( "PostDrawTranslucentRenderables", "PUI.DrawInteractionEffects", functi
 	-- Set the reference value to 00011100 & 01010101 & 11110011
 	render.SetStencilReferenceValue( 0x10 )
 	-- Pass if the masked buffer value matches the unmasked reference value
-	render.SetStencilCompareFunction( STENCIL_GREATER )
+	-- render.SetStencilCompareFunction( STENCIL_GREATER )
 
 	-- Draw our entities
 	-- render.ClearBuffersObeyStencil( 0, 148, 133, 255, false )
     local plyMat = Material( "prp/ui/temp/glow.png" )
     
     for _, ent in ipairs( ents.FindByClass( "player" ) ) do
+        if ent == LocalPlayer() then continue end
+        
+        render.SetStencilCompareFunction( STENCIL_GREATER )
         local targetPos = ent:GetPos() + ent:OBBCenter() -- Center of the target player's bounding box
         local dir = LocalPlayer():GetPos() - targetPos
         local ang = dir:Angle()
@@ -110,30 +103,78 @@ hook.Add( "PostDrawTranslucentRenderables", "PUI.DrawInteractionEffects", functi
         ang:RotateAroundAxis(ang:Up(), 90)
         -- ang.pitch = 0
 
-        cam.Start3D2D(targetPos, ang, 0.1)
+        local vPos = ent:GetPos() + ent:OBBCenter()
+        local iScaleFactor = 1 / ent:GetPos():Distance( LocalPlayer():GetPos() )
+
+        local iInitialWidth = 40000
+        local iInitialHeight = 75000
+
+        local tScreenPos = vPos:ToScreen()
+        local iX = tScreenPos.x - ( iInitialWidth / 2 * iScaleFactor )
+        local iY = tScreenPos.y - ( iInitialHeight / 2 * iScaleFactor )
+
+        local iWidth = iInitialWidth * iScaleFactor
+        local iHeight = iInitialHeight * iScaleFactor
+
+        local iSelectX = tScreenPos.x + ( 10000 * iScaleFactor )
+        local iSelectY = tScreenPos.y - ( 20000 * iScaleFactor )
+
+        cam.Start2D()
             render.OverrideDepthEnable( true, false )
 
             surface.SetMaterial(plyMat)
             surface.SetDrawColor(255, 255, 255, 64)
-            
-            -- The size of the texture in the 3D world. You might need to adjust these values
-            local w, h = 800, 1200
-            surface.DrawTexturedRect(-w/2, -h/2, w, h) -- Centered on the player's bounding box
+
+            Print( iX, ",\t", iY, ",\t", iWidth, ",\t", iHeight )
+
+            surface.DrawTexturedRect(iX, iY, iWidth, iHeight) -- Centered on the player's bounding box
+
+            -- surface.SetDrawColor( 255, 0, 0, 255 )
+            -- surface.DrawRect( iX, iY, iWidth, iHeight )
 
             render.OverrideDepthEnable( false )
-        cam.End3D2D()
+        cam.End2D()
+
+        -- cam.Start3D2D(targetPos, ang, 0.1)
+        --     render.OverrideDepthEnable( true, false )
+
+        --     surface.SetMaterial(plyMat)
+        --     surface.SetDrawColor(255, 255, 255, 64)
+            
+        --     -- The size of the texture in the 3D world. You might need to adjust these values
+        --     local w, h = 800, 1200
+        --     surface.DrawTexturedRect(-w/2, -h/2, w, h) -- Centered on the player's bounding box
+
+        --     render.OverrideDepthEnable( false )
+        -- cam.End3D2D()
+
+        render.SetStencilCompareFunction( STENCIL_GREATEREQUAL )
+
+        cam.Start2D()
+            surface.SetDrawColor( PUI.GREEN:Unpack() )
+            surface.DrawRect( iSelectX, iSelectY, 2, 40 )
+
+            PUI.StartOverlay()            
+                surface.SetMaterial( Material( "prp/ui/temp/gradient_overlay2_left.png" ) )
+                surface.SetDrawColor( 255, 255, 255, 255 )
+                surface.DrawRect( iSelectX + 2, iSelectY, 200, 40 )
+            PUI.EndOverlay()
+
+            surface.SetMaterial( Material( "gui/gradient" ) )
+            surface.SetDrawColor( ColorAlpha( PUI.GREEN, 64 ):Unpack() )
+            surface.DrawTexturedRect( iSelectX + 2, iSelectY, 200, 40 )
+        cam.End2D()
     end
 
-    render.SetStencilCompareFunction( STENCIL_EQUAL )
 
-    for _, ent in ipairs( ents.FindByClass( "player" ) ) do
+    -- for _, ent in ipairs( ents.FindByClass( "player" ) ) do
         -- PUI.StartOverlay()
         --     -- @TODO: Something
         --     surface.SetMaterial( Material( "effects/flashlight/soft" ) )
         --     surface.SetDrawColor( 255, 255, 255, 255 )
         --     surface.DrawTexturedRect( 0, 0, ScrW(), ScrH() )
         -- PUI.EndOverlay()
-    end
+    -- end
 
 	-- Let everything render normally again
 	render.SetStencilEnable( false )
