@@ -6,7 +6,7 @@ local oMaterialHeart = Material( "prp/icons/hud/heart_shadow.png" )
 
 local oGradientLeft = Material( "prp/icons/hud/gradient_left.png" )
 
-local function fnHealthPercentSmoothed()
+function fnHealthPercentSmoothed()
     return LocalPlayer():Health() / LocalPlayer():GetMaxHealth()
 end
 
@@ -43,6 +43,13 @@ surface.CreateFont( "PRP.UI.Watermark.Subtext", {
     antialias = true
 })
 
+surface.CreateFont( "PRP.UI.Bar.Label", {
+    font = "Inter",
+    size = 20,
+    weight = 600,
+    antialias = true
+})
+
 function PRP.UI.DrawTimer( iX, iY, sLabel, iTime )
     local sTime = string.FormattedTime( iTime, "%02i:%02i" )
 
@@ -60,7 +67,9 @@ function PRP.UI.DrawTimer( iX, iY, sLabel, iTime )
 end
 
 local oBarPill = Material( "prp/icons/hud/healthbar_pill_5pxc.png" )
-function PRP.UI.DrawBar( oMaterial, iX, iY, fnPercent )
+function PRP.UI.DrawBar( oMaterial, iX, iY, fnPercent, oColor, bDrawValue )
+    oColor = oColor or COLOR_WHITE
+
     local iXPadding = 16
 	local iYPadding = 20
 
@@ -75,12 +84,12 @@ function PRP.UI.DrawBar( oMaterial, iX, iY, fnPercent )
     local iIconY = iY
 
     surface.SetMaterial( oMaterial )
-    surface.SetDrawColor( 255, 255, 255, 255 )
+    surface.SetDrawColor( oColor:Unpack() )
     surface.DrawTexturedRect( iIconX, iIconY, iIconWidth, iIconHeight )
 
     -- Bar background
 
-    local iBarWidth = 350
+    local iBarWidth = bDrawValue and 330 or 365
     local iBarHeight = 5
     local iBarX = iIconX + iIconWidth + iXGap
     local iBarY = iIconY + ( iIconHeight / 2 ) - ( iBarHeight / 2 )
@@ -106,7 +115,7 @@ function PRP.UI.DrawBar( oMaterial, iX, iY, fnPercent )
 
     -- Bar Progress - Gradient
     surface.SetMaterial( oGradientLeft )
-    surface.SetDrawColor( 255, 255, 255, 32 )
+    surface.SetDrawColor( ColorAlpha( oColor, 48 ):Unpack() )
     surface.DrawTexturedRectUV(
         iBarX,
         iBarY,
@@ -130,8 +139,16 @@ function PRP.UI.DrawBar( oMaterial, iX, iY, fnPercent )
     local iBarPillY = iBarY
 
     surface.SetMaterial( oBarPill )
-    surface.SetDrawColor( 255, 255, 255, 255 )
+    surface.SetDrawColor( oColor:Unpack() )
     surface.DrawTexturedRect( iBarPillX, iBarPillY, iBarPillWidth, iBarPillHeight )
+
+    -- Bar Value
+    if bDrawValue then
+        surface.SetFont( "PRP.UI.Bar.Label" )
+        surface.SetTextColor( 255, 255, 255, 255 )
+        surface.SetTextPos( iBarX + iBarWidth + 10, iIconY + ( iIconHeight - 20 ) / 2 )
+        surface.DrawText( math.floor( fnPercent() * 100 ) )
+    end
 end
 
 hook.Add( "HUDPaint", "PRP.UI.HUDPaint", function()
