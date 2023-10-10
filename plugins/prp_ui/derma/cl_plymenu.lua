@@ -114,9 +114,28 @@ function PANEL:Init()
     self.m_pnlTabCharacter, self.m_pnlTabCharacterContent = self.m_pnlTabPanel:AddTab( "YOU" )
     -- self.m_pnlTabCharacter.m_panelContent
 
-    self.m_pnlTabCharacterLeft = vgui.Create( "DPanel", self.m_pnlTabCharacterContent )
+    self.m_pnlTabCharacterLeft = vgui.Create( "DIconLayout", self.m_pnlTabCharacterContent )
     self.m_pnlTabCharacterLeft:SetPos( ScrW() / 2 - PRP.UI.ScaleFactor * 500, 0 )
     self.m_pnlTabCharacterLeft:SetSize( PRP.UI.ScaleFactor * 500, ScrH() - ( 100 * PRP.UI.ScaleFactor ) )
+    self.m_pnlTabCharacterLeft:SetSpaceY( 30 )
+
+    self.m_pnlTabCharacterLeftHeader = vgui.Create( "DPanel", self.m_pnlTabCharacterLeft )
+    self.m_pnlTabCharacterLeftHeader:SetPos( 0, 0 )
+    self.m_pnlTabCharacterLeftHeader:SetSize( PRP.UI.ScaleFactor * 500, 68 * PRP.UI.ScaleFactor )
+    self.m_pnlTabCharacterLeftHeader.Paint = function( this, iW, iH )
+        -- surface.SetDrawColor( 255, 0, 0, 128 )
+        -- surface.DrawRect( 0, 0, iW, iH )
+
+        surface.SetFont( "PRP.PlyMenu.Large" )
+        surface.SetTextColor( 203, 233, 255, 255 )
+        surface.SetTextPos( 0, 0 )
+        surface.DrawText( string.upper( LocalPlayer():GetCharacter():GetName() ) )
+
+        surface.SetFont( "PRP.PlyMenu.Sub" )
+        surface.SetTextColor( 172, 213, 243, 255 * 0.15 )
+        surface.SetTextPos( 0, 48 * PRP.UI.ScaleFactor )
+        surface.DrawText( string.upper( "UNEMPLOYED" ) )
+    end
 
     self.m_pnlTabCharacterLeftInventory = self.m_pnlTabCharacterLeft:Add("ixInventory")
     self.m_pnlTabCharacterLeftInventory:SetIconSize( 80 * PRP.UI.ScaleFactor )
@@ -128,7 +147,7 @@ function PANEL:Init()
     self.m_pnlTabCharacterLeftInventory.childPanels = {}
 
     local inventory = LocalPlayer():GetCharacter():GetInventory()
-    
+
     if (inventory) then
         self.m_pnlTabCharacterLeftInventory:SetInventory(inventory)
     end
@@ -137,16 +156,16 @@ function PANEL:Init()
     local iInventoryX = self.m_pnlTabCharacterLeft:GetWide() / 2 - (self.m_pnlTabCharacterLeftInventory:GetWide() / 2)
     local iInventoryY = (self.m_pnlTabCharacterLeft:GetTall() - self.m_pnlTabCharacterLeftInventory:GetTall()) / 2
     self.m_pnlTabCharacterLeftInventory:SetPos( iInventoryX, iInventoryY )
-    self.m_pnlTabCharacterLeft.Paint = function( p, iW, iH )
-        surface.SetFont( "PRP.PlyMenu.Large" )
-        surface.SetTextColor( 203, 233, 255, 255 )
-        surface.SetTextPos( iInventoryX, iInventoryY - ( (16 + 64) * PRP.UI.ScaleFactor ) )
-        surface.DrawText( string.upper( LocalPlayer():GetCharacter():GetName() ) )
 
-        surface.SetFont( "PRP.PlyMenu.Sub" )
-        surface.SetTextColor( 172, 213, 243, 255 * 0.15 )
-        surface.SetTextPos( iInventoryX, iInventoryY - ( (16 + 16) * PRP.UI.ScaleFactor ) )
-        surface.DrawText( string.upper( "UNEMPLOYED" ) )
+
+    self.m_pnlTabCharacterLeftStatus = self.m_pnlTabCharacterLeft:Add( "DPanel" )
+    self.m_pnlTabCharacterLeftStatus:SetSize( self.m_pnlTabCharacterLeft:GetWide(), 2 * 30 * PRP.UI.ScaleFactor )
+    self.m_pnlTabCharacterLeftStatus.Paint = function( this, iW, iH )
+        PRP.UI.DrawBar( Material( "prp/icons/hud/heart_shadow.png" ), 0, 0, fnHealthPercentSmoothed, PUI.RED, true )
+    end
+
+    self.m_pnlTabCharacterLeft.Paint = function( p, iW, iH )
+
     end
 
 
