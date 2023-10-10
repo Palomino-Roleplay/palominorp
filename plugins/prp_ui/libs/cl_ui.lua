@@ -49,6 +49,13 @@ end
 
 -- hook.Remove( "PostDrawTranslucentRenderables", "PUI.DrawInteractionEffects" )
 
+surface.CreateFont( "PRP.UI.Interaction.Option", {
+    font = "Inter",
+    size = 20,
+    weight = 700,
+    antialias = true
+})
+
 hook.Add( "PostDrawTranslucentRenderables", "PUI.DrawInteractionEffects", function()
 	render.SetStencilWriteMask( 0xFF )
 	render.SetStencilTestMask( 0xFF )
@@ -89,10 +96,10 @@ hook.Add( "PostDrawTranslucentRenderables", "PUI.DrawInteractionEffects", functi
 	-- Draw our entities
 	-- render.ClearBuffersObeyStencil( 0, 148, 133, 255, false )
     local plyMat = Material( "prp/ui/temp/glow.png" )
-    
+
     for _, ent in ipairs( ents.FindByClass( "player" ) ) do
         if ent == LocalPlayer() then continue end
-        
+
         render.SetStencilCompareFunction( STENCIL_GREATER )
         local targetPos = ent:GetPos() + ent:OBBCenter() -- Center of the target player's bounding box
         local dir = LocalPlayer():GetPos() - targetPos
@@ -163,6 +170,35 @@ hook.Add( "PostDrawTranslucentRenderables", "PUI.DrawInteractionEffects", functi
             surface.SetMaterial( Material( "gui/gradient" ) )
             surface.SetDrawColor( ColorAlpha( PUI.GREEN, 64 ):Unpack() )
             surface.DrawTexturedRect( iSelectX + 2, iSelectY, 200, 40 )
+
+            surface.SetTextColor( 255, 255, 255, 255 )
+            surface.SetFont( "PRP.UI.Interaction.Option" )
+            surface.SetTextPos( iSelectX + 20, iSelectY + ( ( 40 - 20 ) / 2 ) )
+            surface.DrawText( "TRADE" )
+
+            -- 2
+
+            iSelectY = iSelectY + 40
+
+            surface.SetDrawColor( 255, 255, 255, 128 )
+            surface.DrawRect( iSelectX, iSelectY, 2, 40 )
+
+            surface.SetTextColor( 255, 255, 255, 128 )
+            surface.SetFont( "PRP.UI.Interaction.Option" )
+            surface.SetTextPos( iSelectX + 20, iSelectY + ( ( 40 - 20 ) / 2 ) )
+            surface.DrawText( "COPY STEAMID" )
+
+            -- 3
+
+            iSelectY = iSelectY + 40
+
+            surface.SetDrawColor( 255, 255, 255, 64 )
+            surface.DrawRect( iSelectX, iSelectY, 2, 40 )
+
+            surface.SetTextColor( 255, 255, 255, 64 )
+            surface.SetFont( "PRP.UI.Interaction.Option" )
+            surface.SetTextPos( iSelectX + 20, iSelectY + ( ( 40 - 20 ) / 2 ) )
+            surface.DrawText( "PAT DOWN" )
         cam.End2D()
     end
 
