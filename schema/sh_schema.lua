@@ -34,6 +34,11 @@ ix.config.Add("EquipTime", 3, "How long does it take for a weapon to be equipped
     category = "Palomino"
 })
 
+ix.config.Add("mediaPlayerDistance", 1000000, "Square of the distance to have a nearby media player play", nil, {
+    data = {min = 1000, max = 100000000, decimals = 0},
+    category = "Palomino"
+})
+
 -- CustomizableWeaponry 2 Configs
 CustomizableWeaponry.canOpenInteractionMenu = true
 CustomizableWeaponry.customizationEnabled = true
