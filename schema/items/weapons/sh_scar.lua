@@ -5,6 +5,7 @@ ITEM.class = "cw_scarh"
 ITEM.weaponCategory = "primary"
 ITEM.width = 4
 ITEM.height = 2
+ITEM.bDropOnDeath = true
 ITEM.pacData = {
     [1] = {
         ["children"] = {
