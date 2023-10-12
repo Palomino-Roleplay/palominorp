@@ -16,6 +16,19 @@ surface.CreateFont( "PRP.DeathScreen.Title.Shadow", {
 local oDeathSound = CreateSound( game.GetWorld(), "palomino/death_2.wav" )
 oDeathSound:SetSoundLevel( 0 )
 
+local tDeathMessages = {
+    "SMOKED",
+    "DEAD",
+    "ELIMINATED",
+    "WASTED",
+    "EXECUTED",
+    "PERISHED",
+    "FRAGGED",
+    "KILLED",
+    "ERADICATED",
+    "ERASED",
+}
+
 function PANEL:Init()
     -- oDeathSound:PlayEx( 1, 100 )
     -- oDeathSound:SetDSP( 0 )
@@ -23,6 +36,8 @@ function PANEL:Init()
     surface.PlaySound( "palomino/death_2.wav" )
 
     -- surface.PlaySound( "palomino/death.mp3" )
+
+    self.message = table.Random( tDeathMessages )
 
     self:SetPos( 0, 0 )
     self:SetSize( ScrW(), ScrH() )
@@ -74,8 +89,10 @@ function PANEL:Paint( iW, iH )
         iFadeToWhiteFactor = math.ease.InExpo( math.Clamp( ( iTime - self.m_iFadeToWhiteStartTimestamp ) / ( self.m_iFadeToWhiteEndTimestamp - self.m_iFadeToWhiteStartTimestamp ), 0, 1 ) )
     end
 
+    local iAnimationFactor = math.ease.OutExpo( math.Clamp( iTime / 5, 0, 1 ) )
+
     if iTime < self.m_iFadeToWhiteEndTimestamp then
-        surface.SetDrawColor( 0, 0, 0, iFadeAlpha )
+        surface.SetDrawColor( 64 * (1 - iAnimationFactor), 0, 0, iFadeAlpha )
         surface.DrawRect( 0, 0, iW, iH )
     end
 
@@ -83,19 +100,17 @@ function PANEL:Paint( iW, iH )
     surface.DrawRect( 0, 0, iW, iH )
 
     if iTime < self.m_iFadeToWhiteEndTimestamp then
-        local iAnimationFactor = math.ease.OutExpo( math.Clamp( iTime / 5, 0, 1 ) )
-
         -- Shadow
         surface.SetFont( "PRP.DeathScreen.Title.Shadow" )
-        local iTextShadowW, iTextShadowH = surface.GetTextSize( "SMOKED" )
+        local iTextShadowW, iTextShadowH = surface.GetTextSize( self.message )
         surface.SetTextColor( 255 - 155 * iAnimationFactor, ( 1 - iAnimationFactor ) * 255, ( 1 - iAnimationFactor ) * 255, 64 + 128 * ( 1 - iAnimationFactor ) )
         surface.SetTextPos( iW / 2 - iTextShadowW / 2, iH / 2 - iTextShadowH / 2 )
-        surface.DrawText( "SMOKED" )
+        surface.DrawText( self.message )
 
         -- Text
 
         surface.SetFont( "PRP.DeathScreen.Title" )
-        local iTextW, iTextH = surface.GetTextSize( "SMOKED" )
+        local iTextW, iTextH = surface.GetTextSize( self.message )
 
         if iFadeToWhiteFactor > 0 then
             print("ass")
@@ -106,7 +121,7 @@ function PANEL:Paint( iW, iH )
         end
 
         surface.SetTextPos( iW / 2 - iTextW / 2, iH / 2 - iTextH / 2 )
-        surface.DrawText( "SMOKED" )
+        surface.DrawText( self.message )
     end
 end
 
