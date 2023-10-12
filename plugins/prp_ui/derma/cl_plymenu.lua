@@ -10,6 +10,9 @@ local PANEL = {}
 PRP.API.AddMaterial( "ui/plymenu/youbg", "" )
 PRP.API.AddMaterial( "ui/plymenu/bg", "" )
 
+local oGradient = Material( "prp/ui/temp/gradient.png" )
+local oGlowMat = Material( "prp/ui/temp/ply_glow.png", "" )
+
 -- local function DownloadAPIFiles()
 --     -- if true then return end
 --     if IsValid( PRP.UI.PLY_MENU ) then return end
@@ -53,6 +56,12 @@ surface.CreateFont( "PRP.PlyMenu.Large", {
     antialias = true
 } )
 
+surface.CreateFont( "PRP.PlyMenu.Sub", {
+    font = "Inter",
+    size = 20 * PRP.UI.ScaleFactor,
+    antialias = true
+} )
+
 function PANEL:Init()
     self:SetPos( 0, 0 )
     self:SetSize( ScrW(), ScrH() )
@@ -73,13 +82,19 @@ function PANEL:Init()
         -- print( math.Clamp( math.TimeFraction( self.iOpenTime, self.iOpenTime + 0.5, CurTime() ), 0, 1 ) )
         self.easedFraction = math.ease.OutCubic( math.Clamp( math.TimeFraction( self.iOpenTime, self.iOpenTime + 0.3, CurTime() ), 0, 1 ) )
 
+        local iFactor = 1
+        local iFactorAdjusted = iFactor + 1
+        local iFactorInverseSquare = 1 / ( iFactorAdjusted * iFactorAdjusted )
+
+        local iFactor = 2
+
         local tTable = {
             ["$pp_colour_addr"] = 0,
             ["$pp_colour_addg"] = 0,
             ["$pp_colour_addb"] = 0,
-            ["$pp_colour_brightness"] = -0 * self.easedFraction,
-            ["$pp_colour_contrast"] = 1 - ( 0 * self.easedFraction ),
-            ["$pp_colour_colour"] = 1 * ( 1 - self.easedFraction ),
+            ["$pp_colour_brightness"] = 1.4,
+            ["$pp_colour_contrast"] = 0.35,
+            ["$pp_colour_colour"] = 0,
             ["$pp_colour_mulr"] = 0,
             ["$pp_colour_mulg"] = 0,
             ["$pp_colour_mulb"] = 0
@@ -99,9 +114,28 @@ function PANEL:Init()
     self.m_pnlTabCharacter, self.m_pnlTabCharacterContent = self.m_pnlTabPanel:AddTab( "YOU" )
     -- self.m_pnlTabCharacter.m_panelContent
 
-    self.m_pnlTabCharacterLeft = vgui.Create( "DPanel", self.m_pnlTabCharacterContent )
+    self.m_pnlTabCharacterLeft = vgui.Create( "DIconLayout", self.m_pnlTabCharacterContent )
     self.m_pnlTabCharacterLeft:SetPos( ScrW() / 2 - PRP.UI.ScaleFactor * 500, 0 )
     self.m_pnlTabCharacterLeft:SetSize( PRP.UI.ScaleFactor * 500, ScrH() - ( 100 * PRP.UI.ScaleFactor ) )
+    self.m_pnlTabCharacterLeft:SetSpaceY( 30 )
+
+    self.m_pnlTabCharacterLeftHeader = vgui.Create( "DPanel", self.m_pnlTabCharacterLeft )
+    self.m_pnlTabCharacterLeftHeader:SetPos( 0, 0 )
+    self.m_pnlTabCharacterLeftHeader:SetSize( PRP.UI.ScaleFactor * 500, 68 * PRP.UI.ScaleFactor )
+    self.m_pnlTabCharacterLeftHeader.Paint = function( this, iW, iH )
+        -- surface.SetDrawColor( 255, 0, 0, 128 )
+        -- surface.DrawRect( 0, 0, iW, iH )
+
+        surface.SetFont( "PRP.PlyMenu.Large" )
+        surface.SetTextColor( 203, 233, 255, 255 )
+        surface.SetTextPos( 0, 0 )
+        surface.DrawText( string.upper( LocalPlayer():GetCharacter():GetName() ) )
+
+        surface.SetFont( "PRP.PlyMenu.Sub" )
+        surface.SetTextColor( 172, 213, 243, 255 * 0.15 )
+        surface.SetTextPos( 0, 48 * PRP.UI.ScaleFactor )
+        surface.DrawText( string.upper( "UNEMPLOYED" ) )
+    end
 
     self.m_pnlTabCharacterLeftInventory = self.m_pnlTabCharacterLeft:Add("ixInventory")
     self.m_pnlTabCharacterLeftInventory:SetIconSize( 80 * PRP.UI.ScaleFactor )
@@ -113,7 +147,7 @@ function PANEL:Init()
     self.m_pnlTabCharacterLeftInventory.childPanels = {}
 
     local inventory = LocalPlayer():GetCharacter():GetInventory()
-    
+
     if (inventory) then
         self.m_pnlTabCharacterLeftInventory:SetInventory(inventory)
     end
@@ -122,13 +156,36 @@ function PANEL:Init()
     local iInventoryX = self.m_pnlTabCharacterLeft:GetWide() / 2 - (self.m_pnlTabCharacterLeftInventory:GetWide() / 2)
     local iInventoryY = (self.m_pnlTabCharacterLeft:GetTall() - self.m_pnlTabCharacterLeftInventory:GetTall()) / 2
     self.m_pnlTabCharacterLeftInventory:SetPos( iInventoryX, iInventoryY )
-    self.m_pnlTabCharacterLeft.Paint = function( p, iW, iH )
-        surface.SetDrawColor( 255, 255, 255, 255 )
-        surface.SetFont( "PRP.PlyMenu.Large" )
+
+
+    self.m_pnlTabCharacterLeftStatus = self.m_pnlTabCharacterLeft:Add( "DPanel" )
+    self.m_pnlTabCharacterLeftStatus:SetSize( self.m_pnlTabCharacterLeft:GetWide(), 2 * 35 * PRP.UI.ScaleFactor )
+    self.m_pnlTabCharacterLeftStatus.Paint = function( this, iW, iH )
+        -- @TODO: No Material() in Paint hook!
+        surface.SetDrawColor( 43, 195, 140, 255 )
+        surface.SetMaterial( Material( "prp/icons/hud/wallet.png" ) )
+        surface.DrawTexturedRect( 0, 0, 24 * PRP.UI.ScaleFactor, 24 * PRP.UI.ScaleFactor )
+
         surface.SetTextColor( 255, 255, 255, 255 )
-        surface.SetTextPos( iInventoryX, iInventoryY - ( 48 * PRP.UI.ScaleFactor ) )
-        surface.DrawText( "INVENTORY" )
+        surface.SetFont( "PRP.UI.Bar.Label" )
+        local sMoney = "$ " .. string.Comma( LocalPlayer():GetCharacter():GetMoney() )
+        local iWidth, iHeight = surface.GetTextSize( sMoney )
+        surface.SetTextPos( 400 - iWidth + 2, 2 )
+        surface.DrawText( sMoney )
+
+
+        PRP.UI.DrawBar( Material( "prp/icons/hud/heart_shadow.png" ), 0, iH / 2, fnHealthPercentSmoothed, PUI.RED, true )
     end
+
+    self.m_pnlTabCharacterLeft.Paint = function( p, iW, iH )
+
+    end
+
+    self.m_pnlTabCharacterLeft:InvalidateLayout( true )
+    self.m_pnlTabCharacterLeft:CenterVertical()
+    -- Center self.m_pnlTabCharacterLeft vertically
+    -- timer.Simple( 0, function()
+    -- end )
 
 
     self.m_pnlTabCharacterRight = vgui.Create( "DPanel", self.m_pnlTabCharacterContent )
@@ -208,8 +265,13 @@ function PANEL:Init()
     --     -- surface.DrawTexturedRect( - ( 747 - w ) / 2, 0, 747, h )
     -- end
     function wow:PaintOver( w, h )
-        -- surface.SetDrawColor( 255, 255, 255, 100 )
-        -- surface.DrawOutlinedRect( 0, 0, w, h )
+        render.SetScissorRect(0, 0, ScrW(), ScrH(), false)
+
+        -- surface.SetDrawColor( 255, 255, 255, 255 * 1 )
+        -- surface.SetMaterial( oGlowMat )
+        -- surface.DrawTexturedRect( 0, 0, 744, 1080 )
+
+        render.SetScissorRect(0, 0, ScrW(), ScrH(), true)
     end
     function wow:DrawModel()
         -- self.Entity:DrawModel()
@@ -330,19 +392,32 @@ function PANEL:Init()
     self.m_pnlBackground.Paint = function( p, iW, iH )
         ix.util.DrawBlur( p, self.easedFraction * 6 or 0 )
 
-        surface.SetDrawColor( 255, 255, 255, 255 * 1 * self.easedFraction )
-        surface.SetMaterial( Material( "prp/vignette4.png", "smooth" ) )
+
+        PUI.StartOverlay()
+            surface.SetDrawColor( 255, 255, 255 )
+            surface.SetMaterial( oGradient )
+            surface.DrawTexturedRect( 0, 0, iW, iH )
+
+            surface.DrawRect( 0, 0, iW, iH )
+        PUI.EndOverlay()
+
+        Print( "eased fraction: " .. self.easedFraction )
+
+        surface.SetDrawColor( 255, 255, 255, 255 * 0.3 * self.easedFraction )
+        surface.SetMaterial( oGradient )
         surface.DrawTexturedRect( 0, 0, iW, iH )
 
-        if self.m_pnlTabPanel._iCurrentTab == 2 then
-            surface.SetDrawColor( 255, 255, 255, 255 * 0.9 * self.easedFraction )
-            surface.SetMaterial( PRP.API.Material( "ui/plymenu/youbg" ) )
-            surface.DrawTexturedRect( 0, 0, iW, iH )
-        else
-            surface.SetDrawColor( 255, 255, 255, 255 * 0.9 * self.easedFraction )
-            surface.SetMaterial( PRP.API.Material( "ui/plymenu/bg" ) )
-            surface.DrawTexturedRect( 0, 0, iW, iH )
-        end
+        -- surface.SetDrawColor( 255, 255, 255, 255 * 1 * self.easedFraction )
+        -- surface.SetMaterial( oGradient )
+        -- surface.DrawTexturedRect( 0, 0, iW, iH )
+
+        -- render.OverrideBlend( true, BLEND_DST_COLOR, BLEND_DST_ALPHA, BLENDFUNC_ADD, BLEND_SRC_COLOR, BLEND_DST_ALPHA, BLENDFUNC_ADD )
+
+        -- surface.SetDrawColor( 255, 255, 255, 255 * 1 * self.easedFraction )
+        -- surface.SetMaterial( oGradient )
+        -- surface.DrawTexturedRect( 0, 0, iW, iH )
+
+        -- render.OverrideBlend( false )
 
         -- surface.SetDrawColor( 255, 255, 255, 255 * 1 * self.easedFraction )
         -- surface.SetMaterial( Material( "prp/Footer.png", "" ) )

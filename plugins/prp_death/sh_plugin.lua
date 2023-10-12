@@ -7,6 +7,10 @@ PLUGIN.description = "Handles death."
 ix.util.Include("hooks/sv_hooks.lua")
 ix.util.Include("hooks/cl_hooks.lua")
 
+ix.config.Add("spawnTimeFastEnabled", false, "Whether or not players can fast respawn.", nil, {
+	category = "Palomino"
+})
+
 ix.config.Add("spawnTimeFast", 5, "Amount of seconds before a player can trigger a respawn with spacebar.", nil, {
 	data = {min = 0, max = 300},
 	category = "Palomino"

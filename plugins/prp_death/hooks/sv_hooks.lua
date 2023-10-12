@@ -20,16 +20,14 @@ function PLUGIN:DoPlayerDeath( pPlayer, pAttacker, tDamageInfo )
 		end
 	end
 
-	net.Start("ixPlayerDeath")
-	net.Send(pPlayer)
-
-	-- pPlayer:SetAction("@respawning", ix.config.Get("spawnTime", 5))
-	pPlayer:SetDSP(31)
-
-    return true
+    -- return true
 end
 
 function PLUGIN:PlayerDeath(pPlayer, eInflictor, eAttacker)
+	-- pPlayer:SetDSP( 31 )
+	net.Start( "ixPlayerDeath" )
+	net.Send( pPlayer )
+
 	local character = pPlayer:GetCharacter()
 
 	if (character) then
@@ -74,7 +72,7 @@ function PLUGIN:PlayerDeathThink( pPlayer )
         local iFastDeathTimestamp = pPlayer:GetNetVar("deathTimeFast")
 		local iFullDeathTimestamp = pPlayer:GetNetVar("deathTimeFull")
 
-        if iFastDeathTimestamp and iFastDeathTimestamp <= CurTime() and pPlayer:KeyDown( IN_JUMP ) then
+        if ix.config.Get( "spawnTimeFastEnabled", false ) and iFastDeathTimestamp and iFastDeathTimestamp <= CurTime() and pPlayer:KeyDown( IN_JUMP ) then
 			if pPlayer.DeathSpawn then
             	pPlayer:DeathSpawn()
 			else

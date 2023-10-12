@@ -25,7 +25,7 @@ hook.Add( "InitializedPlugins", "PRP.Heist.LootTimer", function()
     local oBank = PRP.Heist.Get( "bank" )
 
     timer.Create( "PRP.Heist.LootTimer", 1, 0, function()
-        Print("LootTimer")
+        -- Print("LootTimer")
         for _, pPlayer in pairs( PRP.Heist.PlayersWithLoot ) do
             Print( "Player" )
             if not IsValid( pPlayer ) then

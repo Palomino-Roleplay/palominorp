@@ -1,10 +1,9 @@
-ITEM.name = "M4A1 Carbine"
-ITEM.description = "11.5 inch, compensated with an iron-bonded bolt carrier"
-ITEM.model = "models/weapons/w_her_m27IA.mdl"
-ITEM.class = "heretic_cw2_m27"
-ITEM.weaponCategory = "primary"
-ITEM.width = 4
-ITEM.height = 2
+ITEM.name = "Black Balaclava"
+ITEM.description = "Hides your identity."
+ITEM.model = "models/sal/halloween/ninja.mdl"
+ITEM.width = 1
+ITEM.height = 1
+ITEM.outfitCategory = "hat"
 ITEM.pacData = {
     [1] = {
         ["children"] = {
@@ -13,7 +12,7 @@ ITEM.pacData = {
                 },
                 ["self"] = {
                     ["Skin"] = 0,
-                    ["UniqueID"] = "f3316f71347b853136ae00da01c1312e34a2a332b68b9b4c81c5a532cacdee4c",
+                    ["UniqueID"] = "b9d9d6cdb12f8690fa20c3867064616f44cca1ee52a1eae862d2a6b71c4fd813",
                     ["NoLighting"] = false,
                     ["AimPartName"] = "",
                     ["IgnoreZ"] = false,
@@ -31,12 +30,12 @@ ITEM.pacData = {
                     ["Material"] = "",
                     ["Invert"] = false,
                     ["ForceObjUrl"] = false,
-                    ["Bone"] = "spine 1",
-                    ["Angles"] = Angle(38.299999237061, 6.4000000953674, 0),
+                    ["Bone"] = "eyes",
+                    ["Angles"] = Angle(1.7075475398087e-06, -1.2518906593323, 2.1344342258089e-06),
                     ["AngleOffset"] = Angle(0, 0, 0),
                     ["BoneMerge"] = false,
                     ["Color"] = Vector(1, 1, 1),
-                    ["Position"] = Vector(-4.2639808654785, -4.9076538085938, 3.7115478515625),
+                    ["Position"] = Vector(-4.3817749023438, 0.3297119140625, -2.2934188842773),
                     ["ClassName"] = "model2",
                     ["Brightness"] = 1,
                     ["Hide"] = false,
@@ -49,13 +48,13 @@ ITEM.pacData = {
                     ["Translucent"] = false,
                     ["BlendMode"] = "",
                     ["EyeTargetUID"] = "",
-                    ["Model"] = "models/weapons/w_her_m27IA.mdl",
+                    ["Model"] = "models/sal/halloween/ninja.mdl",
                 },
             },
         },
         ["self"] = {
             ["DrawOrder"] = 0,
-            ["UniqueID"] = "a6d1b08663f89a30ae442d7d34956e942cab9ea707ccb6f266aac508e4657f8e",
+            ["UniqueID"] = "39fd85ba79aa1daca235416d6c41bebc7c7b7f8c48f5156f25f614bed4cab6f2",
             ["Hide"] = false,
             ["TargetEntityUID"] = "",
             ["EditorExpand"] = true,

@@ -12,7 +12,7 @@ hook.Add("player_spawn", "PRP.Death.PlayerSpawn", function(data)
 
     if (IsValid(client)) then
         if (client == LocalPlayer() and (IsValid(ix.gui.deathScreen))) then
-            ix.gui.deathScreen:Close()
+            ix.gui.deathScreen:FadeOut()
         end
     end
 end)

@@ -2,9 +2,11 @@ PRP.UI = PRP.UI or {}
 
 local oHeartNoAlphatest = Material( "prp/icons/hud/heart.png" )
 
+local oMaterialHeart = Material( "prp/icons/hud/heart_shadow.png" )
+
 local oGradientLeft = Material( "prp/icons/hud/gradient_left.png" )
 
-local function fnHealthPercentSmoothed()
+function fnHealthPercentSmoothed()
     return LocalPlayer():Health() / LocalPlayer():GetMaxHealth()
 end
 
@@ -41,6 +43,13 @@ surface.CreateFont( "PRP.UI.Watermark.Subtext", {
     antialias = true
 })
 
+surface.CreateFont( "PRP.UI.Bar.Label", {
+    font = "Inter",
+    size = 20,
+    weight = 600,
+    antialias = true
+})
+
 function PRP.UI.DrawTimer( iX, iY, sLabel, iTime )
     local sTime = string.FormattedTime( iTime, "%02i:%02i" )
 
@@ -58,7 +67,9 @@ function PRP.UI.DrawTimer( iX, iY, sLabel, iTime )
 end
 
 local oBarPill = Material( "prp/icons/hud/healthbar_pill_5pxc.png" )
-function PRP.UI.DrawBar( oMaterial, iX, iY, fnPercent )
+function PRP.UI.DrawBar( oMaterial, iX, iY, fnPercent, oColor, bDrawValue )
+    oColor = oColor or COLOR_WHITE
+
     local iXPadding = 16
 	local iYPadding = 20
 
@@ -67,16 +78,18 @@ function PRP.UI.DrawBar( oMaterial, iX, iY, fnPercent )
     local iIconWidth = oMaterial:Width()
     local iIconHeight = oMaterial:Height()
 
+    -- Print("IconHeight: " .. iIconHeight)
+    -- Print("IconWidth: " .. iIconWidth)
     local iIconX = iX
     local iIconY = iY
 
     surface.SetMaterial( oMaterial )
-    surface.SetDrawColor( 255, 255, 255, 255 )
+    surface.SetDrawColor( oColor:Unpack() )
     surface.DrawTexturedRect( iIconX, iIconY, iIconWidth, iIconHeight )
 
     -- Bar background
 
-    local iBarWidth = 420
+    local iBarWidth = bDrawValue and 330 or 365
     local iBarHeight = 5
     local iBarX = iIconX + iIconWidth + iXGap
     local iBarY = iIconY + ( iIconHeight / 2 ) - ( iBarHeight / 2 )
@@ -102,7 +115,7 @@ function PRP.UI.DrawBar( oMaterial, iX, iY, fnPercent )
 
     -- Bar Progress - Gradient
     surface.SetMaterial( oGradientLeft )
-    surface.SetDrawColor( 255, 255, 255, 32 )
+    surface.SetDrawColor( ColorAlpha( oColor, 48 ):Unpack() )
     surface.DrawTexturedRectUV(
         iBarX,
         iBarY,
@@ -126,22 +139,32 @@ function PRP.UI.DrawBar( oMaterial, iX, iY, fnPercent )
     local iBarPillY = iBarY
 
     surface.SetMaterial( oBarPill )
-    surface.SetDrawColor( 255, 255, 255, 255 )
+    surface.SetDrawColor( oColor:Unpack() )
     surface.DrawTexturedRect( iBarPillX, iBarPillY, iBarPillWidth, iBarPillHeight )
+
+    -- Bar Value
+    if bDrawValue then
+        surface.SetFont( "PRP.UI.Bar.Label" )
+        surface.SetTextColor( 255, 255, 255, 255 )
+        surface.SetTextPos( iBarX + iBarWidth + 10, iIconY + ( iIconHeight - 20 ) / 2 )
+        surface.DrawText( math.floor( fnPercent() * 100 ) )
+    end
 end
 
 hook.Add( "HUDPaint", "PRP.UI.HUDPaint", function()
     -- Drawn bottom to top
 
+    -- PUI.Box( 0, 0, ScrW(), ScrH(), COLOR_WHITE )
+
     -- Health
     local iX = 15
-    local iY = ScrH() - ( oHeartNoAlphatest:Height() + 10 )
-    PRP.UI.DrawBar( oHeartNoAlphatest, iX, iY, fnHealthPercentSmoothed )
+    local iY = ScrH() - ( oMaterialHeart:Height() + 10 )
+    PRP.UI.DrawBar( oMaterialHeart, iX, iY, fnHealthPercentSmoothed )
 
     -- Armor
     if LocalPlayer():Armor() > 0 then
-        iY = iY - ( oHeartNoAlphatest:Height() + 10 )
-        PRP.UI.DrawBar( oHeartNoAlphatest, iX, iY, fnArmorPercentSmoothed )
+        iY = iY - ( oMaterialHeart:Height() + 10 )
+        PRP.UI.DrawBar( oMaterialHeart, iX, iY, fnArmorPercentSmoothed )
     end
 
     -- Recovery Timer
@@ -149,7 +172,7 @@ hook.Add( "HUDPaint", "PRP.UI.HUDPaint", function()
     if iRecoveryTime then
         local iRecoveryTimeRemaining = math.max( iRecoveryTime - CurTime(), 0 )
 
-        iY = iY - ( oHeartNoAlphatest:Height() + 10 )
+        iY = iY - ( oMaterialHeart:Height() + 10 )
         PRP.UI.DrawTimer( iX, iY, "RECOVERING", iRecoveryTimeRemaining )
     end
 
@@ -158,8 +181,8 @@ hook.Add( "HUDPaint", "PRP.UI.HUDPaint", function()
     surface.SetFont( "PRP.UI.Watermark.Header" )
     surface.SetTextPos( 15, 15 )
     surface.SetTextColor( 255, 255, 255, 32 )
-    surface.DrawText( "PALOMINO.GG" )
-    local iHeaderWidth, iHeaderHeight = surface.GetTextSize( "PALOMINO.GG" )
+    surface.DrawText( "PALOMINO" )
+    local iHeaderWidth, iHeaderHeight = surface.GetTextSize( "PALOMINO" )
 
     surface.SetFont( "PRP.UI.Watermark.Subtext" )
     surface.SetDrawColor( 255, 255, 255, 32 )
@@ -178,12 +201,12 @@ hook.Add( "HUDPaint", "PRP.UI.HUDPaint", function()
 	-- local iHealthPercentage = iHealth / iMaxHealth
 
 	-- -- Heart Icon
-	-- local iHeartWidth = oHeartNoAlphatest:Width()
-	-- local iHeartHeight = oHeartNoAlphatest:Height()
+	-- local iHeartWidth = oMaterialHeart:Width()
+	-- local iHeartHeight = oMaterialHeart:Height()
 	-- local iHeartX = iXPadding
 	-- local iHeartY = ScrH() - ( iHeartHeight / 2 ) - iYPadding
 
-	-- surface.SetMaterial( oHeartNoAlphatest )
+	-- surface.SetMaterial( oMaterialHeart )
 	-- surface.SetDrawColor( 255, 255, 255, 32 )
 	-- surface.DrawTexturedRect( iHeartX, iHeartY, iHeartWidth, iHeartHeight )
 
