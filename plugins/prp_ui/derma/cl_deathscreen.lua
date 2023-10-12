@@ -19,14 +19,14 @@ oDeathSound:SetSoundLevel( 0 )
 local tDeathMessages = {
     "SMOKED",
     "DEAD",
-    "ELIMINATED",
     "WASTED",
-    "EXECUTED",
-    "PERISHED",
     "FRAGGED",
     "KILLED",
-    "ERADICATED",
     "ERASED",
+    "OWNED",
+    "GONE",
+    "DROPPED",
+    "CLIPPED",
 }
 
 function PANEL:Init()
