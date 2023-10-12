@@ -13,9 +13,6 @@ surface.CreateFont( "PRP.DeathScreen.Title.Shadow", {
     blursize = 32
 })
 
-local oDeathSound = CreateSound( game.GetWorld(), "palomino/death_2.wav" )
-oDeathSound:SetSoundLevel( 0 )
-
 local tDeathMessages = {
     "SMOKED",
     "DEAD",
