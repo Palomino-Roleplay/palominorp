@@ -159,9 +159,22 @@ function PANEL:Init()
 
 
     self.m_pnlTabCharacterLeftStatus = self.m_pnlTabCharacterLeft:Add( "DPanel" )
-    self.m_pnlTabCharacterLeftStatus:SetSize( self.m_pnlTabCharacterLeft:GetWide(), 2 * 30 * PRP.UI.ScaleFactor )
+    self.m_pnlTabCharacterLeftStatus:SetSize( self.m_pnlTabCharacterLeft:GetWide(), 2 * 35 * PRP.UI.ScaleFactor )
     self.m_pnlTabCharacterLeftStatus.Paint = function( this, iW, iH )
-        PRP.UI.DrawBar( Material( "prp/icons/hud/heart_shadow.png" ), 0, 0, fnHealthPercentSmoothed, PUI.RED, true )
+        -- @TODO: No Material() in Paint hook!
+        surface.SetDrawColor( 43, 195, 140, 255 )
+        surface.SetMaterial( Material( "prp/icons/hud/wallet.png" ) )
+        surface.DrawTexturedRect( 0, 0, 24 * PRP.UI.ScaleFactor, 24 * PRP.UI.ScaleFactor )
+
+        surface.SetTextColor( 255, 255, 255, 255 )
+        surface.SetFont( "PRP.UI.Bar.Label" )
+        local sMoney = "$ " .. string.Comma( LocalPlayer():GetCharacter():GetMoney() )
+        local iWidth, iHeight = surface.GetTextSize( sMoney )
+        surface.SetTextPos( 400 - iWidth + 2, 2 )
+        surface.DrawText( sMoney )
+
+
+        PRP.UI.DrawBar( Material( "prp/icons/hud/heart_shadow.png" ), 0, iH / 2, fnHealthPercentSmoothed, PUI.RED, true )
     end
 
     self.m_pnlTabCharacterLeft.Paint = function( p, iW, iH )
