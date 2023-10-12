@@ -168,6 +168,12 @@ function PANEL:Init()
 
     end
 
+    self.m_pnlTabCharacterLeft:InvalidateLayout( true )
+    self.m_pnlTabCharacterLeft:CenterVertical()
+    -- Center self.m_pnlTabCharacterLeft vertically
+    -- timer.Simple( 0, function()
+    -- end )
+
 
     self.m_pnlTabCharacterRight = vgui.Create( "DPanel", self.m_pnlTabCharacterContent )
     self.m_pnlTabCharacterRight:SetPos( ScrW() / 2, 20 * PRP.UI.ScaleFactor )
