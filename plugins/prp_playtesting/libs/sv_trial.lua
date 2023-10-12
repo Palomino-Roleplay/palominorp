@@ -54,6 +54,11 @@ function PRP.Playtesting.CreateSampleCharacter( pPlayer, fnCallback )
     ix.char.Create( tCharacterInfo, function( iID )
         local oCharacter = ix.char.loaded[iID]
 
+        if not oCharacter then
+            ErrorNoHalt( "Failed to create character for " .. pPlayer:Name() .. " (" .. pPlayer:SteamID() .. ")" )
+            return
+        end
+
         local oCurrentCharacter = pPlayer:GetCharacter()
 
         if oCurrentCharacter then
@@ -69,7 +74,7 @@ function PRP.Playtesting.CreateSampleCharacter( pPlayer, fnCallback )
         hook.Run( "PrePlayerLoadedCharacter", pPlayer, oCharacter, oCurrentCharacter )
 
         oCharacter:Setup()
-        oCurrentCharacter:Spawn()
+        pPlayer:Spawn()
 
         hook.Run( "PlayerLoadedCharacter", pPlayer, oCharacter, oCurrentCharacter )
 
