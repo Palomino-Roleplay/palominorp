@@ -181,7 +181,7 @@ hook.Add( "HUDPaint", "PRP.UI.HUDPaint", function()
     surface.SetFont( "PRP.UI.Watermark.Header" )
     surface.SetTextPos( 15, 15 )
     surface.SetTextColor( 255, 255, 255, 32 )
-    surface.DrawText( "PALOMINO" )
+    surface.DrawText( "PALOMINO.GG" )
     local iHeaderWidth, iHeaderHeight = surface.GetTextSize( "PALOMINO" )
 
     surface.SetFont( "PRP.UI.Watermark.Subtext" )
