@@ -2,13 +2,13 @@ local PANEL = {}
 
 surface.CreateFont( "PRP.DeathScreen.Title", {
     font = "Inter Bold",
-    size = 256,
+    size = 200,
     antialias = true
 })
 
 surface.CreateFont( "PRP.DeathScreen.Title.Shadow", {
     font = "Inter Bold",
-    size = 256,
+    size = 200,
     antialias = true,
     blursize = 32
 })
