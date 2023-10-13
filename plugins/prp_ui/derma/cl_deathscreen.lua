@@ -86,7 +86,7 @@ function PANEL:Paint( iW, iH )
         iFadeToWhiteFactor = math.ease.InExpo( math.Clamp( ( iTime - self.m_iFadeToWhiteStartTimestamp ) / ( self.m_iFadeToWhiteEndTimestamp - self.m_iFadeToWhiteStartTimestamp ), 0, 1 ) )
     end
 
-    local iAnimationFactor = math.ease.OutExpo( math.Clamp( iTime / 5, 0, 1 ) )
+    local iAnimationFactor = math.ease.OutExpo( math.Clamp( iTime / 8, 0, 1 ) )
 
     if iTime < self.m_iFadeToWhiteEndTimestamp then
         surface.SetDrawColor( 64 * (1 - iAnimationFactor), 0, 0, iFadeAlpha )
