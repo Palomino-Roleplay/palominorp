@@ -10,9 +10,14 @@ local PANEL = {}
 PRP.API.AddMaterial( "ui/plymenu/youbg", "" )
 PRP.API.AddMaterial( "ui/plymenu/bg", "" )
 
-local oGradient = Material( "prp/ui/temp/gradient.png" )
-local oGradientGlow = Material( "prp/ui/temp/gradient_plymenu_v2.png" )
+local oGradient = Material( "prp/ui/temp/gradient_v2.png", "" )
+local oGradientGlow = Material( "prp/ui/temp/gradient_v2_plymenu_v2.png", "" )
 local oGlowMat = Material( "prp/ui/temp/ply_glow.png", "" )
+local oBoltMat = Material( "prp/ui/temp/bolt.png" )
+
+local function fnStaminaPercentSmoothed()
+    return 1 - ( CurTime() % 30 / 30 )
+end
 
 -- local function DownloadAPIFiles()
 --     -- if true then return end
@@ -160,9 +165,11 @@ function PANEL:Init()
 
 
     self.m_pnlTabCharacterLeftStatus = self.m_pnlTabCharacterLeft:Add( "DPanel" )
-    self.m_pnlTabCharacterLeftStatus:SetSize( self.m_pnlTabCharacterLeft:GetWide(), 2 * 35 * PRP.UI.ScaleFactor )
+    self.m_pnlTabCharacterLeftStatus:SetSize( self.m_pnlTabCharacterLeft:GetWide(), 3 * 40 * PRP.UI.ScaleFactor )
     self.m_pnlTabCharacterLeftStatus.Paint = function( this, iW, iH )
         -- @TODO: No Material() in Paint hook!
+
+        -- Wallet
         surface.SetDrawColor( 43, 195, 140, 255 )
         surface.SetMaterial( Material( "prp/icons/hud/wallet.png" ) )
         surface.DrawTexturedRect( 0, 0, 24 * PRP.UI.ScaleFactor, 24 * PRP.UI.ScaleFactor )
@@ -170,12 +177,28 @@ function PANEL:Init()
         surface.SetTextColor( 255, 255, 255, 255 )
         surface.SetFont( "PRP.UI.Bar.Label" )
         local sMoney = "$ " .. string.Comma( LocalPlayer():GetCharacter():GetMoney() )
-        local iWidth, iHeight = surface.GetTextSize( sMoney )
-        surface.SetTextPos( 400 - iWidth + 2, 2 )
+        surface.SetTextPos( ( 24 + 10 ) * PRP.UI.ScaleFactor, 2 )
         surface.DrawText( sMoney )
 
+        -- Salary
+        surface.SetFont( "PRP.UI.Bar.Label" )
+        local sSalary = "$ " .. string.Comma( 100 ) .. "/hr"
 
-        PRP.UI.DrawBar( Material( "prp/icons/hud/heart_shadow.png" ), 0, iH / 2, fnHealthPercentSmoothed, PUI.RED, true )
+        local iTextWidth, iTextHeight = surface.GetTextSize( sSalary )
+
+        surface.SetDrawColor( 43, 195, 140, 255 )
+        surface.SetMaterial( Material( "prp/ui/temp/work.png" ) )
+        surface.DrawTexturedRect( 400 - 24 - 10 - iTextWidth, 0, 24, 24 )
+
+        surface.SetTextColor( 255, 255, 255, 255 )
+        surface.SetTextPos( 400 - iTextWidth, 2 )
+        surface.DrawText( sSalary )
+
+        -- Health
+        PRP.UI.DrawBar( Material( "prp/icons/hud/heart_shadow.png" ), 0, iH / 3, fnHealthPercentSmoothed, PUI.RED, true )
+
+        -- "Stamina"
+        PRP.UI.DrawBar( Material( "prp/ui/temp/bolt.png" ), 0, 2 * iH / 3, fnStaminaPercentSmoothed, Color( 255, 210, 90 ), true )
     end
 
     self.m_pnlTabCharacterLeft.Paint = function( p, iW, iH )
@@ -336,20 +359,15 @@ function PANEL:Init()
 
             cam.Start2D()
                 -- render.OverrideBlend( true, BLEND_SRC_ALPHA, BLEND_DST_ALPHA, BLENDFUNC_ADD, BLEND_SRC_ALPHA, BLEND_SRC_ALPHA, BLENDFUNC_ADD )
-                
-                surface.SetMaterial( Material( "prp/coooolers.png", "" ) )
+
                 render.OverrideBlend( true, BLEND_DST_COLOR, BLEND_DST_ALPHA, BLENDFUNC_ADD, BLEND_SRC_COLOR, BLEND_DST_ALPHA, BLENDFUNC_ADD )
-                surface.SetDrawColor( 255, 255, 255, 255 )
-                surface.DrawTexturedRect( 0, 0, ScrW(), ScrH())
-                
-                -- surface.SetMaterial( matInvBG )
-                -- render.OverrideBlend( true, BLEND_SRC_ALPHA, BLEND_ZERO, BLENDFUNC_ADD, BLEND_SRC_ALPHA, BLEND_ZERO, BLENDFUNC_ADD )
-                -- surface.SetDrawColor( 255, 255, 255, 255 )
+                -- surface.SetMaterial( oGradient )
+                surface.SetDrawColor( 200, 215, 225, 235 )
                 -- surface.DrawTexturedRect( 0, 0, ScrW(), ScrH() )
-
-                -- surface.DrawRect( 0, 0, ScrW(), ScrH() )
-
+                surface.DrawRect( 0, 0, ScrW(), ScrH() )
                 render.OverrideBlend( false )
+
+
             cam.End2D()
 
             -- Draw our entities
@@ -405,7 +423,7 @@ function PANEL:Init()
     -- Background Paint
 
     self.m_pnlBackground.Paint = function( p, iW, iH )
-        ix.util.DrawBlur( p, self.easedFraction * 6 or 0 )
+        ix.util.DrawBlur( p, self.easedFraction * 8 or 0 )
 
 
         PUI.StartOverlay()
@@ -415,8 +433,6 @@ function PANEL:Init()
 
             surface.DrawRect( 0, 0, iW, iH )
         PUI.EndOverlay()
-
-        Print( "eased fraction: " .. self.easedFraction )
 
         surface.SetDrawColor( 255, 255, 255, 255 * 0.2 * self.easedFraction )
         surface.SetMaterial( oGradientGlow )
@@ -436,13 +452,7 @@ function PANEL:Init()
         surface.SetTextColor( 255, 255, 255, 8 )
         surface.DrawText( sVersion )
 
-        -- PUI.StartOverlay()
-        --     surface.SetDrawColor( 255, 255, 255 )
-        --     surface.SetMaterial( oGradient )
-        --     surface.DrawTexturedRect( 0, 0, iW, iH )
 
-        --     surface.DrawRect( 0, 0, iW, iH )
-        -- PUI.EndOverlay()
 
         -- surface.SetDrawColor( 255, 255, 255, 255 * 1 * self.easedFraction )
         -- surface.SetMaterial( oGradient )
