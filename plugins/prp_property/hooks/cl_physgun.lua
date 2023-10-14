@@ -13,6 +13,47 @@ function PLUGIN:PhysgunDrop( pPlayer, eEntity )
     return
 end
 
+local matGradientUp = Material( "vgui/gradient_up", "alphatest" )
+local matGradientDown = Material( "vgui/gradient_down", "alphatest" )
+local oGradientColor = Color( 164, 32, 32, 128 )
+
+local function DrawGradientBox(pos1, pos2)
+    render.DepthRange(0, 0.01)
+
+    local vPosMin = Vector(
+        math.min(pos1.x, pos2.x),
+        math.min(pos1.y, pos2.y),
+        math.min(pos1.z, pos2.z)
+    )
+
+    local vPosMax = Vector(
+        math.max(pos1.x, pos2.x),
+        math.max(pos1.y, pos2.y),
+        math.max(pos1.z, pos2.z)
+    )
+
+    render.SetMaterial(matGradientUp)
+    local upperZ = vPosMin.z + 32
+
+    -- Front, Back, Right, Left (1st Side)
+    render.DrawQuad(Vector(vPosMax.x, vPosMax.y, upperZ), Vector(vPosMin.x, vPosMax.y, upperZ), Vector(vPosMin.x, vPosMax.y, vPosMin.z), Vector(vPosMax.x, vPosMax.y, vPosMin.z), oGradientColor )
+    render.DrawQuad(Vector(vPosMin.x, vPosMin.y, upperZ), Vector(vPosMax.x, vPosMin.y, upperZ), Vector(vPosMax.x, vPosMin.y, vPosMin.z), Vector(vPosMin.x, vPosMin.y, vPosMin.z), oGradientColor )
+    render.DrawQuad(Vector(vPosMax.x, vPosMax.y, upperZ), Vector(vPosMax.x, vPosMin.y, upperZ), Vector(vPosMax.x, vPosMin.y, vPosMin.z), Vector(vPosMax.x, vPosMax.y, vPosMin.z), oGradientColor )
+    render.DrawQuad(Vector(vPosMin.x, vPosMin.y, upperZ), Vector(vPosMin.x, vPosMax.y, upperZ), Vector(vPosMin.x, vPosMax.y, vPosMin.z), Vector(vPosMin.x, vPosMin.y, vPosMin.z), oGradientColor )
+
+    render.SetMaterial(matGradientDown)
+
+    -- Front, Back, Right, Left (2nd Side)
+    render.DrawQuad(Vector(vPosMax.x, vPosMax.y, vPosMin.z), Vector(vPosMin.x, vPosMax.y, vPosMin.z), Vector(vPosMin.x, vPosMax.y, upperZ), Vector(vPosMax.x, vPosMax.y, upperZ), oGradientColor )
+    render.DrawQuad(Vector(vPosMin.x, vPosMin.y, vPosMin.z), Vector(vPosMax.x, vPosMin.y, vPosMin.z), Vector(vPosMax.x, vPosMin.y, upperZ), Vector(vPosMin.x, vPosMin.y, upperZ), oGradientColor )
+    render.DrawQuad(Vector(vPosMax.x, vPosMax.y, vPosMin.z), Vector(vPosMax.x, vPosMin.y, vPosMin.z), Vector(vPosMax.x, vPosMin.y, upperZ), Vector(vPosMax.x, vPosMax.y, upperZ), oGradientColor )
+    render.DrawQuad(Vector(vPosMin.x, vPosMin.y, vPosMin.z), Vector(vPosMin.x, vPosMax.y, vPosMin.z), Vector(vPosMin.x, vPosMax.y, upperZ), Vector(vPosMin.x, vPosMin.y, upperZ), oGradientColor )
+
+    render.DepthRange(0, 1)
+end
+
+
+
 function PLUGIN:PostDrawTranslucentRenderables()
     if not IsValid( PRP.Prop.PhysgunnedEntity ) then return end
     if not PRP.Prop.PhysgunnedEntity:GetProperty() then return end
@@ -115,13 +156,20 @@ function PLUGIN:PostDrawTranslucentRenderables()
     local tBlacklistZones = oProperty:GetZonesOfType("prop_blacklist")
     local bInBlacklistZone = PRP.Prop.PhysgunnedEntity:IsInZoneOfType( "prop_blacklist", vTargetPos, vTargetAng )
     for _, tZone in pairs(tBlacklistZones) do
-        render.DrawWireframeBox(
+        -- render.DrawWireframeBox(
+        --     tZone.pos[1],
+        --     Angle(0, 0, 0),
+        --     Vector(0, 0, 0),
+        --     tZone.pos[2] - tZone.pos[1],
+        --     Color(164, 0, 0),
+        --     true
+        -- )
+
+        DrawGradientBox(
             tZone.pos[1],
-            Angle(0, 0, 0),
-            Vector(0, 0, 0),
-            tZone.pos[2] - tZone.pos[1],
+            tZone.pos[2],
             Color(164, 0, 0),
-            true
+            Color(0, 164, 0)
         )
     end
 
@@ -144,7 +192,6 @@ function PLUGIN:PostDrawTranslucentRenderables()
 end
 
 net.Receive( "PRP.Property.OnPhysgunPickup", function( iLen )
-    Print( "hi, are you receiving?" )
     local eEntity = net.ReadEntity()
     if not IsValid( eEntity ) then return end
 
