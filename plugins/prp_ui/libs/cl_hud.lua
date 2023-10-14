@@ -182,12 +182,12 @@ hook.Add( "HUDPaint", "PRP.UI.HUDPaint", function()
     surface.SetTextPos( 15, 15 )
     surface.SetTextColor( 255, 255, 255, 32 )
     surface.DrawText( "PALOMINO.GG" )
-    local iHeaderWidth, iHeaderHeight = surface.GetTextSize( "PALOMINO" )
+    local iHeaderWidth, iHeaderHeight = surface.GetTextSize( "PALOMINO.GG" )
 
     surface.SetFont( "PRP.UI.Watermark.Subtext" )
     surface.SetDrawColor( 255, 255, 255, 32 )
     surface.SetTextPos( 15, 15 + iHeaderHeight )
-    surface.DrawText( "PRE-ALPHA" )
+    surface.DrawText( string.upper( Schema.version ) )
 
     -- if true then return end
 
