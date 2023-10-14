@@ -139,7 +139,7 @@ function PRP.UI.DrawBar( oMaterial, iX, iY, fnPercent, oColor, bDrawValue )
     local iBarPillY = iBarY
 
     surface.SetMaterial( oBarPill )
-    surface.SetDrawColor( oColor:Unpack() )
+    surface.SetDrawColor( ColorAlpha( oColor, 255 ):Unpack() )
     surface.DrawTexturedRect( iBarPillX, iBarPillY, iBarPillWidth, iBarPillHeight )
 
     -- Bar Value
@@ -159,7 +159,7 @@ hook.Add( "HUDPaint", "PRP.UI.HUDPaint", function()
     -- Health
     local iX = 15
     local iY = ScrH() - ( oMaterialHeart:Height() + 10 )
-    PRP.UI.DrawBar( oMaterialHeart, iX, iY, fnHealthPercentSmoothed )
+    PRP.UI.DrawBar( oMaterialHeart, iX, iY, fnHealthPercentSmoothed, Color( 255, 255, 255, 16 ) )
 
     -- Armor
     if LocalPlayer():Armor() > 0 then
