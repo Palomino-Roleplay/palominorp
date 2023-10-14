@@ -162,9 +162,9 @@ function PLUGIN:PostDrawTranslucentRenderables()
         PRP.Property.PhysgunnedEntityClient:SetAngles( vTargetAng )
 
         local iClientEntityAlpha = 32 * math.ease.InQuad( math.Clamp( PRP.Property.PhysgunnedEntityClient:GetPos():Distance( PRP.Prop.PhysgunnedEntity:GetPos() ) / PRP.Prop.PhysgunnedEntity:BoundingRadius(), 0, 1 ) )
-        Print( "what in the fuck?" )
-        Print( PRP.Prop.PhysgunnedEntity:BoundingRadius() )
-        Print( iClientEntityAlpha )
+        -- Print( "what in the fuck?" )
+        -- Print( PRP.Prop.PhysgunnedEntity:BoundingRadius() )
+        -- Print( iClientEntityAlpha )
         PRP.Property.PhysgunnedEntityClient:SetColor4Part( 255, 255, 255, iClientEntityAlpha )
 
         tIntersectingEntities = PRP.Prop.PhysgunnedEntity:CalcIntersect( vTargetPos, vTargetAng )
