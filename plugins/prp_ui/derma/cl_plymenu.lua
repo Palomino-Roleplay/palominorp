@@ -11,6 +11,7 @@ PRP.API.AddMaterial( "ui/plymenu/youbg", "" )
 PRP.API.AddMaterial( "ui/plymenu/bg", "" )
 
 local oGradient = Material( "prp/ui/temp/gradient.png" )
+local oGradientGlow = Material( "prp/ui/temp/gradient_plymenu_v2.png" )
 local oGlowMat = Material( "prp/ui/temp/ply_glow.png", "" )
 
 -- local function DownloadAPIFiles()
@@ -205,6 +206,20 @@ function PANEL:Init()
         -- surface.DrawTexturedRect( 0, h * 0.1, w, h * 0.8 )
     end
 
+    self.m_pnlTabCharacterContent.Paint = function( this, iW, iH )
+        local iLeftX = self.m_pnlTabCharacterLeft:GetX() + self.m_pnlTabCharacterLeft:GetWide()
+        local iLeftY = self.m_pnlTabCharacterLeft:GetY()
+        local iLeftH = self.m_pnlTabCharacterLeft:GetTall()
+
+        surface.SetDrawColor( 255, 255, 255, 4 )
+        surface.DrawRect( iLeftX, iLeftY, 2, iLeftH )
+
+        PUI.StartOverlay()
+            surface.SetDrawColor( 220, 220, 220, 255 )
+            surface.DrawRect( iLeftX, iLeftY, 2, iLeftH )
+        PUI.EndOverlay()
+    end
+
 
     local wow = vgui.Create( "DModelPanel", self.m_pnlTabCharacterRight )
     wow:Dock( FILL )
@@ -395,7 +410,7 @@ function PANEL:Init()
 
         PUI.StartOverlay()
             surface.SetDrawColor( 255, 255, 255 )
-            surface.SetMaterial( oGradient )
+            surface.SetMaterial( oGradientGlow )
             surface.DrawTexturedRect( 0, 0, iW, iH )
 
             surface.DrawRect( 0, 0, iW, iH )
@@ -403,9 +418,31 @@ function PANEL:Init()
 
         Print( "eased fraction: " .. self.easedFraction )
 
-        surface.SetDrawColor( 255, 255, 255, 255 * 0.3 * self.easedFraction )
-        surface.SetMaterial( oGradient )
+        surface.SetDrawColor( 255, 255, 255, 255 * 0.2 * self.easedFraction )
+        surface.SetMaterial( oGradientGlow )
         surface.DrawTexturedRect( 0, 0, iW, iH )
+
+        -- @TODO: This should be a function or panel or something.
+
+        surface.SetFont( "PRP.UI.Watermark.Header" )
+        local iTextWidth, iTextHeight = surface.GetTextSize( "PALOMINO.GG" )
+        surface.SetTextPos( 15, ScrH() - 15 - iTextHeight )
+        surface.SetTextColor( 255, 255, 255, 8 )
+        surface.DrawText( "PALOMINO.GG" )
+
+        local sVersion = string.upper( Schema.version )
+        iTextWidth, iTextHeight = surface.GetTextSize( sVersion )
+        surface.SetTextPos( ScrW() - iTextWidth - 15, ScrH() - 15 - iTextHeight )
+        surface.SetTextColor( 255, 255, 255, 8 )
+        surface.DrawText( sVersion )
+
+        -- PUI.StartOverlay()
+        --     surface.SetDrawColor( 255, 255, 255 )
+        --     surface.SetMaterial( oGradient )
+        --     surface.DrawTexturedRect( 0, 0, iW, iH )
+
+        --     surface.DrawRect( 0, 0, iW, iH )
+        -- PUI.EndOverlay()
 
         -- surface.SetDrawColor( 255, 255, 255, 255 * 1 * self.easedFraction )
         -- surface.SetMaterial( oGradient )
