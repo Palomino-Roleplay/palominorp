@@ -7,6 +7,13 @@ surface.CreateFont( "PRP.UI.Button", {
     antialias = true
 } )
 
+surface.CreateFont( "PRP.UI.Key", {
+    font = "Inter",
+    size = 32 * PRP.UI.ScaleFactor,
+    weight = 800,
+    antialias = true
+} )
+
 local PANEL = {}
 
 AccessorFunc( PANEL, "m_iPadding", "Padding" )
@@ -94,3 +101,42 @@ concommand.Add( "prp_testbutton", function()
     dButton:SetPos( 50, 50 )
     dButton:SetLabel( "I UNDERSTAND" )
 end )
+
+-- Keyboard Button Display
+
+PANEL = {}
+
+function PANEL:Init()
+    self:SetSize( 48, 48 )
+    -- self:Center()
+    -- self:MakePopup()
+    -- self:SetTitle( "" )
+    -- self:ShowCloseButton( true )
+end
+
+function PANEL:SetKey( iKey )
+    self.m_iKey = iKey
+end
+
+function PANEL:Paint( iW, iH )
+    -- -- PUI.StartOverlay()
+    --     surface.SetDrawColor( 217, 217, 217, 255 * 0.1 * 0.25 )
+    --     surface.DrawRect( 0, 0, iW, iH )
+    -- -- PUI.EndOverlay()
+
+    -- surface.SetDrawColor( 255, 255, 255, 255 * 0.2 * 0.25 )
+    -- surface.DrawOutlinedRect( 0, 0, iW, iH, 2 )
+
+    -- surface.SetTextColor( 255, 255, 255, 255 * 0.4 * 0.25 )
+    -- surface.SetFont( "PRP.UI.Key" )
+
+    local sKeyName = string.lower( input.GetKeyName( self.m_iKey or 0 ) or "" )
+    surface.SetMaterial( Material( "prp/ui/temp/key_" .. sKeyName .. ".png" ) )
+    surface.SetDrawColor( 255, 255, 255, 255 * 0.35 )
+    surface.DrawTexturedRect( 0, 0, iW, iH )
+    -- local w, h = surface.GetTextSize( sKeyName )
+    -- surface.SetTextPos( iW / 2 - w / 2, iH / 2 - h / 2 )
+    -- surface.DrawText( sKeyName )
+end
+
+vgui.Register( "PRP.KeyboardButton", PANEL, "DPanel" )
