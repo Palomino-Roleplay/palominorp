@@ -1,3 +1,7 @@
+function Schema:GetCrosshairAlpha()
+    return 0
+end
+
 function Schema:BuildBusinessMenu()
     return false
 end
