@@ -10,8 +10,14 @@ local PANEL = {}
 PRP.API.AddMaterial( "ui/plymenu/youbg", "" )
 PRP.API.AddMaterial( "ui/plymenu/bg", "" )
 
-local oGradient = Material( "prp/ui/temp/gradient.png" )
+local oGradient = Material( "prp/ui/temp/gradient_v2.png", "" )
+local oGradientGlow = Material( "prp/ui/temp/gradient_v2_plymenu_v2.png", "" )
 local oGlowMat = Material( "prp/ui/temp/ply_glow.png", "" )
+local oBoltMat = Material( "prp/ui/temp/bolt.png" )
+
+local function fnStaminaPercentSmoothed()
+    return 1 - ( CurTime() % 30 / 30 )
+end
 
 -- local function DownloadAPIFiles()
 --     -- if true then return end
@@ -58,7 +64,7 @@ surface.CreateFont( "PRP.PlyMenu.Large", {
 
 surface.CreateFont( "PRP.PlyMenu.Sub", {
     font = "Inter",
-    size = 20 * PRP.UI.ScaleFactor,
+    size = 24 * PRP.UI.ScaleFactor,
     antialias = true
 } )
 
@@ -68,6 +74,19 @@ function PANEL:Init()
 
     self:MakePopup()
     self:SetKeyboardInputEnabled( false )
+
+    -- Close Button
+    self.m_pnlCloseButton = vgui.Create( "DButton", self )
+    self.m_pnlCloseButton:SetSize( 32, 32 )
+    self.m_pnlCloseButton:SetText( "" )
+    self.m_pnlCloseButton:SetPos( ScrW() - 32, 0 )
+    self.m_pnlCloseButton.Paint = function( p, iW, iH )
+        -- draw.SimpleText( "X", "DermaLarge", iW / 2, iH / 2, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+    end
+    self.m_pnlCloseButton.DoClick = function()
+        self:Remove()
+    end
+    self.m_pnlCloseButton:SetZPos( 100 )
 
     self.iOpenTime = CurTime()
 
@@ -159,22 +178,40 @@ function PANEL:Init()
 
 
     self.m_pnlTabCharacterLeftStatus = self.m_pnlTabCharacterLeft:Add( "DPanel" )
-    self.m_pnlTabCharacterLeftStatus:SetSize( self.m_pnlTabCharacterLeft:GetWide(), 2 * 35 * PRP.UI.ScaleFactor )
+    self.m_pnlTabCharacterLeftStatus:SetSize( self.m_pnlTabCharacterLeft:GetWide(), 3 * 40 * PRP.UI.ScaleFactor )
     self.m_pnlTabCharacterLeftStatus.Paint = function( this, iW, iH )
         -- @TODO: No Material() in Paint hook!
+
+        -- Wallet
         surface.SetDrawColor( 43, 195, 140, 255 )
         surface.SetMaterial( Material( "prp/icons/hud/wallet.png" ) )
         surface.DrawTexturedRect( 0, 0, 24 * PRP.UI.ScaleFactor, 24 * PRP.UI.ScaleFactor )
 
-        surface.SetTextColor( 255, 255, 255, 255 )
+        surface.SetTextColor( 255, 255, 255, 150 )
         surface.SetFont( "PRP.UI.Bar.Label" )
         local sMoney = "$ " .. string.Comma( LocalPlayer():GetCharacter():GetMoney() )
-        local iWidth, iHeight = surface.GetTextSize( sMoney )
-        surface.SetTextPos( 400 - iWidth + 2, 2 )
+        surface.SetTextPos( ( 24 + 10 ) * PRP.UI.ScaleFactor, 2 )
         surface.DrawText( sMoney )
 
+        -- Salary
+        surface.SetFont( "PRP.UI.Bar.Label" )
+        local sSalary = "$ " .. string.Comma( 100 ) .. "/hr"
 
-        PRP.UI.DrawBar( Material( "prp/icons/hud/heart_shadow.png" ), 0, iH / 2, fnHealthPercentSmoothed, PUI.RED, true )
+        local iTextWidth, iTextHeight = surface.GetTextSize( sSalary )
+
+        surface.SetDrawColor( 43, 195, 140, 255 )
+        surface.SetMaterial( Material( "prp/ui/temp/work.png" ) )
+        surface.DrawTexturedRect( 400 - 24 - 10 - iTextWidth, 0, 24, 24 )
+
+        surface.SetTextColor( 255, 255, 255, 150 )
+        surface.SetTextPos( 400 - iTextWidth, 2 )
+        surface.DrawText( sSalary )
+
+        -- Health
+        PRP.UI.DrawBar( Material( "prp/icons/hud/heart_shadow.png" ), 0, iH / 3, fnHealthPercentSmoothed, PUI.RED, true )
+
+        -- "Stamina"
+        PRP.UI.DrawBar( Material( "prp/ui/temp/bolt.png" ), 0, 2 * iH / 3 - 6, fnStaminaPercentSmoothed, Color( 255, 210, 90 ), true )
     end
 
     self.m_pnlTabCharacterLeft.Paint = function( p, iW, iH )
@@ -203,6 +240,20 @@ function PANEL:Init()
         -- surface.SetDrawColor( 255, 255, 255, 255 * self.easedFraction )
         -- surface.SetMaterial( Material( "prp/plybg.png", "smooth" ) )
         -- surface.DrawTexturedRect( 0, h * 0.1, w, h * 0.8 )
+    end
+
+    self.m_pnlTabCharacterContent.Paint = function( this, iW, iH )
+        local iLeftX = self.m_pnlTabCharacterLeft:GetX() + self.m_pnlTabCharacterLeft:GetWide()
+        local iLeftY = self.m_pnlTabCharacterLeft:GetY()
+        local iLeftH = self.m_pnlTabCharacterLeft:GetTall()
+
+        surface.SetDrawColor( 255, 255, 255, 4 )
+        surface.DrawRect( iLeftX, iLeftY, 2, iLeftH )
+
+        PUI.StartOverlay()
+            surface.SetDrawColor( 220, 220, 220, 255 )
+            surface.DrawRect( iLeftX, iLeftY, 2, iLeftH )
+        PUI.EndOverlay()
     end
 
 
@@ -321,20 +372,15 @@ function PANEL:Init()
 
             cam.Start2D()
                 -- render.OverrideBlend( true, BLEND_SRC_ALPHA, BLEND_DST_ALPHA, BLENDFUNC_ADD, BLEND_SRC_ALPHA, BLEND_SRC_ALPHA, BLENDFUNC_ADD )
-                
-                surface.SetMaterial( Material( "prp/coooolers.png", "" ) )
+
                 render.OverrideBlend( true, BLEND_DST_COLOR, BLEND_DST_ALPHA, BLENDFUNC_ADD, BLEND_SRC_COLOR, BLEND_DST_ALPHA, BLENDFUNC_ADD )
-                surface.SetDrawColor( 255, 255, 255, 255 )
-                surface.DrawTexturedRect( 0, 0, ScrW(), ScrH())
-                
-                -- surface.SetMaterial( matInvBG )
-                -- render.OverrideBlend( true, BLEND_SRC_ALPHA, BLEND_ZERO, BLENDFUNC_ADD, BLEND_SRC_ALPHA, BLEND_ZERO, BLENDFUNC_ADD )
-                -- surface.SetDrawColor( 255, 255, 255, 255 )
+                -- surface.SetMaterial( oGradient )
+                surface.SetDrawColor( 200, 215, 225, 235 )
                 -- surface.DrawTexturedRect( 0, 0, ScrW(), ScrH() )
-
-                -- surface.DrawRect( 0, 0, ScrW(), ScrH() )
-
+                surface.DrawRect( 0, 0, ScrW(), ScrH() )
                 render.OverrideBlend( false )
+
+
             cam.End2D()
 
             -- Draw our entities
@@ -375,37 +421,39 @@ function PANEL:Init()
     -- self.m_pnlHeader:SetPos( 0, 0 )
     -- self.m_pnlHeader:SetSize( ScrW(), 100 )
 
-    -- Close Button
-    self.m_pnlCloseButton = vgui.Create( "DButton", self )
-    self.m_pnlCloseButton:SetSize( 32, 32 )
-    self.m_pnlCloseButton:SetText( "" )
-    self.m_pnlCloseButton:SetPos( ScrW() - 32, 0 )
-    self.m_pnlCloseButton.Paint = function( p, iW, iH )
-        draw.SimpleText( "X", "DermaLarge", iW / 2, iH / 2, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
-    end
-    self.m_pnlCloseButton.DoClick = function()
-        self:Remove()
-    end
-
     -- Background Paint
 
     self.m_pnlBackground.Paint = function( p, iW, iH )
-        ix.util.DrawBlur( p, self.easedFraction * 6 or 0 )
+        ix.util.DrawBlur( p, self.easedFraction * 8 or 0 )
 
 
         PUI.StartOverlay()
             surface.SetDrawColor( 255, 255, 255 )
-            surface.SetMaterial( oGradient )
+            surface.SetMaterial( oGradientGlow )
             surface.DrawTexturedRect( 0, 0, iW, iH )
 
             surface.DrawRect( 0, 0, iW, iH )
         PUI.EndOverlay()
 
-        Print( "eased fraction: " .. self.easedFraction )
-
-        surface.SetDrawColor( 255, 255, 255, 255 * 0.3 * self.easedFraction )
-        surface.SetMaterial( oGradient )
+        surface.SetDrawColor( 255, 255, 255, 255 * 0.2 * self.easedFraction )
+        surface.SetMaterial( oGradientGlow )
         surface.DrawTexturedRect( 0, 0, iW, iH )
+
+        -- @TODO: This should be a function or panel or something.
+
+        surface.SetFont( "PRP.UI.Watermark.Header" )
+        local iTextWidth, iTextHeight = surface.GetTextSize( "PALOMINO.GG" )
+        surface.SetTextPos( 15, ScrH() - 15 - iTextHeight )
+        surface.SetTextColor( 255, 255, 255, 8 )
+        surface.DrawText( "PALOMINO.GG" )
+
+        local sVersion = string.upper( Schema.version )
+        iTextWidth, iTextHeight = surface.GetTextSize( sVersion )
+        surface.SetTextPos( ScrW() - iTextWidth - 15, ScrH() - 15 - iTextHeight )
+        surface.SetTextColor( 255, 255, 255, 8 )
+        surface.DrawText( sVersion )
+
+
 
         -- surface.SetDrawColor( 255, 255, 255, 255 * 1 * self.easedFraction )
         -- surface.SetMaterial( oGradient )

@@ -50,6 +50,13 @@ surface.CreateFont( "PRP.UI.Bar.Label", {
     antialias = true
 })
 
+surface.CreateFont( "PRP.UI.Hint.Label", {
+    font = "Inter",
+    size = 20,
+    weight = 600,
+    antialias = true
+})
+
 function PRP.UI.DrawTimer( iX, iY, sLabel, iTime )
     local sTime = string.FormattedTime( iTime, "%02i:%02i" )
 
@@ -75,8 +82,8 @@ function PRP.UI.DrawBar( oMaterial, iX, iY, fnPercent, oColor, bDrawValue )
 
     local iXGap = 16
 
-    local iIconWidth = oMaterial:Width()
-    local iIconHeight = oMaterial:Height()
+    local iIconWidth = 24
+    local iIconHeight = 24
 
     -- Print("IconHeight: " .. iIconHeight)
     -- Print("IconWidth: " .. iIconWidth)
@@ -139,19 +146,20 @@ function PRP.UI.DrawBar( oMaterial, iX, iY, fnPercent, oColor, bDrawValue )
     local iBarPillY = iBarY
 
     surface.SetMaterial( oBarPill )
-    surface.SetDrawColor( oColor:Unpack() )
+    surface.SetDrawColor( ColorAlpha( oColor, 255 ):Unpack() )
     surface.DrawTexturedRect( iBarPillX, iBarPillY, iBarPillWidth, iBarPillHeight )
 
     -- Bar Value
     if bDrawValue then
         surface.SetFont( "PRP.UI.Bar.Label" )
-        surface.SetTextColor( 255, 255, 255, 255 )
+        surface.SetTextColor( 255, 255, 255, 150 )
         surface.SetTextPos( iBarX + iBarWidth + 10, iIconY + ( iIconHeight - 20 ) / 2 )
         surface.DrawText( math.floor( fnPercent() * 100 ) )
     end
 end
 
 hook.Add( "HUDPaint", "PRP.UI.HUDPaint", function()
+    if PRP.Scene.Active then return end
     -- Drawn bottom to top
 
     -- PUI.Box( 0, 0, ScrW(), ScrH(), COLOR_WHITE )
@@ -159,7 +167,7 @@ hook.Add( "HUDPaint", "PRP.UI.HUDPaint", function()
     -- Health
     local iX = 15
     local iY = ScrH() - ( oMaterialHeart:Height() + 10 )
-    PRP.UI.DrawBar( oMaterialHeart, iX, iY, fnHealthPercentSmoothed )
+    PRP.UI.DrawBar( oMaterialHeart, iX, iY, fnHealthPercentSmoothed, Color( 255, 255, 255, 16 ) )
 
     -- Armor
     if LocalPlayer():Armor() > 0 then
@@ -181,13 +189,31 @@ hook.Add( "HUDPaint", "PRP.UI.HUDPaint", function()
     surface.SetFont( "PRP.UI.Watermark.Header" )
     surface.SetTextPos( 15, 15 )
     surface.SetTextColor( 255, 255, 255, 32 )
-    surface.DrawText( "PALOMINO" )
-    local iHeaderWidth, iHeaderHeight = surface.GetTextSize( "PALOMINO" )
+    surface.DrawText( "PALOMINO.GG" )
+    local iHeaderWidth, iHeaderHeight = surface.GetTextSize( "PALOMINO.GG" )
 
     surface.SetFont( "PRP.UI.Watermark.Subtext" )
     surface.SetDrawColor( 255, 255, 255, 32 )
     surface.SetTextPos( 15, 15 + iHeaderHeight )
-    surface.DrawText( "PRE-ALPHA" )
+    surface.DrawText( string.upper( Schema.version ) )
+
+    -- @TODO: Put this in its own module/file thing
+    -- Q Spawnmenu Hint
+
+    surface.SetFont( "PRP.UI.Hint.Label" )
+
+    local sHintText = "SPAWNMENU"
+    local iHintLabelWidth, iHintLabelHeight = surface.GetTextSize( sHintText )
+
+    local iHintX = ScrW() - iHintLabelWidth - 20
+
+    surface.SetTextColor( 255, 255, 255, 16 )
+    surface.SetTextPos( iHintX, ScrH() - 20 - 15 - ((36-20)/2) )
+    surface.DrawText( sHintText )
+
+    surface.SetMaterial( Material( "prp/ui/temp/key36_q.png" ) )
+    surface.SetDrawColor( 255, 255, 255, 64 )
+    surface.DrawTexturedRect( iHintX - 36 - 10, ScrH() - 36 - 15, 36, 36 )
 
     -- if true then return end
 

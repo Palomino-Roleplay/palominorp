@@ -5,5 +5,6 @@ function PLAYER:IsPolice()
 end
 
 function PLAYER:IsDisguised()
-	return self:GetParts()["skullmask"] or false
+	-- @TODO: FUck no
+	return self:GetParts()["skullmask"] or self:GetParts()["black_balaclava"] or false
 end
