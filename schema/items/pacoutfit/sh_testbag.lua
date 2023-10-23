@@ -1,11 +1,9 @@
-ITEM.name = "SCAR-H"
-ITEM.description = "Belgium's best export since the waffle"
-ITEM.model = "models/cw2/rifles/w_scarh.mdl"
-ITEM.class = "cw_scarh"
-ITEM.weaponCategory = "primary"
-ITEM.width = 3
-ITEM.height = 2
-ITEM.bDropOnDeath = true
+ITEM.name = "Trailer Bag"
+ITEM.description = "Used on the trailer. By puvz."
+ITEM.model = "models/jessev92/payday2/item_bag_loot.mdl"
+ITEM.width = 1
+ITEM.height = 1
+ITEM.outfitCategory = "bag"
 ITEM.pacData = {
     [1] = {
         ["children"] = {
@@ -14,7 +12,7 @@ ITEM.pacData = {
                 },
                 ["self"] = {
                     ["Skin"] = 0,
-                    ["UniqueID"] = "ed6cef65bef44427dde1408a081d795d5314c7c3f4beb22b9f5b8f536dccb2c0",
+                    ["UniqueID"] = "018853a42752edc997ca36a25af4e25cadc0fd5900353fd6a6cb27ba013f47ae",
                     ["NoLighting"] = false,
                     ["AimPartName"] = "",
                     ["IgnoreZ"] = false,
@@ -32,12 +30,12 @@ ITEM.pacData = {
                     ["Material"] = "",
                     ["Invert"] = false,
                     ["ForceObjUrl"] = false,
-                    ["Bone"] = "spine 1",
-                    ["Angles"] = Angle(38, 0, 0),
+                    ["Bone"] = "spine 4",
+                    ["Angles"] = Angle(83.796073913574, 173.19999694824, -85.924705505371),
                     ["AngleOffset"] = Angle(0, 0, 0),
                     ["BoneMerge"] = false,
                     ["Color"] = Vector(1, 1, 1),
-                    ["Position"] = Vector(-2.909797668457, -4.570068359375, 1.4567337036133),
+                    ["Position"] = Vector(-5.1028213500977, -6.4100494384766, -1.3787536621094),
                     ["ClassName"] = "model2",
                     ["Brightness"] = 1,
                     ["Hide"] = false,
@@ -50,13 +48,13 @@ ITEM.pacData = {
                     ["Translucent"] = false,
                     ["BlendMode"] = "",
                     ["EyeTargetUID"] = "",
-                    ["Model"] = "models/cw2/rifles/w_scarh.mdl",
+                    ["Model"] = "models/jessev92/payday2/item_bag_loot.mdl",
                 },
             },
         },
         ["self"] = {
             ["DrawOrder"] = 0,
-            ["UniqueID"] = "a6d1b08663f89a30ae442d7d34956e942cab9ea707ccb6f266aac508e4657f8e",
+            ["UniqueID"] = "8d2fd8b7e4e976decb1a95ca052760813fd44e309c5e057cbad33668ffa0fcee",
             ["Hide"] = false,
             ["TargetEntityUID"] = "",
             ["EditorExpand"] = true,
@@ -67,9 +65,4 @@ ITEM.pacData = {
             ["ClassName"] = "group",
         },
     },
-}
-ITEM.iconCam = {
-	pos = Vector(0, 200, 0),
-	ang = Angle(-0.7, 272.44, 0),
-	fov = 13.42
 }
