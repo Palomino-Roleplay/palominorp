@@ -60,9 +60,9 @@ function PLUGIN:InitializedPlugins()
 end
 
 -- @TODO: Move to a config setting
-local iNameplateDrawDistance = 256
+local iNameplateDrawDistance = 4096
 local iNameplateDrawDistanceSqr = math.pow( iNameplateDrawDistance, 2 )
-local iNameplateFadeDistance = 64
+local iNameplateFadeDistance = 128
 local iNameplateFadeDistanceSqr = math.pow( iNameplateDrawDistance - iNameplateFadeDistance, 2 )
 
 
@@ -211,7 +211,7 @@ end
 function PLUGIN:PostDrawTranslucentRenderables()
     for _, pPlayer in pairs( player.GetAll() ) do
         if not IsValid( pPlayer ) then continue end
-        if pPlayer == LocalPlayer() then continue end
+        -- if pPlayer == LocalPlayer() then continue end
         if not pPlayer:Alive() then continue end
         if not pPlayer:GetCharacter() then continue end
         if pPlayer:GetNoDraw() then continue end
@@ -230,8 +230,7 @@ function PLUGIN:PostDrawTranslucentRenderables()
             -- mask = MASK_SHOT_HULL,
         })
 
-        if tTrace.Entity ~= pPlayer then
-            Print(tTrace.Entity) continue end
+        if tTrace.Entity ~= pPlayer then continue end
 
         -- Drawing below this point.
 
@@ -250,7 +249,7 @@ function PLUGIN:PostDrawTranslucentRenderables()
         local iAimDiff = vUnitPos:Dot( vOurAimVector )
 
         local iOurMinAimDiff = 0.6
-        if iAimDiff < iOurMinAimDiff then Print("2") continue end
+        if iAimDiff < iOurMinAimDiff then continue end
 
         -- Condition 2: Other player looking at LocalPlayer
         local vLookAtLocalPlayer = vOurEyePos - vTheirEyePos
@@ -262,7 +261,7 @@ function PLUGIN:PostDrawTranslucentRenderables()
         local theirAimDiff = vLookAtLocalPlayer:Dot( vTheirAimVector )
 
         local iTheirMinAimDiff = -0.5
-        if ( pPlayer:VoiceVolume() == 0 and not pPlayer:GetNetVar( "actionString", nil ) ) and theirAimDiff < iTheirMinAimDiff then Print("3") continue end  -- -1 for exact opposite, < -0.99 gives a tiny bit of leeway
+        if ( pPlayer:VoiceVolume() == 0 and not pPlayer:GetNetVar( "actionString", nil ) ) and theirAimDiff < iTheirMinAimDiff then continue end  -- -1 for exact opposite, < -0.99 gives a tiny bit of leeway
 
         local iAlpha = 255
 
@@ -279,6 +278,10 @@ function PLUGIN:PostDrawTranslucentRenderables()
         aAngles:RotateAroundAxis( aAngles:Forward(), 90 )
         aAngles:RotateAroundAxis( aAngles:Right(), -90 )
 
+        -- if pPlayer == LocalPlayer() then
+        --     aAngles:RotateAroundAxis( aAngles:Right(), 180 )
+        -- end
+
         -- local aAngles = pPlayer:EyeAngles()
         -- aAngles.p = 0
         -- aAngles:Normalize()
@@ -286,7 +289,7 @@ function PLUGIN:PostDrawTranslucentRenderables()
         -- aAngles:RotateAroundAxis( aAngles:Right(), -90 )
 
 
-        surface.SetAlphaMultiplier( iAlpha / 255 )
+        -- surface.SetAlphaMultiplier( iAlpha / 255 )
 
         cam.Start3D2D( vNametagPos, aAngles, 0.02 )
             PRP.UI.Nameplates.Draw( pPlayer, { x = 0, y = 0 } )

@@ -37,7 +37,7 @@ function PANEL:Paint(w, h)
     -- surface.SetMaterial( oMaterial )
     -- surface.DrawTexturedRect( 0, 0, w, h - iLowerBarHeight )
 
-    draw.SimpleText( self.m_strName, "PRP_TabMenu_Tab", w / 2, h / 2 + (5 * PRP.UI.ScaleFactor), Color( 255, 255, 255, self.m_bActive and 255 or 40 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+    draw.SimpleText( self.m_strName, "PRP_TabMenu_Tab", w / 2, h / 2, Color( 255, 255, 255, self.m_bActive and 255 or 40 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 end
 
 function PANEL:OnRemove()

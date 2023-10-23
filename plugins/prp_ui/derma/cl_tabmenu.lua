@@ -7,7 +7,21 @@ function PANEL:Init()
     -- self.m_pnlCanvas = vgui.Create( "Panel", self )
     self._tabs = {}
 
-    self.m_pnlHeader = vgui.Create( "DIconLayout", self )
+    self.m_pnlHeaderCanvas = vgui.Create( "DIconLayout", self )
+    self.m_pnlHeaderCanvas:SetSpaceX( 50 )
+    self.m_pnlHeaderCanvas:SetSpaceY( 0 )
+    self.m_pnlHeaderCanvas:Dock( TOP )
+    self.m_pnlHeaderCanvas:SetTall( 100 * PRP.UI.ScaleFactor )
+    self.m_pnlHeaderCanvas:SetWide( ScrW() )
+    self.m_pnlHeaderCanvas:SetLayoutDir( TOP )
+
+    self.m_pnlButtonQ = self:Add( "PRP.KeyboardButton" )
+    self.m_pnlButtonQ:SetKey( KEY_Q )
+
+    self.m_pnlButtonE = self:Add( "PRP.KeyboardButton" )
+    self.m_pnlButtonE:SetKey( KEY_E )
+
+    self.m_pnlHeader = vgui.Create( "DIconLayout", self.m_pnlHeaderCanvas )
     self.m_pnlHeader:SetSpaceX( 0 )
     self.m_pnlHeader:SetSpaceY( 0 )
     self.m_pnlHeader:Dock( TOP )
@@ -65,6 +79,9 @@ function PANEL:AddTab( sName )
     -- @TODO: AIDS
     self._iCursorPosEased = self._iCursorPosEased + ( 2 * 240 * PRP.UI.ScaleFactor )
     self._iPanelPosEased = ScrW() * 2
+
+    self.m_pnlButtonQ:SetPos( self.iStartingPos - ( 100 * PRP.UI.ScaleFactor ), 48 )
+    self.m_pnlButtonE:SetPos( self.iStartingPos + ( 240 * PRP.UI.ScaleFactor * #self._tabs ) + ( 50 * PRP.UI.ScaleFactor ), 48 )
 
 
     self:UpdateActiveTab()

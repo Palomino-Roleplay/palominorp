@@ -64,7 +64,7 @@ surface.CreateFont( "PRP.PlyMenu.Large", {
 
 surface.CreateFont( "PRP.PlyMenu.Sub", {
     font = "Inter",
-    size = 20 * PRP.UI.ScaleFactor,
+    size = 24 * PRP.UI.ScaleFactor,
     antialias = true
 } )
 
@@ -74,6 +74,19 @@ function PANEL:Init()
 
     self:MakePopup()
     self:SetKeyboardInputEnabled( false )
+
+    -- Close Button
+    self.m_pnlCloseButton = vgui.Create( "DButton", self )
+    self.m_pnlCloseButton:SetSize( 32, 32 )
+    self.m_pnlCloseButton:SetText( "" )
+    self.m_pnlCloseButton:SetPos( ScrW() - 32, 0 )
+    self.m_pnlCloseButton.Paint = function( p, iW, iH )
+        -- draw.SimpleText( "X", "DermaLarge", iW / 2, iH / 2, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+    end
+    self.m_pnlCloseButton.DoClick = function()
+        self:Remove()
+    end
+    self.m_pnlCloseButton:SetZPos( 100 )
 
     self.iOpenTime = CurTime()
 
@@ -174,7 +187,7 @@ function PANEL:Init()
         surface.SetMaterial( Material( "prp/icons/hud/wallet.png" ) )
         surface.DrawTexturedRect( 0, 0, 24 * PRP.UI.ScaleFactor, 24 * PRP.UI.ScaleFactor )
 
-        surface.SetTextColor( 255, 255, 255, 255 )
+        surface.SetTextColor( 255, 255, 255, 150 )
         surface.SetFont( "PRP.UI.Bar.Label" )
         local sMoney = "$ " .. string.Comma( LocalPlayer():GetCharacter():GetMoney() )
         surface.SetTextPos( ( 24 + 10 ) * PRP.UI.ScaleFactor, 2 )
@@ -190,7 +203,7 @@ function PANEL:Init()
         surface.SetMaterial( Material( "prp/ui/temp/work.png" ) )
         surface.DrawTexturedRect( 400 - 24 - 10 - iTextWidth, 0, 24, 24 )
 
-        surface.SetTextColor( 255, 255, 255, 255 )
+        surface.SetTextColor( 255, 255, 255, 150 )
         surface.SetTextPos( 400 - iTextWidth, 2 )
         surface.DrawText( sSalary )
 
@@ -198,7 +211,7 @@ function PANEL:Init()
         PRP.UI.DrawBar( Material( "prp/icons/hud/heart_shadow.png" ), 0, iH / 3, fnHealthPercentSmoothed, PUI.RED, true )
 
         -- "Stamina"
-        PRP.UI.DrawBar( Material( "prp/ui/temp/bolt.png" ), 0, 2 * iH / 3, fnStaminaPercentSmoothed, Color( 255, 210, 90 ), true )
+        PRP.UI.DrawBar( Material( "prp/ui/temp/bolt.png" ), 0, 2 * iH / 3 - 6, fnStaminaPercentSmoothed, Color( 255, 210, 90 ), true )
     end
 
     self.m_pnlTabCharacterLeft.Paint = function( p, iW, iH )
@@ -407,18 +420,6 @@ function PANEL:Init()
     self.m_pnlTabHelp = self.m_pnlTabPanel:AddTab( "HELP" )
     -- self.m_pnlHeader:SetPos( 0, 0 )
     -- self.m_pnlHeader:SetSize( ScrW(), 100 )
-
-    -- Close Button
-    self.m_pnlCloseButton = vgui.Create( "DButton", self )
-    self.m_pnlCloseButton:SetSize( 32, 32 )
-    self.m_pnlCloseButton:SetText( "" )
-    self.m_pnlCloseButton:SetPos( ScrW() - 32, 0 )
-    self.m_pnlCloseButton.Paint = function( p, iW, iH )
-        draw.SimpleText( "X", "DermaLarge", iW / 2, iH / 2, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
-    end
-    self.m_pnlCloseButton.DoClick = function()
-        self:Remove()
-    end
 
     -- Background Paint
 
