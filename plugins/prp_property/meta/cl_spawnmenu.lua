@@ -242,4 +242,4 @@ function PLUGIN:PopulateMenuBar( dMenuBar )
 end
 
 -- @TODO: Yucky, and lags client on autorefresh. Maybe only do it once? (See: SpawnMenuCreated)
--- RunConsoleCommand( "spawnmenu_reload" )
+RunConsoleCommand( "spawnmenu_reload" )
