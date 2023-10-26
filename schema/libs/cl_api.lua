@@ -92,17 +92,17 @@ function PRP.API.Initialize()
 
         Print( "Initializing PAPI..." )
 
-        -- Print( "Downloading materials..." )
-        -- for sURI, sMaterialParameters in pairs( PRP.API._tMaterialsDownloadQueue ) do
-        --     Print( sURI )
-        --     DownloadMaterial( sURI, sMaterialParameters )
-        -- end
+        Print( "Downloading materials..." )
+        for sURI, sMaterialParameters in pairs( PRP.API._tMaterialsDownloadQueue ) do
+            Print( sURI )
+            DownloadMaterial( sURI, sMaterialParameters )
+        end
 
         Print( "why though?" )
 
         PRP.API._bInitComplete = true
 
-        -- Print( "PAPI initialized!" )
+        Print( "PAPI initialized!" )
     end )
 end
 

@@ -7,8 +7,8 @@ PRP.UI.PlyMenu.tAPIFiles = PRP.UI.PlyMenu.tAPIFiles or {}
 
 local PANEL = {}
 
--- PRP.API.AddMaterial( "ui/plymenu/youbg", "" )
--- PRP.API.AddMaterial( "ui/plymenu/bg", "" )
+PRP.API.AddMaterial( "ui/plymenu/youbg", "" )
+PRP.API.AddMaterial( "ui/plymenu/bg", "" )
 
 local oGradient = Material( "prp/ui/temp/gradient_v2.png", "" )
 local oGradientGlow = Material( "prp/ui/temp/gradient_v2_plymenu_v2.png", "" )

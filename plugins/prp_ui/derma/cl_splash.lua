@@ -2,7 +2,7 @@
 
 local PANEL = {}
 
--- PRP.API.AddMaterial( "ui/splash/bg", "" )
+PRP.API.AddMaterial( "ui/splash/bg", "" )
 
 surface.CreateFont( "PRP.Splash.Title", {
     font = "Inter",
@@ -102,9 +102,9 @@ end
 function PANEL:Paint( w, h )
     if not PRP.API._bDownloadComplete then return end
 
-    -- surface.SetDrawColor( 255, 255, 255, 64 )
-    -- surface.SetMaterial( PRP.API.Material( "ui/splash/bg" ) )
-    -- surface.DrawTexturedRect( 0, 0, w, h )
+    surface.SetDrawColor( 255, 255, 255, 64 )
+    surface.SetMaterial( PRP.API.Material( "ui/splash/bg" ) )
+    surface.DrawTexturedRect( 0, 0, w, h )
 end
 
 function PANEL:PaintOver( w, h )
