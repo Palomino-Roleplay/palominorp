@@ -19,11 +19,11 @@ function PLUGIN:InitializedProperties()
     PROPERTY = setmetatable( {}, { __index = PRP.Property.Meta } )
     PROPERTY:SetID( "bank" )
     PROPERTY:SetName( "Bank" )
-    PROPERTY:SetPermaProps( {
-        { pos = Vector( -1949, 3411, -280 ), angles = Angle( 0, 11, 0 ), model = "models/props/cs_militia/crate_extrasmallmill.mdl" },
-        { pos = Vector( -1947, 3353, -280 ), angles = Angle( 0, 0, 0 ), model = "models/props/cs_militia/crate_extrasmallmill.mdl" },
-        { pos = Vector( -1949, 3353, -231 ), angles = Angle( 0, 0, 0 ), model = "models/props/cs_militia/crate_extrasmallmill.mdl" },
-    } )
+    -- PROPERTY:SetPermaProps( {
+    --     { pos = Vector( -1949, 3411, -280 ), angles = Angle( 0, 11, 0 ), model = "models/props/cs_militia/crate_extrasmallmill.mdl" },
+    --     { pos = Vector( -1947, 3353, -280 ), angles = Angle( 0, 0, 0 ), model = "models/props/cs_militia/crate_extrasmallmill.mdl" },
+    --     { pos = Vector( -1949, 3353, -231 ), angles = Angle( 0, 0, 0 ), model = "models/props/cs_militia/crate_extrasmallmill.mdl" },
+    -- } )
     PROPERTY:SetBounds({
         {
             Vector(-192.21844482422,2164.1379394531,512.03125),
