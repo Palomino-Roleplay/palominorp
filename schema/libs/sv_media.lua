@@ -5,6 +5,7 @@ hook.Add( "InitPostEntity", "PRP.Media.InitPostEntity", function()
         for _, oMediaPlayer in ipairs( MediaPlayer.GetAll() ) do
             local tSeenPlayers = {}
             for _, pPlayer in ipairs( oMediaPlayer:GetListeners() ) do
+                if not IsValid( pPlayer ) then return end
                 if not pPlayer:Alive() then return end
 
                 if pPlayer:GetPos():DistToSqr( oMediaPlayer:GetPos() ) > ix.config.Get( "mediaPlayerDistance", 1000000 ) then
