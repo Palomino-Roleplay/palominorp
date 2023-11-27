@@ -1,1 +1,1 @@
-DeriveGamemode("phelix")
+include("shared.lua")
