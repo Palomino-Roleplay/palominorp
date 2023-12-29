@@ -133,7 +133,7 @@ function ENT:DrawTranslucent()
             draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", 0, 16, ColorAlpha( cColorWashed, 255 * iFX ) )
             draw.SimpleText(self:GetSignText(), "PRP.Neon.Large.Glow", 0, 16, ColorAlpha( cColor, 255 * iFX ) )
         else
-            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", 0, 16, Color( 64, 64, 64, 200 ) )
+            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", 0, 16, Color( 64, 64, 64, 128 ) )
         end
 
         imgui.End3D2D()
@@ -144,18 +144,18 @@ function ENT:DrawTranslucent()
             draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", -iTextWidth, 16, ColorAlpha( cColorWashed, 255 * iFX ) )
             draw.SimpleText(self:GetSignText(), "PRP.Neon.Large.Glow", -iTextWidth, 16, ColorAlpha( cColor, 255 * iFX ) )
         else
-            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", -iTextWidth, 16, Color( 64, 64, 64, 64 ) )
+            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", -iTextWidth, 16, Color( 64, 64, 64, 128 ) )
         end
 
         imgui.End3D2D()
     end
 
     if imgui.Entity3D2D( self, vOffset + Vector( 24, 0, 8 ), Angle( 0, 90, 90 ), i3D2DScale * 0.25 ) then
-        if imgui.xButton(-32, 10, 64, 20, 20, Color( 120, 120, 120 ), Color( 255, 255, 255 ), Color( 180, 180, 180 ) ) then
+        if imgui.xButton(-30, 20, 60, 30, 20, Color( 120, 120, 120 ), Color( 255, 255, 255 ), Color( 180, 180, 180 ) ) then
             self:TogglePower()
         end
 
-        if imgui.xTextButton("EDIT", "!Inter@16", -25, 40, 50, 32, 4, Color( 120, 120, 120 ), Color( 255, 255, 255 ), Color( 180, 180, 180 ) ) then
+        if imgui.xTextButton("EDIT", "!Inter@16", -25, 60, 50, 32, 4, Color( 120, 120, 120 ), Color( 255, 255, 255 ), Color( 180, 180, 180 ) ) then
             -- self:KeypadType( i )
             -- self:TogglePower()
 
