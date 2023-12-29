@@ -14,6 +14,19 @@ ENT.AdminOnly		= false
 
 ENT.RenderGroup 	= RENDERGROUP_BOTH
 
+if SERVER then
+    util.AddNetworkString( "PRP.NeonSign.EditText" )
+    net.Receive( "PRP.NeonSign.EditText", function( _, pPlayer )
+        -- @TODO: Ensure player is allowed to edit this sign
+        local eSign = net.ReadEntity()
+        local sText = net.ReadString()
+
+        -- @TODO: Validate text
+
+        eSign:SetSignText( sText )
+    end )
+end
+
 function ENT:Initialize()
 	-- Sets what model to use
 	self:SetModel( "models/props_combine/combine_light002a.mdl" )
@@ -44,7 +57,7 @@ local function fnDesaturateNeonColor( cColor )
 end
 
 function ENT:Use()
-    self:TogglePower()
+    -- self:TogglePower()
 end
 
 function ENT:Draw()
@@ -117,10 +130,10 @@ function ENT:DrawTranslucent()
 
     if imgui.Entity3D2D( self, vOffset, Angle( 0, 180, 90 ), i3D2DScale ) then
         if self:GetSignEnabled() then
-            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", 0, 0, ColorAlpha( cColorWashed, 255 * iFX ) )
-            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large.Glow", 0, 0, ColorAlpha( cColor, 255 * iFX ) )
+            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", 0, 16, ColorAlpha( cColorWashed, 255 * iFX ) )
+            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large.Glow", 0, 16, ColorAlpha( cColor, 255 * iFX ) )
         else
-            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", 0, 0, Color( 64, 64, 64, 200 ) )
+            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", 0, 16, Color( 64, 64, 64, 200 ) )
         end
 
         imgui.End3D2D()
@@ -131,19 +144,39 @@ function ENT:DrawTranslucent()
             draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", -iTextWidth, 16, ColorAlpha( cColorWashed, 255 * iFX ) )
             draw.SimpleText(self:GetSignText(), "PRP.Neon.Large.Glow", -iTextWidth, 16, ColorAlpha( cColor, 255 * iFX ) )
         else
-            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", -iTextWidth, 0, Color( 64, 64, 64, 64 ) )
+            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", -iTextWidth, 16, Color( 64, 64, 64, 64 ) )
         end
 
         imgui.End3D2D()
     end
 
-    -- if imgui.Entity3D2D( self, vOffset + Vector( 16, 4.5, -28 ), Angle( 0, 180, 90 ), i3D2DScale ) then
-    --     if imgui.xButton(5, 5, 36, 8, 8, Color( 120, 120, 120 ), Color( 255, 255, 255 ), Color( 180, 180, 180 ) ) then
-    --         self:TogglePower()
-    --     end
+    if imgui.Entity3D2D( self, vOffset + Vector( 24, 0, 8 ), Angle( 0, 90, 90 ), i3D2DScale * 0.25 ) then
+        if imgui.xButton(-32, 10, 64, 20, 20, Color( 120, 120, 120 ), Color( 255, 255, 255 ), Color( 180, 180, 180 ) ) then
+            self:TogglePower()
+        end
 
-    --     imgui.End3D2D()
-    -- end
+        if imgui.xTextButton("EDIT", "!Inter@16", -25, 40, 50, 32, 4, Color( 120, 120, 120 ), Color( 255, 255, 255 ), Color( 180, 180, 180 ) ) then
+            -- self:KeypadType( i )
+            -- self:TogglePower()
+
+            Derma_StringRequest(
+                "Neon Sign",
+                "Enter your desired text",
+                "OPEN",
+                function( sText )
+                    net.Start( "PRP.NeonSign.EditText" )
+                        net.WriteEntity( self )
+                        net.WriteString( sText )
+                    net.SendToServer()
+                end,
+                nil,
+                "Submit",
+                "Cancel"
+            )
+        end
+
+        imgui.End3D2D()
+    end
 end
 
 function ENT:Think()
