@@ -131,7 +131,7 @@ function ENT:DrawTranslucent()
             draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", -iTextWidth, 16, ColorAlpha( cColorWashed, 255 * iFX ) )
             draw.SimpleText(self:GetSignText(), "PRP.Neon.Large.Glow", -iTextWidth, 16, ColorAlpha( cColor, 255 * iFX ) )
         else
-            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", 0, 0, Color( 64, 64, 64, 64 ) )
+            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", -iTextWidth, 0, Color( 64, 64, 64, 64 ) )
         end
 
         imgui.End3D2D()
