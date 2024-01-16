@@ -18,3 +18,7 @@ end
 function Schema:CanArmDupe()
     return false
 end
+
+function Schema:PlayerFootstep(pPlayer)
+    if pPlayer:Crouching() then return true end
+end
