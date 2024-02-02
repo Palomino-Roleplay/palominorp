@@ -74,7 +74,7 @@ end )
 util.AddNetworkString( "PRP.Police.Arrest" )
 net.Receive( "PRP.Police.Arrest", function( _, pOfficer )
     local pVictim = net.ReadEntity()
-    local iTime = net.ReadInt( 32 ) * 60
+    local iTime = net.ReadInt( 32 ) -- * 60
     local sReason = net.ReadString()
 
     if not pOfficer:GetCharacter() then return end
