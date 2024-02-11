@@ -1,2 +1,4 @@
 AddCSLuaFile("cl_init.lua")
-DeriveGamemode("phelix")
+AddCSLuaFile("shared.lua")
+
+include("shared.lua")

@@ -200,20 +200,20 @@ hook.Add( "HUDPaint", "PRP.UI.HUDPaint", function()
     -- @TODO: Put this in its own module/file thing
     -- Q Spawnmenu Hint
 
-    surface.SetFont( "PRP.UI.Hint.Label" )
+    -- surface.SetFont( "PRP.UI.Hint.Label" )
 
-    local sHintText = "SPAWNMENU"
-    local iHintLabelWidth, iHintLabelHeight = surface.GetTextSize( sHintText )
+    -- local sHintText = "SPAWNMENU"
+    -- local iHintLabelWidth, iHintLabelHeight = surface.GetTextSize( sHintText )
 
-    local iHintX = ScrW() - iHintLabelWidth - 20
+    -- local iHintX = ScrW() - iHintLabelWidth - 20
 
-    surface.SetTextColor( 255, 255, 255, 16 )
-    surface.SetTextPos( iHintX, ScrH() - 20 - 15 - ((36-20)/2) )
-    surface.DrawText( sHintText )
+    -- surface.SetTextColor( 255, 255, 255, 16 )
+    -- surface.SetTextPos( iHintX, ScrH() - 20 - 15 - ((36-20)/2) )
+    -- surface.DrawText( sHintText )
 
-    surface.SetMaterial( Material( "prp/ui/temp/key36_q.png" ) )
-    surface.SetDrawColor( 255, 255, 255, 64 )
-    surface.DrawTexturedRect( iHintX - 36 - 10, ScrH() - 36 - 15, 36, 36 )
+    -- surface.SetMaterial( Material( "prp/ui/temp/key36_q.png" ) )
+    -- surface.SetDrawColor( 255, 255, 255, 64 )
+    -- surface.DrawTexturedRect( iHintX - 36 - 10, ScrH() - 36 - 15, 36, 36 )
 
     -- if true then return end
 

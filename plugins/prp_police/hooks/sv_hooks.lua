@@ -48,6 +48,8 @@ function PLUGIN:PlayerSpawnObject( pPlayer )
     if pPlayer:GetCharacter():IsArrested() then return pPlayer:IsAdmin() end
 end
 
+-- Tickets
+
 util.AddNetworkString( "PRP.Police.IssueTicket" )
 net.Receive( "PRP.Police.IssueTicket", function( _, pOfficer )
     local pVictim = net.ReadEntity()
@@ -65,6 +67,25 @@ net.Receive( "PRP.Police.IssueTicket", function( _, pOfficer )
 
     local bSuccess, sMessage = pOfficer:GetCharacter():IssueTicket( pVictim, sReason, iAmount )
     pOfficer:Notify( sMessage )
+end )
+
+-- Arresting
+
+util.AddNetworkString( "PRP.Police.Arrest" )
+net.Receive( "PRP.Police.Arrest", function( _, pOfficer )
+    local pVictim = net.ReadEntity()
+    local iTime = net.ReadInt( 32 ) -- * 60
+    local sReason = net.ReadString()
+
+    if not pOfficer:GetCharacter() then return end
+    if not IsValid( pVictim ) then return end
+    if not pVictim:GetCharacter() then return end
+    if not pOfficer:GetCharacter():IsPolice() then return end
+    if not pOfficer:Alive() then return end
+    if pOfficer:GetPos():DistToSqr( pVictim:GetPos() ) >= 100000 then return end
+    if not pVictim:Alive() then return end
+
+    pVictim:GetCharacter():Arrest( pOfficer, iTime, sReason )
 end )
 
 -- Handcuffs

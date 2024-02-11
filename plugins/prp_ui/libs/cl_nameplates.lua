@@ -289,7 +289,7 @@ function PLUGIN:PostDrawTranslucentRenderables()
         -- aAngles:RotateAroundAxis( aAngles:Right(), -90 )
 
 
-        -- surface.SetAlphaMultiplier( iAlpha / 255 )
+        surface.SetAlphaMultiplier( iAlpha / 255 )
 
         cam.Start3D2D( vNametagPos, aAngles, 0.02 )
             PRP.UI.Nameplates.Draw( pPlayer, { x = 0, y = 0 } )

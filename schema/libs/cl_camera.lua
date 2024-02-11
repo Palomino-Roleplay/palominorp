@@ -931,6 +931,41 @@ concommand.Add( "prp_teaser_park", function()
     PRP.Scene.Active:Start()
 end )
 
+-- @TODO: IMPORTANT: Again, make sure to remove these before launch!!!
+concommand.Add( "prp_playtesting_bank", function()
+    local oCameraLayer
+    PRP.Scene.Active, oCameraLayer = PRP.Scene.Create( {}, "Camera" )
+    PRP.Scene.Active:SetDuration( 10 ) 
+    oCameraLayer:AddKeyframesAt( 0, {
+        ["origin"] = {
+            value = Vector( -2525.780273, 868.443909, 907.343811 ),
+        },
+        ["angles"] = {
+            value = Angle( 23.292, 58.379, 0.000 ),
+        },
+        ["fov"] = {
+            value = 67.600006103516,
+        },
+    } )
+
+    oCameraLayer:AddKeyframesAt( 10, {
+        ["origin"] = {
+            value = Vector( -2296.469482, 1244.636230, 705.220154 ),
+        },
+        ["angles"] = {
+            value = Angle( 22.003, 59.880, 0.000 ),
+        },
+        ["fov"] = {
+            value = 82.000007629395,
+        },
+    } )
+    
+    PRP.Scene.Active:Start()
+
+    PRP.Overlay = vgui.Create( "PRP.Fullscreen.Overlay" )
+    PRP.Overlay:SetText( "BANK HEIST" )
+end )
+
 concommand.Add( "prp_teaser_casino", function()
     if PRP.Scene.Active then
         PRP.Scene.Active:Stop()
