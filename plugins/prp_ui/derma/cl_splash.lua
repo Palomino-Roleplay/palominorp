@@ -128,8 +128,10 @@ function PANEL:PaintOver( w, h )
         draw.SimpleText( "SplashStart: " .. tostring(self.splashStart), "DebugFixedSmall", w / 2, h / 2 + 64 + 16 + 16, Color( 164, 164, 164), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
         draw.SimpleText( "Failsafe DC in: " .. tostring(math.Round(30 - CurTime() - self.splashStart)), "DebugFixedSmall", w / 2, h / 2 + 64 + 32 + 16, Color( 164, 164, 164), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 
-        if CurTime() - self.splashStart > 60 then
-            RunConsoleCommand( "disconnect" )
+        if CurTime() - self.splashStart > 30 then
+            -- RunConsoleCommand( "disconnect" )
+            -- @TODO: Disconnect instead of removing
+            self:Remove()
         end
     else
         self.splashStart = nil
