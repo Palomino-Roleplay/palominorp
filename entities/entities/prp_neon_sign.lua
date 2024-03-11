@@ -14,12 +14,30 @@ ENT.AdminOnly		= false
 
 ENT.RenderGroup 	= RENDERGROUP_BOTH
 
+ENT.SampleColors    = {
+    Vector( 1, 0, 0 ),
+    Vector( 0, 1, 0 ),
+    Vector( 0, 0, 1 ),
+    Vector( 1, 1, 0 ),
+    Vector( 0, 1, 1 ),
+    Vector( 1, 0, 1 )
+}
+
 if SERVER then
     util.AddNetworkString( "PRP.NeonSign.EditText" )
     net.Receive( "PRP.NeonSign.EditText", function( _, pPlayer )
         -- @TODO: Ensure player is allowed to edit this sign
         local eSign = net.ReadEntity()
         local sText = net.ReadString()
+
+        sText = string.upper( sText )
+        sText = string.gsub(sText, "[^%w%s?]", "")
+
+        sText = string.sub( sText, 0, 16 )
+
+        -- @TODO: Profanity filter
+
+        -- String verification
 
         -- @TODO: Validate text
 
