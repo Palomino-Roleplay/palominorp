@@ -186,7 +186,7 @@ function ENT:Think()
     surface.SetFont( "PRP.Neon.Large" )
     local iTextWidth, iTextHeight = surface.GetTextSize( self:GetSignText() )
 
-    local vPos = self:LocalToWorld( vOffset ) + self:GetAngles():Up() * iTextHeight * i3D2DScale * 0.5
+    local vPos = self:LocalToWorld( vOffset ) - self:GetAngles():Up() * iTextHeight * i3D2DScale * 0.5
     vPos = vPos + self:GetAngles():Forward() * -iTextWidth * i3D2DScale * 0.5
 
     local oDLight = DynamicLight( self:EntIndex(), false )
