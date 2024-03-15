@@ -14,6 +14,16 @@ ENT.AdminOnly		= false
 
 ENT.RenderGroup 	= RENDERGROUP_BOTH
 
+ENT.SampleColors    = {
+    Vector( 0.8, 0.2, 0.2 ),
+    Vector( 0.2, 0.8, 0.2 ),
+    Vector( 0.2, 0.2, 0.8 ),
+    Vector( 0.8, 0.8, 0.2 ),
+    Vector( 0.2, 0.8, 0.8 ),
+    Vector( 0.8, 0.2, 0.8 )
+}
+
+
 function ENT:Initialize()
 	-- Sets what model to use
 	self:SetModel( "models/maxofs2d/thruster_projector.mdl" )
@@ -45,12 +55,16 @@ function ENT:Initialize()
         eEffect:SetParent( self )
         eEffect:SetLocalPos( Vector( 0, 6, 0 ) )
         eEffect:SetLocalAngles( Angle( 180, 0, 0 ) )
+        eEffect:SetRenderMode( RENDERMODE_TRANSCOLOR )
         eEffect:Spawn()
 
-        timer.Simple( 1, function()
-            eEffect:SetColor( Color( 0, 0, 0, 255 ) )
+        timer.Simple( 0, function()
+            eEffect.AttachedEntity:SetRenderMode( RENDERMODE_TRANSCOLOR )
+            eEffect.AttachedEntity:SetColor( Color( 0, 0, 0, 255 ) )
             -- eEffect:SetRenderMode( 4 )
         end )
+
+        self.eEffect = eEffect
     end
 end
 
@@ -70,24 +84,47 @@ end
 function ENT:SetupDataTables()
     self:NetworkVar( "Vector", 0, "LampColor" )
     self:NetworkVar( "Bool", 0, "LampEnabled" )
+    self:NetworkVar( "Entity", 0, "Effect" )
 
-    self:SetLampColor( Vector( 1, 0, 0 ) )
-    self:SetLampEnabled( true )
-    self:SetColor( fnDesaturateNeonColor( self:GetLampColor():ToColor() ) )
+    self:SetLampColor( self.SampleColors[math.random( 1, #self.SampleColors )] )
+    self:SetLampEnabled( false )
+    self:SetColor( Color( 128, 128, 128 ) )
 end
 
 local vOffset = Vector( -15, 0, 34 )
 local i3D2DScale = 0.25
 
-function ENT:TogglePower()
-    self:SetSignEnabled( !self:GetSignEnabled() )
+function ENT:GetEffectEntity()
+    if self.eEffect then return self.eEffect end
 
-    if self:GetSignEnabled() then
+    for _, eChild in pairs( self:GetChildren() ) do
+        if eChild:GetClass() == "prop_effect" then
+            self.eEffect = eChild
+            return eChild
+        end
+    end
+
+    return NULL
+end
+
+function ENT:TogglePower()
+    self:SetLampEnabled( !self:GetLampEnabled() )
+
+    if self:GetLampEnabled() then
         self:EmitSound( "buttons/button1.wav" )
         self:SetColor( fnDesaturateNeonColor( self:GetLampColor():ToColor() ) )
+        -- self.eEffect:SetColor( self:GetLampColor():ToColor() )
+
+        if self:GetEffectEntity() then
+            self:GetEffectEntity().AttachedEntity:SetColor( self:GetLampColor():ToColor() )
+        end
     else
         self:EmitSound( "buttons/lightswitch2.wav" )
         self:SetColor( Color( 128, 128, 128 ) )
+
+        if self:GetEffectEntity() then
+            self:GetEffectEntity().AttachedEntity:SetColor( Color( 0, 0, 0, 0 ) )
+        end
     end
 end
 
