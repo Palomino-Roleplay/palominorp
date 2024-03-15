@@ -31,15 +31,11 @@ if SERVER then
         local sText = net.ReadString()
 
         sText = string.upper( sText )
-        sText = string.gsub(sText, "[^%w%s?]", "")
+        sText = string.gsub( sText, "[^%w%s?]", "" )
 
         sText = string.sub( sText, 0, 16 )
 
         -- @TODO: Profanity filter
-
-        -- String verification
-
-        -- @TODO: Validate text
 
         eSign:SetSignText( sText )
     end )
@@ -67,6 +63,8 @@ function ENT:Initialize()
     -- self:SetSignText( "FOO BAR" )
     -- self:SetSignType( 1 )
     -- self:SetSignColor( Vector( 1, 0, 0 ) )
+
+    -- @TODO: Consider spawning w/ an (invisible?) 2x10 or something block to avoid the text clipping into walls.
 end
 
 local function fnDesaturateNeonColor( cColor )
@@ -107,7 +105,9 @@ function ENT:SetupDataTables()
 
     self:SetSignText( "HUGHES CASINO" )
     self:SetSignType( 1 )
-    self:SetSignColor( Vector( 1, 0, 0 ) )
+
+    local vColor = self.SampleColors[math.random( 1, #self.SampleColors )]
+    self:SetSignColor( vColor )
     self:SetSignEnabled( true )
     self:SetColor( fnDesaturateNeonColor( self:GetSignColor():ToColor() ) )
 end
@@ -127,75 +127,150 @@ function ENT:TogglePower()
     end
 end
 
-function ENT:DrawTranslucent()
-    local iTime = CurTime()
-    local iFlickerSpeed = 60
-    local iFlickerAmount = 0.1
-    local iRandomFactor = 0.15
+hook.Add( "PostDrawTranslucentRenderables", "PRP.NeonSign.PostDrawTranslucentRenderables", function( bDrawingDepth, bDrawingSkybox, bIsDraw3DSkybox )
+    -- @TODO: Optimize
+    -- @TODO: Optimization: Don't render past a certain distance
 
-    local iIntensityBase = 0.9  -- Base light intensity
+    for _, eEntity in pairs( ents.FindByClass( "prp_neon_sign" ) or {} ) do
+        local iTime = CurTime()
+        local iFlickerSpeed = 60
+        local iFlickerAmount = 0.1
+        local iRandomFactor = 0.15
 
-    -- Calculate flickering light intensity
-    local iFX = iIntensityBase + math.sin(iTime * iFlickerSpeed) * iFlickerAmount + math.random() * iRandomFactor
+        local iIntensityBase = 0.9  -- Base light intensity
 
-    surface.SetFont( "PRP.Neon.Large" )
-    local iTextWidth, iTextHeight = surface.GetTextSize( self:GetSignText() )
+        -- Calculate flickering light intensity
+        local iFX = iIntensityBase + math.sin(iTime * iFlickerSpeed) * iFlickerAmount + math.random() * iRandomFactor
 
-    local cColor = self:GetSignColor()
-    cColor = isvector( cColor ) and cColor:ToColor() or Color( 255, 255, 255 )
+        surface.SetFont( "PRP.Neon.Large" )
+        local iTextWidth, iTextHeight = surface.GetTextSize( eEntity:GetSignText() )
 
-    cColorWashed = fnDesaturateNeonColor( cColor )
+        local cColor = eEntity:GetSignColor()
+        cColor = isvector( cColor ) and cColor:ToColor() or Color( 255, 255, 255 )
 
-    if imgui.Entity3D2D( self, vOffset, Angle( 0, 180, 90 ), i3D2DScale ) then
-        if self:GetSignEnabled() then
-            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", 0, 16, ColorAlpha( cColorWashed, 255 * iFX ) )
-            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large.Glow", 0, 16, ColorAlpha( cColor, 255 * iFX ) )
-        else
-            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", 0, 16, Color( 64, 64, 64, 128 ) )
+        cColorWashed = fnDesaturateNeonColor( cColor )
+
+        if imgui.Entity3D2D( eEntity, vOffset, Angle( 0, 180, 90 ), i3D2DScale ) then
+            if eEntity:GetSignEnabled() then
+                draw.SimpleText(eEntity:GetSignText(), "PRP.Neon.Large", 0, 16, ColorAlpha( cColorWashed, 255 * iFX ) )
+                draw.SimpleText(eEntity:GetSignText(), "PRP.Neon.Large.Glow", 0, 16, ColorAlpha( cColor, 255 * iFX ) )
+            else
+                draw.SimpleText(eEntity:GetSignText(), "PRP.Neon.Large", 0, 16, Color( 64, 64, 64, 128 ) )
+            end
+
+            imgui.End3D2D()
         end
 
-        imgui.End3D2D()
+        if imgui.Entity3D2D( eEntity, vOffset, Angle( 0, 0, 90 ), i3D2DScale ) then
+            if eEntity:GetSignEnabled() then
+                draw.SimpleText(eEntity:GetSignText(), "PRP.Neon.Large", -iTextWidth, 16, ColorAlpha( cColorWashed, 255 * iFX ) )
+                draw.SimpleText(eEntity:GetSignText(), "PRP.Neon.Large.Glow", -iTextWidth, 16, ColorAlpha( cColor, 255 * iFX ) )
+            else
+                draw.SimpleText(eEntity:GetSignText(), "PRP.Neon.Large", -iTextWidth, 16, Color( 64, 64, 64, 128 ) )
+            end
+
+            imgui.End3D2D()
+        end
+
+        if imgui.Entity3D2D( eEntity, vOffset + Vector( 24, 0, 8 ), Angle( 0, 90, 90 ), i3D2DScale * 0.25 ) then
+            if imgui.xButton(-30, 20, 60, 30, 20, Color( 120, 120, 120 ), Color( 255, 255, 255 ), Color( 180, 180, 180 ) ) then
+                eEntity:TogglePower()
+            end
+
+            if imgui.xTextButton("EDIT", "!Inter@16", -25, 60, 50, 32, 4, Color( 120, 120, 120 ), Color( 255, 255, 255 ), Color( 180, 180, 180 ) ) then
+                -- eEntity:KeypadType( i )
+                -- eEntity:TogglePower()
+
+                Derma_StringRequest(
+                    "Neon Sign",
+                    "Enter your desired text",
+                    "OPEN",
+                    function( sText )
+                        net.Start( "PRP.NeonSign.EditText" )
+                            net.WriteEntity( eEntity )
+                            net.WriteString( sText )
+                        net.SendToServer()
+                    end,
+                    nil,
+                    "Submit",
+                    "Cancel"
+                )
+            end
+
+            imgui.End3D2D()
+        end
     end
+end )
 
-    if imgui.Entity3D2D( self, vOffset, Angle( 0, 0, 90 ), i3D2DScale ) then
-        if self:GetSignEnabled() then
-            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", -iTextWidth, 16, ColorAlpha( cColorWashed, 255 * iFX ) )
-            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large.Glow", -iTextWidth, 16, ColorAlpha( cColor, 255 * iFX ) )
-        else
-            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", -iTextWidth, 16, Color( 64, 64, 64, 128 ) )
-        end
+-- function ENT:DrawTranslucent()
+--     local iTime = CurTime()
+--     local iFlickerSpeed = 60
+--     local iFlickerAmount = 0.1
+--     local iRandomFactor = 0.15
 
-        imgui.End3D2D()
-    end
+--     local iIntensityBase = 0.9  -- Base light intensity
 
-    if imgui.Entity3D2D( self, vOffset + Vector( 24, 0, 8 ), Angle( 0, 90, 90 ), i3D2DScale * 0.25 ) then
-        if imgui.xButton(-30, 20, 60, 30, 20, Color( 120, 120, 120 ), Color( 255, 255, 255 ), Color( 180, 180, 180 ) ) then
-            self:TogglePower()
-        end
+--     -- Calculate flickering light intensity
+--     local iFX = iIntensityBase + math.sin(iTime * iFlickerSpeed) * iFlickerAmount + math.random() * iRandomFactor
 
-        if imgui.xTextButton("EDIT", "!Inter@16", -25, 60, 50, 32, 4, Color( 120, 120, 120 ), Color( 255, 255, 255 ), Color( 180, 180, 180 ) ) then
-            -- self:KeypadType( i )
-            -- self:TogglePower()
+--     surface.SetFont( "PRP.Neon.Large" )
+--     local iTextWidth, iTextHeight = surface.GetTextSize( self:GetSignText() )
 
-            Derma_StringRequest(
-                "Neon Sign",
-                "Enter your desired text",
-                "OPEN",
-                function( sText )
-                    net.Start( "PRP.NeonSign.EditText" )
-                        net.WriteEntity( self )
-                        net.WriteString( sText )
-                    net.SendToServer()
-                end,
-                nil,
-                "Submit",
-                "Cancel"
-            )
-        end
+--     local cColor = self:GetSignColor()
+--     cColor = isvector( cColor ) and cColor:ToColor() or Color( 255, 255, 255 )
 
-        imgui.End3D2D()
-    end
-end
+--     cColorWashed = fnDesaturateNeonColor( cColor )
+
+--     if imgui.Entity3D2D( self, vOffset, Angle( 0, 180, 90 ), i3D2DScale ) then
+--         if self:GetSignEnabled() then
+--             draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", 0, 16, ColorAlpha( cColorWashed, 255 * iFX ) )
+--             draw.SimpleText(self:GetSignText(), "PRP.Neon.Large.Glow", 0, 16, ColorAlpha( cColor, 255 * iFX ) )
+--         else
+--             draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", 0, 16, Color( 64, 64, 64, 128 ) )
+--         end
+
+--         imgui.End3D2D()
+--     end
+
+--     if imgui.Entity3D2D( self, vOffset, Angle( 0, 0, 90 ), i3D2DScale ) then
+--         if self:GetSignEnabled() then
+--             draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", -iTextWidth, 16, ColorAlpha( cColorWashed, 255 * iFX ) )
+--             draw.SimpleText(self:GetSignText(), "PRP.Neon.Large.Glow", -iTextWidth, 16, ColorAlpha( cColor, 255 * iFX ) )
+--         else
+--             draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", -iTextWidth, 16, Color( 64, 64, 64, 128 ) )
+--         end
+
+--         imgui.End3D2D()
+--     end
+
+--     if imgui.Entity3D2D( self, vOffset + Vector( 24, 0, 8 ), Angle( 0, 90, 90 ), i3D2DScale * 0.25 ) then
+--         if imgui.xButton(-30, 20, 60, 30, 20, Color( 120, 120, 120 ), Color( 255, 255, 255 ), Color( 180, 180, 180 ) ) then
+--             self:TogglePower()
+--         end
+
+--         if imgui.xTextButton("EDIT", "!Inter@16", -25, 60, 50, 32, 4, Color( 120, 120, 120 ), Color( 255, 255, 255 ), Color( 180, 180, 180 ) ) then
+--             -- self:KeypadType( i )
+--             -- self:TogglePower()
+
+--             Derma_StringRequest(
+--                 "Neon Sign",
+--                 "Enter your desired text",
+--                 "OPEN",
+--                 function( sText )
+--                     net.Start( "PRP.NeonSign.EditText" )
+--                         net.WriteEntity( self )
+--                         net.WriteString( sText )
+--                     net.SendToServer()
+--                 end,
+--                 nil,
+--                 "Submit",
+--                 "Cancel"
+--             )
+--         end
+
+--         imgui.End3D2D()
+--     end
+-- end
 
 function ENT:Think()
     if SERVER then return end
