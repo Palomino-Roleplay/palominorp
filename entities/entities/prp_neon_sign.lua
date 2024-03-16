@@ -129,14 +129,14 @@ function ENT:TogglePower()
     end
 end
 
-function ENT:DrawSignText( cColor, cColorWashed, iFX, iX, bDrawVertical, iTextHeight )
+function ENT:DrawSignText( cColor, cColorWashed, iFX, iX, bDrawVertical, iTextHeight, bBackside )
     -- Assuming this is already inside a 3D2D context
 
     if self:GetSignEnabled() then
         if bDrawVertical then
             for i = 1, string.len( self:GetSignText() ), 1 do
                 -- pauses
-                draw.SimpleText(self:GetSignText()[i], "PRP.Neon.Large", iX, 0 + (iTextHeight * 0.9 * (i - 1)), ColorAlpha( cColorWashed, 255 * iFX ) )
+                draw.SimpleText(self:GetSignText()[i], "PRP.Neon.Large", bBackside and 0 or iX, 0 + (iTextHeight * 0.9 * (i - 1)), ColorAlpha( cColorWashed, 255 * iFX ), bBackside and TEXT_ALIGN_RIGHT or TEXT_ALIGN_LEFT )
             end
         else
             draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", iX, 15 * 1 / self:GetSignScale(), ColorAlpha( cColorWashed, 255 * iFX ), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
@@ -180,7 +180,7 @@ hook.Add( "PostDrawTranslucentRenderables", "PRP.NeonSign.PostDrawTranslucentRen
             end
 
             if imgui.Entity3D2D( eEntity, vOffsetVertical, Angle( 90, 0, 90 ), eEntity:GetSignScale() ) then
-                eEntity:DrawSignText( cColor, cColorWashed, iFX, -iTextHeight * 0.65, true, iTextHeight )
+                eEntity:DrawSignText( cColor, cColorWashed, iFX, -iTextHeight * 0.65, true, iTextHeight, true )
 
                 imgui.End3D2D()
             end
