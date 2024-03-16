@@ -40,6 +40,15 @@ function PLUGIN:InitializedPlugins()
         additive = true,
     } )
 
+    -- Used by NPC dialogue
+    surface.CreateFont( "PRP.UI.Nameplates.ID.Blurred", {
+        font = "Oxygen Mono",
+        size = iSmallFontSize * PRP.UI.ScaleFactor,
+        antialias = true,
+        additive = true,
+        blursize = ( iSmallFontSize * PRP.UI.ScaleFactor ) / 4,
+    } )
+
     surface.CreateFont( "PRP.UI.Nameplates.Tag", {
         font = "Oxygen",
         weight = 700,
