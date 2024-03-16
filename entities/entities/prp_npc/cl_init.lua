@@ -106,7 +106,13 @@ function ENT:DrawTranslucent()
     local vOffset = Vector( 0, 0, 75 )
 
     if imgui.Entity3D2D( self, vOffset, Angle( 0, 90, 90 ), 0.03 ) then
-        draw.SimpleTextOutlined( self.currentString, "PRP.UI.Nameplates.ID", 0, 0, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color( 0, 0, 0, 255 ) )
+        draw.SimpleTextOutlined( self.currentString, "PRP.UI.Nameplates.ID", 0, 0, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 0, Color( 0, 0, 0, 255 ) )
+
+        imgui.End3D2D()
+    end
+
+    if imgui.Entity3D2D( self, vOffset, Angle( 0, -90, 90 ), 0.03 ) then
+        draw.SimpleTextOutlined( self.currentString, "PRP.UI.Nameplates.ID.Blurred", 0, 0, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 0, Color( 0, 0, 0, 255 ) )
 
         imgui.End3D2D()
     end
