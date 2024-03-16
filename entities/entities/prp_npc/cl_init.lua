@@ -3,6 +3,8 @@ include("shared.lua")
 -- @TODO: Disable or look into why this is needed
 ENT.AutomaticFrameAdvance = true
 
+ENT.RenderGroup = RENDERGROUP_BOTH
+
 function ENT:Initialize()
     self:SetFlexWeight( 0, 0.5 )
     self:SetFlexWeight( 1, 0.5 )
@@ -16,6 +18,10 @@ function ENT:Initialize()
     end )
 
     self:UseClientSideAnimation()
+
+    self.enteredTime = 0
+    self.enteredElapsedTime = 0
+    self.currentString = ""
 end
 
 function ENT:Anim()
@@ -57,6 +63,37 @@ function ENT:Draw()
 	self.lastTick = realTime
 
     self:DrawModel()
+end
+
+local sExampleVoiceLine = "damn hes short asl"
+local iTriggerDistance = 200
+local iSecondsPerCharacter = 0.08
+
+function ENT:DrawTranslucent()
+    if LocalPlayer():GetPos():Distance( self:GetPos() ) > iTriggerDistance then
+        self.enteredTime = 0
+        return
+    elseif self.enteredTime == 0 then
+        self.enteredTime = CurTime()
+    end
+    self.enteredElapsedTime = CurTime() - self.enteredTime
+
+    local iLastStringLength = string.len( self.currentString )
+    self.currentString = string.sub( sExampleVoiceLine, 1, self.enteredElapsedTime / iSecondsPerCharacter )
+    if string.len( self.currentString ) > iLastStringLength and self.currentString[string.len( self.currentString )] != ' ' then
+        surface.PlaySound( "physics/concrete/concrete_impact_soft3.wav" )
+    end
+
+    print(self.enteredElapsedTime)
+    print(self.currentString)
+
+    local vOffset = Vector( 0, 0, 80 )
+
+    if imgui.Entity3D2D( self, vOffset, Angle( 0, 90, 90 ), 0.2 ) then
+        draw.SimpleTextOutlined( self.currentString, "Trebuchet24", 0, 0, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color( 0, 0, 0, 255 ) )
+
+        imgui.End3D2D()
+    end
 end
 
 -- @TODO: PostDrawTranslucentRenderables
