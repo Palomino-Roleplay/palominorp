@@ -74,7 +74,7 @@ local function fnDesaturateNeonColor( cColor )
 end
 
 function ENT:Use()
-    -- self:TogglePower()
+    self:TogglePower()
 end
 
 function ENT:Draw()
@@ -117,15 +117,18 @@ function ENT:SetupDataTables()
     self:SetColor( fnDesaturateNeonColor( self:GetSignColor():ToColor() ) )
 end
 
-function ENT:TogglePower()
-    self:SetSignEnabled( !self:GetSignEnabled() )
+if SERVER then
+    function ENT:TogglePower()
+        -- @TODO: Verify it's only for th owner
+        self:SetSignEnabled( !self:GetSignEnabled() )
 
-    if self:GetSignEnabled() then
-        self:EmitSound( "buttons/button1.wav" )
-        self:SetColor( fnDesaturateNeonColor( self:GetSignColor():ToColor() ) )
-    else
-        self:EmitSound( "buttons/lightswitch2.wav" )
-        self:SetColor( Color( 128, 128, 128 ) )
+        if self:GetSignEnabled() then
+            self:EmitSound( "buttons/button1.wav" )
+            self:SetColor( fnDesaturateNeonColor( self:GetSignColor():ToColor() ) )
+        else
+            self:EmitSound( "buttons/lightswitch2.wav" )
+            self:SetColor( Color( 128, 128, 128 ) )
+        end
     end
 end
 
@@ -137,13 +140,21 @@ function ENT:DrawSignText( cColor, cColorWashed, iFX, iX, bDrawVertical, iTextHe
             for i = 1, string.len( self:GetSignText() ), 1 do
                 -- pauses
                 draw.SimpleText(self:GetSignText()[i], "PRP.Neon.Large", bBackside and 0 or iX, 0 + (iTextHeight * 0.9 * (i - 1)), ColorAlpha( cColorWashed, 255 * iFX ), bBackside and TEXT_ALIGN_RIGHT or TEXT_ALIGN_LEFT )
+                draw.SimpleText(self:GetSignText()[i], "PRP.Neon.Large.Glow", bBackside and 0 or iX, 0 + (iTextHeight * 0.9 * (i - 1)), ColorAlpha( cColorWashed, 255 * iFX ), bBackside and TEXT_ALIGN_RIGHT or TEXT_ALIGN_LEFT )
             end
         else
             draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", iX, 15 * 1 / self:GetSignScale(), ColorAlpha( cColorWashed, 255 * iFX ), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
             draw.SimpleText(self:GetSignText(), "PRP.Neon.Large.Glow", iX, 15 * 1 / self:GetSignScale(), ColorAlpha( cColor, 255 * iFX ), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
         end
     else
-        draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", iX, 16, Color( 64, 64, 64, 128 ) )
+        if bDrawVertical then
+            for i = 1, string.len( self:GetSignText() ), 1 do
+                -- pauses
+                draw.SimpleText(self:GetSignText()[i], "PRP.Neon.Large", bBackside and 0 or iX, 0 + (iTextHeight * 0.9 * (i - 1)), Color( 64, 64, 64, 128 ), bBackside and TEXT_ALIGN_RIGHT or TEXT_ALIGN_LEFT )
+            end
+        else  
+            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", iX, 15 * 1 / self:GetSignScale(), Color( 64, 64, 64, 128 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
+        end
     end
 end
 
@@ -199,9 +210,9 @@ hook.Add( "PostDrawTranslucentRenderables", "PRP.NeonSign.PostDrawTranslucentRen
         end
 
         if imgui.Entity3D2D( eEntity, vOffset + Vector( 24, 0, 8 ), Angle( 0, 90, 90 ), eEntity:GetSignScale() * 0.25 ) then
-            if imgui.xButton(-30, 20, 60, 30, 20, Color( 120, 120, 120 ), Color( 255, 255, 255 ), Color( 180, 180, 180 ) ) then
-                eEntity:TogglePower()
-            end
+            -- if imgui.xButton(-30, 20, 60, 30, 20, Color( 120, 120, 120 ), Color( 255, 255, 255 ), Color( 180, 180, 180 ) ) then
+            --     eEntity:TogglePower()
+            -- end
 
             if imgui.xTextButton("EDIT", "!Inter@16", -25, 60, 50, 32, 4, Color( 120, 120, 120 ), Color( 255, 255, 255 ), Color( 180, 180, 180 ) ) then
                 -- eEntity:KeypadType( i )
