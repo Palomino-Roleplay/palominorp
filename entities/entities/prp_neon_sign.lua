@@ -102,6 +102,7 @@ function ENT:SetupDataTables()
     self:NetworkVar( "Int", 0, "SignType" )
     self:NetworkVar( "Vector", 0, "SignColor" )
     self:NetworkVar( "Bool", 0, "SignEnabled" )
+    self:NetworkVar( "Bool", 0, "SignVertical" )
 
     self:SetSignText( "HUGHES CASINO" )
     self:SetSignType( 1 )
@@ -109,11 +110,9 @@ function ENT:SetupDataTables()
     local vColor = self.SampleColors[math.random( 1, #self.SampleColors )]
     self:SetSignColor( vColor )
     self:SetSignEnabled( true )
+    self:SetSignVertical( true )
     self:SetColor( fnDesaturateNeonColor( self:GetSignColor():ToColor() ) )
 end
-
-local vOffset = Vector( -15, 0, 34 )
-local i3D2DScale = 0.25
 
 function ENT:TogglePower()
     self:SetSignEnabled( !self:GetSignEnabled() )
@@ -127,9 +126,31 @@ function ENT:TogglePower()
     end
 end
 
+function ENT:DrawSignText( cColor, cColorWashed, iFX, iX, bDrawVertical, iTextHeight )
+    -- Assuming this is already inside a 3D2D context
+
+    if self:GetSignEnabled() then
+        if bDrawVertical then
+            for i = 1, string.len( self:GetSignText() ), 1 do
+                -- pauses
+                draw.SimpleText(self:GetSignText()[i], "PRP.Neon.Large", iX, 0 + (iTextHeight * 0.9 * (i - 1)), ColorAlpha( cColorWashed, 255 * iFX ) )
+            end
+        else
+            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", iX, 16, ColorAlpha( cColorWashed, 255 * iFX ) )
+            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large.Glow", iX, 16, ColorAlpha( cColor, 255 * iFX ) )
+        end
+    else
+        draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", iX, 16, Color( 64, 64, 64, 128 ) )
+    end
+end
+
+local vOffset = Vector( -15, 0, 34 )
+local vOffsetVertical = Vector( -10, 0, 9 )
+local i3D2DScale = 0.4
+
 hook.Add( "PostDrawTranslucentRenderables", "PRP.NeonSign.PostDrawTranslucentRenderables", function( bDrawingDepth, bDrawingSkybox, bIsDraw3DSkybox )
     -- @TODO: Optimize
-    -- @TODO: Optimization: Don't render past a certain distance
+    -- @TODO: Optimization: Don't render past a certain distance (but should be a pretty damn far distance)
 
     for _, eEntity in pairs( ents.FindByClass( "prp_neon_sign" ) or {} ) do
         local iTime = CurTime()
@@ -138,8 +159,6 @@ hook.Add( "PostDrawTranslucentRenderables", "PRP.NeonSign.PostDrawTranslucentRen
         local iRandomFactor = 0.15
 
         local iIntensityBase = 0.9  -- Base light intensity
-
-        -- Calculate flickering light intensity
         local iFX = iIntensityBase + math.sin(iTime * iFlickerSpeed) * iFlickerAmount + math.random() * iRandomFactor
 
         surface.SetFont( "PRP.Neon.Large" )
@@ -150,26 +169,30 @@ hook.Add( "PostDrawTranslucentRenderables", "PRP.NeonSign.PostDrawTranslucentRen
 
         cColorWashed = fnDesaturateNeonColor( cColor )
 
-        if imgui.Entity3D2D( eEntity, vOffset, Angle( 0, 180, 90 ), i3D2DScale ) then
-            if eEntity:GetSignEnabled() then
-                draw.SimpleText(eEntity:GetSignText(), "PRP.Neon.Large", 0, 16, ColorAlpha( cColorWashed, 255 * iFX ) )
-                draw.SimpleText(eEntity:GetSignText(), "PRP.Neon.Large.Glow", 0, 16, ColorAlpha( cColor, 255 * iFX ) )
-            else
-                draw.SimpleText(eEntity:GetSignText(), "PRP.Neon.Large", 0, 16, Color( 64, 64, 64, 128 ) )
+        if eEntity:GetSignVertical() then
+            if imgui.Entity3D2D( eEntity, vOffsetVertical, Angle( -90, 180, 90 ), i3D2DScale ) then
+                eEntity:DrawSignText( cColor, cColorWashed, iFX, 0, true, iTextHeight )
+
+                imgui.End3D2D()
             end
 
-            imgui.End3D2D()
-        end
+            if imgui.Entity3D2D( eEntity, vOffsetVertical, Angle( 90, 0, 90 ), i3D2DScale ) then
+                eEntity:DrawSignText( cColor, cColorWashed, iFX, -iTextHeight * 0.65, true, iTextHeight )
 
-        if imgui.Entity3D2D( eEntity, vOffset, Angle( 0, 0, 90 ), i3D2DScale ) then
-            if eEntity:GetSignEnabled() then
-                draw.SimpleText(eEntity:GetSignText(), "PRP.Neon.Large", -iTextWidth, 16, ColorAlpha( cColorWashed, 255 * iFX ) )
-                draw.SimpleText(eEntity:GetSignText(), "PRP.Neon.Large.Glow", -iTextWidth, 16, ColorAlpha( cColor, 255 * iFX ) )
-            else
-                draw.SimpleText(eEntity:GetSignText(), "PRP.Neon.Large", -iTextWidth, 16, Color( 64, 64, 64, 128 ) )
+                imgui.End3D2D()
+            end
+        else
+            if imgui.Entity3D2D( eEntity, vOffset, Angle( 0, 180, 90 ), i3D2DScale ) then
+                eEntity:DrawSignText( cColor, cColorWashed, iFX, 0 )
+
+                imgui.End3D2D()
             end
 
-            imgui.End3D2D()
+            if imgui.Entity3D2D( eEntity, vOffset, Angle( 0, 0, 90 ), i3D2DScale ) then
+                eEntity:DrawSignText( cColor, cColorWashed, iFX, -iTextWidth )
+
+                imgui.End3D2D()
+            end
         end
 
         if imgui.Entity3D2D( eEntity, vOffset + Vector( 24, 0, 8 ), Angle( 0, 90, 90 ), i3D2DScale * 0.25 ) then
