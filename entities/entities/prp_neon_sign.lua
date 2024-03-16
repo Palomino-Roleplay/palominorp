@@ -106,14 +106,14 @@ function ENT:SetupDataTables()
     self:NetworkVar( "Bool", 1, "SignVertical" )
     self:NetworkVar( "Float", 0, "SignScale" )
 
-    self:SetSignText( "HUGHES CASINO" )
+    self:SetSignText( "SYDNEYS" )
     self:SetSignType( 1 )
 
     local vColor = self.SampleColors[math.random( 1, #self.SampleColors )]
     self:SetSignColor( vColor )
     self:SetSignEnabled( true )
-    self:SetSignVertical( true )
-    self:SetSignScale( 0.35 )
+    self:SetSignVertical( false )
+    self:SetSignScale( 0.25 )
     self:SetColor( fnDesaturateNeonColor( self:GetSignColor():ToColor() ) )
 end
 
