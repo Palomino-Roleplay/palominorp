@@ -65,7 +65,7 @@ function ENT:Draw()
     self:DrawModel()
 end
 
-local sExampleVoiceLine = "damn hes short asl"
+local sExampleVoiceLine = "ay, where you from?"
 local iTriggerDistance = 200
 local iSecondsPerCharacter = 0.08
 
@@ -89,8 +89,8 @@ function ENT:DrawTranslucent()
 
     local vOffset = Vector( 0, 0, 80 )
 
-    if imgui.Entity3D2D( self, vOffset, Angle( 0, 90, 90 ), 0.2 ) then
-        draw.SimpleTextOutlined( self.currentString, "Trebuchet24", 0, 0, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color( 0, 0, 0, 255 ) )
+    if imgui.Entity3D2D( self, vOffset, Angle( 0, 90, 90 ), 0.04 ) then
+        draw.SimpleTextOutlined( self.currentString, "PRP.UI.Nameplates.ID", 0, 0, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color( 0, 0, 0, 255 ) )
 
         imgui.End3D2D()
     end
