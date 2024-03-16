@@ -65,9 +65,23 @@ function ENT:Draw()
     self:DrawModel()
 end
 
-local sExampleVoiceLine = "ay, where you from?"
-local iTriggerDistance = 200
-local iSecondsPerCharacter = 0.08
+
+local tExampleTextLines = {
+    "ay, what the fuck are you doing?",
+    "fuck off.",
+    "leave me the fuck alone.",
+    "carry on, will ya?",
+    "beat it.",
+    "i fucking hate this city.",
+}
+
+function ENT:GetTextLine()
+    return tExampleTextLines[(self:EntIndex() % #tExampleTextLines) + 1]
+end
+
+local sExampleVoiceLine = ""
+local iTriggerDistance = 164
+local iSecondsPerCharacter = 0.07
 
 function ENT:DrawTranslucent()
     if LocalPlayer():GetPos():Distance( self:GetPos() ) > iTriggerDistance then
@@ -78,8 +92,10 @@ function ENT:DrawTranslucent()
     end
     self.enteredElapsedTime = CurTime() - self.enteredTime
 
+    local sOurString = self:GetTextLine() or "simulation paused"
+
     local iLastStringLength = string.len( self.currentString )
-    self.currentString = string.sub( sExampleVoiceLine, 1, self.enteredElapsedTime / iSecondsPerCharacter )
+    self.currentString = string.sub( sOurString, 1, self.enteredElapsedTime / iSecondsPerCharacter )
     if string.len( self.currentString ) > iLastStringLength and self.currentString[string.len( self.currentString )] != ' ' then
         surface.PlaySound( "physics/concrete/concrete_impact_soft3.wav" )
     end
@@ -87,9 +103,9 @@ function ENT:DrawTranslucent()
     print(self.enteredElapsedTime)
     print(self.currentString)
 
-    local vOffset = Vector( 0, 0, 80 )
+    local vOffset = Vector( 0, 0, 75 )
 
-    if imgui.Entity3D2D( self, vOffset, Angle( 0, 90, 90 ), 0.04 ) then
+    if imgui.Entity3D2D( self, vOffset, Angle( 0, 90, 90 ), 0.03 ) then
         draw.SimpleTextOutlined( self.currentString, "PRP.UI.Nameplates.ID", 0, 0, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color( 0, 0, 0, 255 ) )
 
         imgui.End3D2D()
