@@ -20,7 +20,8 @@ ENT.SampleColors    = {
     Vector( 0, 0, 1 ),
     Vector( 1, 1, 0 ),
     Vector( 0, 1, 1 ),
-    Vector( 1, 0, 1 )
+    Vector( 1, 0, 1 ),
+    Vector( 1, 1, 1 )
 }
 
 if SERVER then
@@ -102,7 +103,8 @@ function ENT:SetupDataTables()
     self:NetworkVar( "Int", 0, "SignType" )
     self:NetworkVar( "Vector", 0, "SignColor" )
     self:NetworkVar( "Bool", 0, "SignEnabled" )
-    self:NetworkVar( "Bool", 0, "SignVertical" )
+    self:NetworkVar( "Bool", 1, "SignVertical" )
+    self:NetworkVar( "Float", 0, "SignScale" )
 
     self:SetSignText( "HUGHES CASINO" )
     self:SetSignType( 1 )
@@ -111,6 +113,7 @@ function ENT:SetupDataTables()
     self:SetSignColor( vColor )
     self:SetSignEnabled( true )
     self:SetSignVertical( true )
+    self:SetSignScale( 0.35 )
     self:SetColor( fnDesaturateNeonColor( self:GetSignColor():ToColor() ) )
 end
 
@@ -136,8 +139,8 @@ function ENT:DrawSignText( cColor, cColorWashed, iFX, iX, bDrawVertical, iTextHe
                 draw.SimpleText(self:GetSignText()[i], "PRP.Neon.Large", iX, 0 + (iTextHeight * 0.9 * (i - 1)), ColorAlpha( cColorWashed, 255 * iFX ) )
             end
         else
-            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", iX, 16, ColorAlpha( cColorWashed, 255 * iFX ) )
-            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large.Glow", iX, 16, ColorAlpha( cColor, 255 * iFX ) )
+            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", iX, 15 * 1 / self:GetSignScale(), ColorAlpha( cColorWashed, 255 * iFX ), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
+            draw.SimpleText(self:GetSignText(), "PRP.Neon.Large.Glow", iX, 15 * 1 / self:GetSignScale(), ColorAlpha( cColor, 255 * iFX ), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
         end
     else
         draw.SimpleText(self:GetSignText(), "PRP.Neon.Large", iX, 16, Color( 64, 64, 64, 128 ) )
@@ -170,32 +173,32 @@ hook.Add( "PostDrawTranslucentRenderables", "PRP.NeonSign.PostDrawTranslucentRen
         cColorWashed = fnDesaturateNeonColor( cColor )
 
         if eEntity:GetSignVertical() then
-            if imgui.Entity3D2D( eEntity, vOffsetVertical, Angle( -90, 180, 90 ), i3D2DScale ) then
+            if imgui.Entity3D2D( eEntity, vOffsetVertical, Angle( -90, 180, 90 ), eEntity:GetSignScale() ) then
                 eEntity:DrawSignText( cColor, cColorWashed, iFX, 0, true, iTextHeight )
 
                 imgui.End3D2D()
             end
 
-            if imgui.Entity3D2D( eEntity, vOffsetVertical, Angle( 90, 0, 90 ), i3D2DScale ) then
+            if imgui.Entity3D2D( eEntity, vOffsetVertical, Angle( 90, 0, 90 ), eEntity:GetSignScale() ) then
                 eEntity:DrawSignText( cColor, cColorWashed, iFX, -iTextHeight * 0.65, true, iTextHeight )
 
                 imgui.End3D2D()
             end
         else
-            if imgui.Entity3D2D( eEntity, vOffset, Angle( 0, 180, 90 ), i3D2DScale ) then
-                eEntity:DrawSignText( cColor, cColorWashed, iFX, 0 )
+            if imgui.Entity3D2D( eEntity, vOffset, Angle( 0, 180, 90 ), eEntity:GetSignScale() ) then
+                eEntity:DrawSignText( cColor, cColorWashed, iFX, 0, false, iTextHeight )
 
                 imgui.End3D2D()
             end
 
-            if imgui.Entity3D2D( eEntity, vOffset, Angle( 0, 0, 90 ), i3D2DScale ) then
-                eEntity:DrawSignText( cColor, cColorWashed, iFX, -iTextWidth )
+            if imgui.Entity3D2D( eEntity, vOffset, Angle( 0, 0, 90 ), eEntity:GetSignScale() ) then
+                eEntity:DrawSignText( cColor, cColorWashed, iFX, -iTextWidth, false, iTextHeight )
 
                 imgui.End3D2D()
             end
         end
 
-        if imgui.Entity3D2D( eEntity, vOffset + Vector( 24, 0, 8 ), Angle( 0, 90, 90 ), i3D2DScale * 0.25 ) then
+        if imgui.Entity3D2D( eEntity, vOffset + Vector( 24, 0, 8 ), Angle( 0, 90, 90 ), eEntity:GetSignScale() * 0.25 ) then
             if imgui.xButton(-30, 20, 60, 30, 20, Color( 120, 120, 120 ), Color( 255, 255, 255 ), Color( 180, 180, 180 ) ) then
                 eEntity:TogglePower()
             end
