@@ -65,7 +65,6 @@ function ENT:Draw()
     self:DrawModel()
 end
 
-
 local tExampleTextLines = {
     "ay, what the fuck are you doing?",
     "fuck off.",
@@ -76,7 +75,12 @@ local tExampleTextLines = {
 }
 
 function ENT:GetTextLine()
-    return tExampleTextLines[(self:EntIndex() % #tExampleTextLines) + 1]
+    return self.dialogue or tExampleTextLines[(self:EntIndex() % #tExampleTextLines) + 1]
+end
+
+function ENT:SetTextLine( sDialogue )
+    self.dialogue = sDialogue
+    self.enteredTime = CurTime()
 end
 
 local sExampleVoiceLine = ""
@@ -97,7 +101,8 @@ function ENT:DrawTranslucent()
     local iLastStringLength = string.len( self.currentString )
     self.currentString = string.sub( sOurString, 1, self.enteredElapsedTime / iSecondsPerCharacter )
     if string.len( self.currentString ) > iLastStringLength and self.currentString[string.len( self.currentString )] != ' ' then
-        surface.PlaySound( "physics/concrete/concrete_impact_soft3.wav" )
+        -- surface.PlaySound( "physics/concrete/concrete_impact_soft3.wav" )
+        surface.PlaySound( "prp/ui/hover.wav" )
     end
 
     print(self.enteredElapsedTime)
@@ -105,6 +110,7 @@ function ENT:DrawTranslucent()
 
     local vOffset = Vector( 0, 0, 75 )
 
+    cam.IgnoreZ( true )
     if imgui.Entity3D2D( self, vOffset, Angle( 0, 90, 90 ), 0.03 ) then
         draw.SimpleTextOutlined( self.currentString, "PRP.UI.Nameplates.ID", 0, 0, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 0, Color( 0, 0, 0, 255 ) )
 
@@ -116,6 +122,7 @@ function ENT:DrawTranslucent()
 
         imgui.End3D2D()
     end
+    cam.IgnoreZ( false )
 end
 
 -- @TODO: PostDrawTranslucentRenderables
@@ -154,8 +161,34 @@ end
 -- 	end )
 -- end
 
-hook.Add( "PostDrawTranslucentRenderables", "PUI.DrawInteractionEffects", function()
-    if not LocalPlayer():KeyDown( IN_USE ) then return end
+local iTempSelectedOption = 0 -- @TODO: Don't do it like this please.
+local bTempAnyOverlaps = false
+local tOptions = {"'i wanna be a cop'", "'id like to turn myself in'", "'id like to pay my ticket'"}
+hook.Add( "PostDrawTranslucentRenderables", "PUI.DrawInteractionEffects", function( bDrawingDepth, bDrawingSkybox )
+    if bDrawingSkybox then return end
+    if not LocalPlayer():KeyDown( IN_USE ) then
+        if iTempSelectedOption != -1 then
+            surface.PlaySound( "prp/ui/click.wav" )
+
+            for _, ent in pairs( ents.FindByClass( "prp_npc" ) ) do
+                if iTempSelectedOption == 1 then
+                    ent:SetTextLine( "how about you hit the gym first?" )
+
+                    tOptions = {"'low blow man...'", "'go fuck yourself.'", "'ugh, fine.'"}
+                elseif iTempSelectedOption == 2 then
+                    ent:SetTextLine( "fuck off you little bitch." )
+
+                    tOptions = {"'really? come on man...'"}
+                elseif iTempSelectedOption == 3 then
+                    ent:SetTextLine( "palomino pd, how can i help you?" )
+                    tOptions = {"'i wanna be a cop'", "'id like to turn myself in'", "'id like to pay my ticket'"}
+                end
+            end
+
+            iTempSelectedOption = -1
+        end
+        return
+    end
 
 	render.SetStencilWriteMask( 0xFF )
 	render.SetStencilTestMask( 0xFF )
@@ -232,7 +265,7 @@ hook.Add( "PostDrawTranslucentRenderables", "PUI.DrawInteractionEffects", functi
             surface.SetMaterial(plyMat)
             surface.SetDrawColor(255, 255, 255, 64)
 
-            Print( iX, ",\t", iY, ",\t", iWidth, ",\t", iHeight )
+            -- Print( iX, ",\t", iY, ",\t", iWidth, ",\t", iHeight )
 
             surface.DrawTexturedRect(iX, iY, iWidth, iHeight) -- Centered on the player's bounding box
 
@@ -268,12 +301,28 @@ hook.Add( "PostDrawTranslucentRenderables", "PUI.DrawInteractionEffects", functi
             -- local bOverlapsY = false
             -- local bOverlaps = false
 
-            for i, sOption in ipairs({"'you first'", "'excuse me?'", "'watch it, pal'"}) do
+            local tNPCOptions = ent.options or tOptions
+
+            surface.SetMaterial( Material( "gui/gradient" ) )
+            surface.SetDrawColor( 32, 36, 42, 160 )
+            surface.DrawTexturedRect( iSelectX + 2, iSelectY, iOptionWidth, iOptionHeight * #tNPCOptions )
+
+            local bAnyOverlaps = false
+            for i, sOption in ipairs(tNPCOptions) do
                 local bOverlapsX = iSelectX < iCursorX and iSelectX + iOptionWidth > iCursorX
                 local bOverlapsY = iSelectY < iCursorY and iSelectY + iOptionHeight > iCursorY
                 local bOverlaps = bOverlapsX and bOverlapsY
 
                 if bOverlaps then
+                    if i != iTempSelectedOption then
+                        surface.PlaySound( "prp/ui/hover.wav" )
+                    end
+
+                    bAnyOverlaps = true
+                    bTempAnyOverlaps = true
+
+                    iTempSelectedOption = i
+
                     surface.SetDrawColor( PUI.GREEN:Unpack() )
                     surface.DrawRect( iSelectX, iSelectY, 2, 40 )
 
@@ -306,6 +355,16 @@ hook.Add( "PostDrawTranslucentRenderables", "PUI.DrawInteractionEffects", functi
 
                 iSelectY = iSelectY + iOptionHeight
             end
+
+            if not bTempAnyOverlaps then
+                iTempSelectedOption = -1
+            end
+
+            if not bAnyOverlaps and bTempAnyOverlaps then
+                bTempAnyOverlaps = false
+            end
+
+            Print( iTempSelectedOption )
 
             -- 2
 
