@@ -97,6 +97,7 @@ function ENT:DrawTranslucent()
     self.enteredElapsedTime = CurTime() - self.enteredTime
 
     local sOurString = self:GetTextLine() or "simulation paused"
+    -- @TODO: Draw black outline around the speech text when the NPC is selected.
 
     local iLastStringLength = string.len( self.currentString )
     self.currentString = string.sub( sOurString, 1, self.enteredElapsedTime / iSecondsPerCharacter )
@@ -162,11 +163,15 @@ end
 -- end
 
 local iTempSelectedOption = 0 -- @TODO: Don't do it like this please.
+local iTempOpenTime = 0
+local iConfigFadeTime = 0.8
 local bTempAnyOverlaps = false
 local tOptions = {"'i wanna be a cop'", "'id like to turn myself in'", "'id like to pay my ticket'"}
 hook.Add( "PostDrawTranslucentRenderables", "PUI.DrawInteractionEffects", function( bDrawingDepth, bDrawingSkybox )
     if bDrawingSkybox then return end
     if not LocalPlayer():KeyDown( IN_USE ) then
+        iTempOpenTime = 0
+
         if iTempSelectedOption != -1 then
             surface.PlaySound( "prp/ui/click.wav" )
 
@@ -178,7 +183,7 @@ hook.Add( "PostDrawTranslucentRenderables", "PUI.DrawInteractionEffects", functi
                 elseif iTempSelectedOption == 2 then
                     ent:SetTextLine( "fuck off you little bitch." )
 
-                    tOptions = {"'really? come on man...'"}
+                    tOptions = {1, 2, 3, 4, "a lot"}
                 elseif iTempSelectedOption == 3 then
                     ent:SetTextLine( "palomino pd, how can i help you?" )
                     tOptions = {"'i wanna be a cop'", "'id like to turn myself in'", "'id like to pay my ticket'"}
@@ -189,6 +194,17 @@ hook.Add( "PostDrawTranslucentRenderables", "PUI.DrawInteractionEffects", functi
         end
         return
     end
+
+    if iTempOpenTime == 0 then
+        iTempOpenTime = CurTime()
+    end
+
+    local iTempFadePerc = math.min( CurTime() - iTempOpenTime, iConfigFadeTime ) / iConfigFadeTime
+    iTempFadePerc = math.ease.OutElastic( iTempFadePerc )
+    Print( "Fade Perc: ", iTempFadePerc )
+
+    -- Alpha fade
+    surface.SetAlphaMultiplier( iTempFadePerc )
 
 	render.SetStencilWriteMask( 0xFF )
 	render.SetStencilTestMask( 0xFF )
@@ -244,6 +260,7 @@ hook.Add( "PostDrawTranslucentRenderables", "PUI.DrawInteractionEffects", functi
         -- ang.pitch = 0
 
         local vPos = ent:GetPos() + ent:OBBCenter()
+        local vHeadPos = vPos + Vector( 0, 0, 32 )
         local iScaleFactor = 1 / ent:GetPos():Distance( LocalPlayer():GetPos() )
 
         local iInitialWidth = 40000
@@ -253,17 +270,25 @@ hook.Add( "PostDrawTranslucentRenderables", "PUI.DrawInteractionEffects", functi
         local iX = tScreenPos.x - ( iInitialWidth / 2 * iScaleFactor )
         local iY = tScreenPos.y - ( iInitialHeight / 2 * iScaleFactor )
 
+        local tHeadScreenPos = vHeadPos:ToScreen()
+
         local iWidth = iInitialWidth * iScaleFactor
         local iHeight = iInitialHeight * iScaleFactor
 
         local iSelectX = tScreenPos.x + ( 10000 * iScaleFactor )
-        local iSelectY = tScreenPos.y - ( 20000 * iScaleFactor )
+        local iSelectY = tScreenPos.y - ( 20000 * iScaleFactor * ( 0.9 + iTempFadePerc / 10 ) )
+
+        Print("what???")
+        Print( iWidth )
 
         cam.Start2D()
+            surface.SetDrawColor( 255, 255, 255, 64 )
+            surface.DrawLine( tHeadScreenPos.x, tHeadScreenPos.y, iSelectX, iSelectY )
+
             render.OverrideDepthEnable( true, false )
 
             surface.SetMaterial(plyMat)
-            surface.SetDrawColor(255, 255, 255, 64)
+            surface.SetDrawColor(255, 255, 255, 48)
 
             -- Print( iX, ",\t", iY, ",\t", iWidth, ",\t", iHeight )
 
@@ -294,7 +319,7 @@ hook.Add( "PostDrawTranslucentRenderables", "PUI.DrawInteractionEffects", functi
 
 
             local iCursorX, iCursorY = ScrW() / 2, ScrH() / 2
-            local iOptionWidth = 200
+            local iOptionWidth = 250
             local iOptionHeight = 40
 
             -- local bOverlapsX = false
@@ -306,6 +331,9 @@ hook.Add( "PostDrawTranslucentRenderables", "PUI.DrawInteractionEffects", functi
             surface.SetMaterial( Material( "gui/gradient" ) )
             surface.SetDrawColor( 32, 36, 42, 160 )
             surface.DrawTexturedRect( iSelectX + 2, iSelectY, iOptionWidth, iOptionHeight * #tNPCOptions )
+
+            -- Line to NPC
+
 
             local bAnyOverlaps = false
             for i, sOption in ipairs(tNPCOptions) do
@@ -355,6 +383,14 @@ hook.Add( "PostDrawTranslucentRenderables", "PUI.DrawInteractionEffects", functi
 
                 iSelectY = iSelectY + iOptionHeight
             end
+
+            -- A little gradient on the bottom to hold the box up in the air
+            surface.SetMaterial( Material( "gui/gradient" ) )
+            surface.SetDrawColor( 255, 255, 255, 64 )
+            if iTempSelectedOption == #tNPCOptions then
+                surface.SetDrawColor( PUI.GREEN:Unpack() )
+            end
+            surface.DrawTexturedRect( iSelectX, iSelectY, iOptionWidth, 2 )
 
             if not bTempAnyOverlaps then
                 iTempSelectedOption = -1
@@ -413,4 +449,5 @@ hook.Add( "PostDrawTranslucentRenderables", "PUI.DrawInteractionEffects", functi
 
 	-- Let everything render normally again
 	render.SetStencilEnable( false )
+    surface.SetAlphaMultiplier( 1 )
 end )
