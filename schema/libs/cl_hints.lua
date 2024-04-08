@@ -10,17 +10,18 @@ function PRP.Hints.Add( sEntity, tData )
     table.insert( PRP.Hints.List[sEntity], tData )
 end
 
-PRP.Hints.Add( "prp_npc", {
-    -- Text = "Press E to talk to the NPC.",
-    GetText = function( eEntity )
-        local oNPC = eEntity:GetNPC()
-        if not oNPC then return end
+-- PRP.Hints.Add( "prp_npc", {
+--     -- Text = "Press E to talk to the NPC.",
+--     GetText = function( eEntity )
+--         local oNPC = eEntity:GetNPC()
+--         if not oNPC then return end
 
-        return "Press E to talk to the " .. oNPC:GetTitle( eEntity ) .. "."
-    end
-} )
+--         return "Press E to talk to the " .. oNPC:GetTitle( eEntity ) .. "."
+--     end
+-- } )
 
 hook.Add( "HUDPaint", "PRP.Hints.HUDPaint", function()
+    -- @TODO: Redo. Make it more pretty, refocus on keyboard keys, and add support for multiple hints at once.
     local eEntity = LocalPlayer():GetEyeTrace().Entity
 
     if not IsValid( eEntity ) then return end
