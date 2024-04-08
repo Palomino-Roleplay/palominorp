@@ -102,17 +102,20 @@ if CLIENT then
 
         if not tOptions or table.IsEmpty(tOptions) then return false end
 
-        ix.menu.panelV2 = DermaMenu( false )
-        for k, v in pairs( tOptions ) do
-            ix.menu.panelV2:AddOption( k, function()
-                ix.menu.NetworkChoice( eEntity, k, bStatus )
-                ix.menu.panelV2:Remove()
-                ix.menu.panelV2 = nil
-            end )
-        end
+        Print( table.GetKeys( tOptions ) )
+        PUI.Dialogue.New( eEntity, table.GetKeys( tOptions ) )
 
-        ix.menu.panelV2:Open( ScrW() / 2, ScrH() / 2 )
-        input.SetCursorPos( ScrW() / 2, ScrH() / 2 )
+        -- ix.menu.panelV2 = DermaMenu( false )
+        -- for k, v in pairs( tOptions ) do
+            -- ix.menu.panelV2:AddOption( k, function()
+            --     ix.menu.NetworkChoice( eEntity, k, bStatus )
+            --     ix.menu.panelV2:Remove()
+            --     ix.menu.panelV2 = nil
+            -- end )
+        -- end
+
+        -- ix.menu.panelV2:Open( ScrW() / 2, ScrH() / 2 )
+        -- input.SetCursorPos( ScrW() / 2, ScrH() / 2 )
 
         return true
     end

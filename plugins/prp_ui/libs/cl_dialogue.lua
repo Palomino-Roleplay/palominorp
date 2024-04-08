@@ -32,7 +32,7 @@ local iTempSelectedOption = 0 -- @TODO: Don't do it like this please.
 local iTempOpenTime = 0
 local iConfigFadeTime = 0.8
 local bTempAnyOverlaps = false
-local tOptions = {"'i wanna be a cop'", "'id like to turn myself in'", "'id like to pay my ticket'"}
+-- local tOptions = {"'i wanna be a cop'", "'id like to turn myself in'", "'id like to pay my ticket'"}
 
 local oGlowMaterial = Material( "prp/ui/temp/glow.png" )
 local function fnDrawDialogue( bDrawingDepth, bDrawingSkybox )
@@ -147,7 +147,7 @@ local function fnDrawDialogue( bDrawingDepth, bDrawingSkybox )
         local iOptionWidth = 250
         local iOptionHeight = 40
 
-        local tDialogueOptions = PUI.Dialogue.Active.eEntity.tOptions or tOptions
+        local tDialogueOptions = PUI.Dialogue.Active.tOptions or {}
 
         -- Soft gradient background behind the options
         surface.SetMaterial( Material( "gui/gradient" ) )
@@ -224,6 +224,8 @@ local function fnDrawDialogue( bDrawingDepth, bDrawingSkybox )
 end
 
 function PUI.Dialogue.New( eEntity, tOptions, fnAbortCondition )
+    Print( "PUI Dialogue opened." )
+
     fnAbortCondition = fnAbortCondition or fnDefaultAbortCondition
 
     PUI.Dialogue.Active = {
