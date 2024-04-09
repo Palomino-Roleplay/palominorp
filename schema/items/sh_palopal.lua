@@ -29,11 +29,15 @@ ITEM.functions.Hug = {
             pPlayer:Notify( "The doll bites you! Ouch..." )
             pPlayer:TakeDamage( 5, pPlayer, pPlayer )
             pPlayer._palopal_lastHugHurt = true
+
+            -- @TODO: Make the player frown
         else
             pPlayer:EmitSound( "npc/headcrab/idle2.wav", 75, 100 )
             pPlayer:Notify( "You embrace the doll, and a warm, fuzzy feeling envelops you." )
             pPlayer:SetHealth( math.min( pPlayer:Health() + 2, pPlayer:GetMaxHealth() ) )
             pPlayer._palopal_lastHugHurt = false
+
+            -- @TODO: Make the player smile
         end
 
         return false
