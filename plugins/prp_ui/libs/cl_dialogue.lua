@@ -52,7 +52,7 @@ local function fnDrawDialogue( bDrawingDepth, bDrawingSkybox )
     if not LocalPlayer():KeyDown( IN_USE ) then
         PUI.Dialogue.Select()
 
-        -- iTempOpenTime = 0
+        iTempOpenTime = 0
 
         -- if iTempSelectedOption != -1 then
         --     surface.PlaySound( "prp/ui/click.wav" )
