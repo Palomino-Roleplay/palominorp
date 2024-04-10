@@ -90,7 +90,7 @@ local iSecondsPerCharacter = 0.07
 
 local tEmotions = {
     ["angry"] = {
-        color = Color( 255, 255, 255 ),
+        color = Color( 255, 255, 255, 48 ),
         flex = {
             ["right_outer_raiser"] = 1,
             ["left_outer_raiser"] = 1,
@@ -101,7 +101,7 @@ local tEmotions = {
     },
 
     ["happy"] = {
-        color = Color( 255, 255, 255 ),
+        color = Color( 255, 255, 255, 48 ),
         flex = {
             ["smile"] = 1,
 
@@ -109,7 +109,7 @@ local tEmotions = {
     },
 
     ["high"] = {
-        color = Color( 255, 255, 255 ),
+        color = Color( 255, 255, 255, 48 ),
         flex = {
             ["smile"] = 1,
             ["blink"] = 1,
@@ -117,7 +117,7 @@ local tEmotions = {
     },
 
     ["default"] = {
-        color = Color( 255, 255, 255 ),
+        color = Color( 255, 255, 255, 48 ),
         flex = {}
     }
 }
