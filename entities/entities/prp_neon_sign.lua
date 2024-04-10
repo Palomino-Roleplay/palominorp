@@ -111,7 +111,7 @@ function ENT:SetupDataTables()
 
     local vColor = self.SampleColors[math.random( 1, #self.SampleColors )]
     self:SetSignColor( vColor )
-    self:SetSignEnabled( true )
+    self:SetSignEnabled( false )
     self:SetSignVertical( false )
     self:SetSignScale( 0.25 )
     self:SetColor( fnDesaturateNeonColor( self:GetSignColor():ToColor() ) )
