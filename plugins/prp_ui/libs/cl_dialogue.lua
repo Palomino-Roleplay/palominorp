@@ -132,8 +132,9 @@ local function fnDrawDialogue( bDrawingDepth, bDrawingSkybox )
 
         render.OverrideDepthEnable( true, false )
 
+        local oGlowColor = PUI.Dialogue.Active.eEntity:GetDialogueColor() or Color( 255, 255, 255, 32 )
         surface.SetMaterial(oGlowMaterial)
-        surface.SetDrawColor(255, 255, 255, 48)
+        surface.SetDrawColor(oGlowColor.r, oGlowColor.g, oGlowColor.b, oGlowColor.a)
 
         surface.DrawTexturedRect(iX, iY, iWidth, iHeight) -- Centered on the player's bounding box
 

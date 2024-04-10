@@ -1,15 +1,15 @@
 include("shared.lua")
 
 -- @TODO: Disable or look into why this is needed
-ENT.AutomaticFrameAdvance = true
+ENT.AutomaticFrameAdvance = false
 
 ENT.RenderGroup = RENDERGROUP_BOTH
 
 function ENT:Initialize()
-    self:SetFlexWeight( 0, 0.5 )
-    self:SetFlexWeight( 1, 0.5 )
-    self:SetFlexWeight( 2, 0.5 )
-    self:SetFlexWeight( 3, 0.5 )
+    -- self:SetFlexWeight( 0, 0.5 )
+    -- self:SetFlexWeight( 1, 0.5 )
+    -- self:SetFlexWeight( 2, 0.5 )
+    -- self:SetFlexWeight( 3, 0.5 )
 
     self.nextAnim = 0
 
@@ -27,7 +27,6 @@ end
 function ENT:Anim()
     -- if self.nextAnim and self.nextAnim > CurTime() then return end
 
-    -- Print("ANIM!")
 
     -- self:ResetSequence( self.Sequence )
     -- self.nextAnim = CurTime() + 1
@@ -48,10 +47,12 @@ function ENT:Think()
 
     if LocalPlayer():GetPos():DistToSqr(self:GetPos()) > 65536 then
         self:SetNextClientThink( CurTime() + 1 )
+        -- self:SetAnimTime( CurTime() + 1 )
         return true
     end
 
     self:Anim()
+    self:SetNextClientThink( CurTime() )
 
     return true
 end
@@ -87,12 +88,74 @@ local sExampleVoiceLine = ""
 local iTriggerDistance = 164
 local iSecondsPerCharacter = 0.07
 
+local tEmotions = {
+    ["angry"] = {
+        color = Color( 255, 255, 255 ),
+        flex = {
+            ["right_outer_raiser"] = 1,
+            ["left_outer_raiser"] = 1,
+            ["right_lowerer"] = 0.5,
+            ["left_lowerer"] = 0.5,
+            ["jaw_clencher"] = 0.5
+        }
+    },
+
+    ["happy"] = {
+        color = Color( 255, 255, 255 ),
+        flex = {
+            ["smile"] = 1,
+
+        }
+    },
+
+    ["high"] = {
+        color = Color( 255, 255, 255 ),
+        flex = {
+            ["smile"] = 1,
+            ["blink"] = 1,
+        }
+    },
+
+    ["default"] = {
+        color = Color( 255, 255, 255 ),
+        flex = {}
+    }
+}
+
+function ENT:GetEmotion()
+    return "happy"
+end
+
+function ENT:GetEmotionTable()
+    return tEmotions[self:GetEmotion()]
+end
+
+function ENT:GetDialogueColor()
+    return self:GetEmotionTable().color or Color( 255, 255, 255 )
+end
+
 function ENT:DrawTranslucent()
+    local tEmotion = self:GetEmotionTable()
+
     if LocalPlayer():GetPos():Distance( self:GetPos() ) > iTriggerDistance then
+        self:SetFlexWeight( self:GetFlexIDByName( "right_part" ), 0 )
+        self:SetFlexWeight( self:GetFlexIDByName( "left_part" ), 0 )
         self.enteredTime = 0
+
+        -- Reset flex
+        for i = 0, self:GetFlexNum()-1 do
+            self:SetFlexWeight( i, 0 )
+        end
+
         return
     elseif self.enteredTime == 0 then
+        self:SetFlexWeight( self:GetFlexIDByName( "right_part" ), 1.5 )
+        self:SetFlexWeight( self:GetFlexIDByName( "left_part" ), 1.5 )
         self.enteredTime = CurTime()
+
+        for sFlexName, iWeight in pairs( tEmotion.flex ) do
+            self:SetFlexWeight( self:GetFlexIDByName( sFlexName ), iWeight )
+        end
     end
     self.enteredElapsedTime = CurTime() - self.enteredTime
 
@@ -101,13 +164,22 @@ function ENT:DrawTranslucent()
 
     local iLastStringLength = string.len( self.currentString )
     self.currentString = string.sub( sOurString, 1, self.enteredElapsedTime / iSecondsPerCharacter )
-    if string.len( self.currentString ) > iLastStringLength and self.currentString[string.len( self.currentString )] != ' ' then
+    local iCurrentStringLength = string.len( self.currentString )
+    if iCurrentStringLength > iLastStringLength and self.currentString[iCurrentStringLength] != ' ' then
         -- surface.PlaySound( "physics/concrete/concrete_impact_soft3.wav" )
-        surface.PlaySound( "prp/ui/hover.wav" )
+        if iCurrentStringLength == string.len( sOurString ) then
+            self:SetFlexWeight( self:GetFlexIDByName( "jaw_drop" ), 0 )
+            self:SetFlexWeight( self:GetFlexIDByName( "right_part" ), 0 )
+            self:SetFlexWeight( self:GetFlexIDByName( "left_part" ), 0 )
+        else
+            self:SetFlexWeight( self:GetFlexIDByName( "jaw_drop" ), iCurrentStringLength % 2 == 0 and 1.5 or 0 )
+        end
+        -- @TODO: Make configurable per npc (& maybe interaction?)
+        self:EmitSound( "prp/ui/hover.wav" )
     end
 
-    print(self.enteredElapsedTime)
-    print(self.currentString)
+    -- print(self.enteredElapsedTime)
+    -- print(self.currentString)
 
     local vOffset = Vector( 0, 0, 75 )
 
