@@ -84,7 +84,6 @@ function ENT:SetTextLine( sDialogue )
     self.enteredTime = CurTime()
 end
 
-local sExampleVoiceLine = ""
 local iTriggerDistance = 164
 local iSecondsPerCharacter = 0.07
 
