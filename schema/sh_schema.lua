@@ -6,10 +6,11 @@ Schema.version = "PRE-ALPHA"
 PRP = PRP or {}
 
 -- @TODO: Change after playtest
-PRP.API_URL = "https://papi.palominorp.com"
+PRP.API_URL = "http://loopback.gmod:3030"
 PRP.API_KEY = "aFp2bC5P3bhVHWqNTdI7SXljJOtIu2gb"
 
 ix.util.Include("cl_schema.lua")
+ix.util.Include("sv_schema.lua")
 
 ix.util.IncludeDir("meta")
 ix.util.IncludeDir("hooks")
