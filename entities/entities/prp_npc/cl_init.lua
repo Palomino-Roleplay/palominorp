@@ -57,6 +57,26 @@ function ENT:Think()
     return true
 end
 
+local iLargeFontSize = 156
+local iSmallFontSize = 108
+
+surface.CreateFont( "PRP.NPC.Dialogue", {
+    font = "Oxygen Mono",
+    size = iSmallFontSize * PRP.UI.ScaleFactor,
+    antialias = true,
+    -- additive = true,
+    shadow = true,
+} )
+
+surface.CreateFont( "PRP.NPC.Dialogue.Blurred", {
+    font = "Oxygen Mono",
+    size = iSmallFontSize * PRP.UI.ScaleFactor,
+    antialias = true,
+    -- additive = true,
+    blursize = ( iSmallFontSize * PRP.UI.ScaleFactor ) / 4,
+    shadow = true,
+} )
+
 function ENT:Draw()
     local realTime = RealTime()
 
@@ -67,12 +87,7 @@ function ENT:Draw()
 end
 
 local tExampleTextLines = {
-    "ay, what the fuck are you doing?",
-    "fuck off.",
-    "leave me the fuck alone.",
-    "carry on, will ya?",
-    "beat it.",
-    "i fucking hate this city.",
+    "God is dead and I killed him.",
 }
 
 function ENT:GetTextLine()
@@ -189,13 +204,14 @@ function ENT:DrawTranslucent()
 
     cam.IgnoreZ( true )
     if imgui.Entity3D2D( self, vOffset, Angle( 0, 90, 90 ), 0.03 ) then
-        draw.SimpleTextOutlined( self.currentString, "PRP.UI.Nameplates.ID", 0, 0, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 0, Color( 0, 0, 0, 255 ) )
+        draw.SimpleText( self.currentString, "PRP.NPC.Dialogue", 5, 5, PUI.BLACK, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+        draw.SimpleText( self.currentString, "PRP.NPC.Dialogue", 0, 0, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 
         imgui.End3D2D()
     end
 
     if imgui.Entity3D2D( self, vOffset, Angle( 0, -90, 90 ), 0.03 ) then
-        draw.SimpleTextOutlined( self.currentString, "PRP.UI.Nameplates.ID.Blurred", 0, 0, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 0, Color( 0, 0, 0, 255 ) )
+        draw.SimpleText( self.currentString, "PRP.NPC.Dialogue.Blurred", 0, 0, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 
         imgui.End3D2D()
     end
