@@ -103,7 +103,6 @@ local tEmotions = {
         color = Color( 255, 255, 255, 48 ),
         flex = {
             ["smile"] = 1,
-
         }
     },
 
@@ -117,7 +116,9 @@ local tEmotions = {
 
     ["default"] = {
         color = Color( 255, 255, 255, 48 ),
-        flex = {}
+        flex = {
+            ["smile"] = 1,
+        }
     }
 }
 
@@ -144,6 +145,10 @@ function ENT:DrawTranslucent()
         -- Reset flex
         for i = 0, self:GetFlexNum()-1 do
             self:SetFlexWeight( i, 0 )
+        end
+
+        for sFlexName, iWeight in pairs( tEmotion.flex ) do
+            self:SetFlexWeight( self:GetFlexIDByName( sFlexName ), iWeight )
         end
 
         return
