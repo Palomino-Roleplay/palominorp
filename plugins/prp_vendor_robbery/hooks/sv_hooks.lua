@@ -15,8 +15,6 @@ local fnOldUse = ENT_VENDOR.Use
 
 function ENT_VENDOR:Use( pPlayer )
     -- @TODO: Restrict to only some vendors
-    print("huh???? why????")
-
     -- if self._isBeingRobbed then return false end
 
     if self._lastRobbery and self._lastRobbery + ix.config.Get("NPCRobberyAlarmTime", 30 ) > CurTime() then
