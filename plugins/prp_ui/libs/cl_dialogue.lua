@@ -132,7 +132,7 @@ local function fnDrawDialogue( bDrawingDepth, bDrawingSkybox )
 
         render.OverrideDepthEnable( true, false )
 
-        local oGlowColor = PUI.Dialogue.Active.eEntity:GetDialogueColor() or Color( 255, 255, 255, 32 )
+        local oGlowColor = PUI.Dialogue.Active.eEntity.GetDialogueColor and PUI.Dialogue.Active.eEntity:GetDialogueColor() or Color( 255, 255, 255, 32 )
         surface.SetMaterial(oGlowMaterial)
         surface.SetDrawColor(oGlowColor.r, oGlowColor.g, oGlowColor.b, oGlowColor.a)
 
