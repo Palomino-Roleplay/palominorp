@@ -42,14 +42,19 @@ function PUI.Dialogue.Close()
     Print( "PUI Dialogue closed." )
 end
 
+local iTempSelectedOption = -1 -- @TODO: Don't do it like this please.
+
 function PUI.Dialogue.Select()
+    
+    Print( "PUI Dialogue selected: ", iTempSelectedOption )
+    if PUI.Dialogue.Active.tOptions[ iTempSelectedOption ] then
+        PUI.Dialogue.Active.tOptions[ iTempSelectedOption ].OnSelect()
+    end
+    
     PUI.Dialogue.Close()
     iTempSelectedOption = -1
-
-    Print( "PUI Dialogue selected." )
 end
 
-local iTempSelectedOption = 0 -- @TODO: Don't do it like this please.
 local iTempOpenTime = 0
 local iConfigFadeTime = 0.8
 local bTempAnyOverlaps = false
@@ -71,7 +76,7 @@ local function fnDrawDialogue( bDrawingDepth, bDrawingSkybox )
 
     -- Option selected
     if not LocalPlayer():KeyDown( IN_USE ) then
-        PUI.Dialogue.Select()
+        PUI.Dialogue.Select( iTempSelectedOption )
 
         iTempOpenTime = 0
 
@@ -178,20 +183,21 @@ local function fnDrawDialogue( bDrawingDepth, bDrawingSkybox )
 
         -- Draw the options & see if we're hovering over any of them
         local bAnyOverlaps = false
-        for i, sOption in ipairs(tDialogueOptions) do
+        for sOption, tOptionData in pairs(tDialogueOptions) do
             local bOverlapsX = iSelectX < iCursorX and iSelectX + iOptionWidth > iCursorX
             local bOverlapsY = iSelectY < iCursorY and iSelectY + iOptionHeight > iCursorY
             local bHovered = bOverlapsX and bOverlapsY
 
             if bHovered then
-                if i != iTempSelectedOption then
+                if sOption != iTempSelectedOption then
                     surface.PlaySound( "prp/ui/hover.wav" )
                 end
 
                 bAnyOverlaps = true
                 bTempAnyOverlaps = true
 
-                iTempSelectedOption = i
+                iTempSelectedOption = sOption
+                Print( "Hovering over option: ", sOption )
 
                 surface.SetDrawColor( PUI.GREEN:Unpack() )
                 surface.DrawRect( iSelectX, iSelectY, 2, 40 )
@@ -226,12 +232,14 @@ local function fnDrawDialogue( bDrawingDepth, bDrawingSkybox )
         -- A little gradient on the bottom to hold the box up in the air
         surface.SetMaterial( Material( "gui/gradient" ) )
         surface.SetDrawColor( 255, 255, 255, 64 )
-        if iTempSelectedOption == #tDialogueOptions then
-            surface.SetDrawColor( PUI.GREEN:Unpack() )
-        end
+        -- @TODO: Last selected option should highlight the bottom gradient.
+        -- if iTempSelectedOption == #tDialogueOptions then
+        --     surface.SetDrawColor( PUI.GREEN:Unpack() )
+        -- end
         surface.DrawTexturedRect( iSelectX, iSelectY, iOptionWidth, 2 )
 
         if not bTempAnyOverlaps then
+            Print( "Resetting selected option." )
             iTempSelectedOption = -1
         end
 

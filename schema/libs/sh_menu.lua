@@ -102,8 +102,27 @@ if CLIENT then
 
         if not tOptions or table.IsEmpty(tOptions) then return false end
 
-        Print( table.GetKeys( tOptions ) )
-        PUI.Dialogue.New( eEntity, table.GetKeys( tOptions ) )
+        Print( "options!!!" )
+        Print( tOptions )
+
+        local tDialogueOptions = {}
+
+        for sOptionID, fnOnSelect in pairs( tOptions ) do
+            tDialogueOptions[sOptionID] = {
+                OnSelect = function()
+                    Print("OnSelect: ", sOptionID)
+                    if IsValid( eEntity ) then
+                        net.Start("ixEntityMenuSelect")
+                        net.WriteEntity( eEntity )
+                        net.WriteString( sOptionID )
+                        net.WriteType( true ) -- idk what this is
+                        net.SendToServer()
+                    end
+                end
+            }
+        end
+
+        PUI.Dialogue.New( eEntity, tDialogueOptions )
 
         -- ix.menu.panelV2 = DermaMenu( false )
         -- for k, v in pairs( tOptions ) do
