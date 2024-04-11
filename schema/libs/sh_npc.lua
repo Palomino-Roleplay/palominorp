@@ -209,4 +209,25 @@ if CLIENT then
 
         oNPC:Use( eNPC )
     end )
+
+    hook.Add( "Think", "PRP.NPC.Think", function()
+        if LocalPlayer():KeyPressed( IN_USE ) then
+            local tTrace = LocalPlayer():GetEyeTraceNoCursor()
+            if tTrace.Entity and tTrace.Entity:GetClass() == "prp_npc" then
+                PUI.Dialogue.New( tTrace.Entity, {
+                        ["kiss"] = {},
+                        ["smooch"] = {},
+                        ["hug"] = {},
+                    },
+                    {
+                        GlowWidth = 40000,
+                        GlowHeight = 75000,
+                        HeadOffset = Vector( 0, 0, 32 ),
+                        ScreenXMultiplier = 10000,
+                        ScreenYMultiplier = 20000,
+                    }
+                )
+            end
+        end
+    end )
 end
