@@ -3,6 +3,27 @@ PUI.Dialogue = PUI.Dialogue or {}
 
 PUI.Dialogue.Active = false
 
+local iLargeFontSize = 156
+local iSmallFontSize = 108
+
+-- @TODO: Fucking move this. This is the NPC text above their heads.
+surface.CreateFont( "PRP.NPC.Dialogue", {
+    font = "Oxygen Mono",
+    size = iSmallFontSize * PRP.UI.ScaleFactor,
+    antialias = true,
+    -- additive = true,
+    shadow = true,
+} )
+
+surface.CreateFont( "PRP.NPC.Dialogue.Blurred", {
+    font = "Oxygen Mono",
+    size = iSmallFontSize * PRP.UI.ScaleFactor,
+    antialias = true,
+    -- additive = true,
+    blursize = ( iSmallFontSize * PRP.UI.ScaleFactor ) / 4,
+    shadow = true,
+} )
+
 local function fnDefaultAbortCondition()
     return ( not PUI.Dialogue.Active ) 
         or ( not IsValid( PUI.Dialogue.Active.eEntity ) )

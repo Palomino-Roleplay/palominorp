@@ -13,9 +13,9 @@ function ENT:Initialize()
 
     self.nextAnim = 0
 
-    timer.Simple( IsValid(LocalPlayer()) and 1 or 5, function()
+    -- timer.Simple( IsValid(LocalPlayer()) and 1 or 5, function()
         -- self:Anim()
-    end )
+    -- end )
 
     self:UseClientSideAnimation()
 
@@ -57,31 +57,11 @@ function ENT:Think()
     return true
 end
 
-local iLargeFontSize = 156
-local iSmallFontSize = 108
-
-surface.CreateFont( "PRP.NPC.Dialogue", {
-    font = "Oxygen Mono",
-    size = iSmallFontSize * PRP.UI.ScaleFactor,
-    antialias = true,
-    -- additive = true,
-    shadow = true,
-} )
-
-surface.CreateFont( "PRP.NPC.Dialogue.Blurred", {
-    font = "Oxygen Mono",
-    size = iSmallFontSize * PRP.UI.ScaleFactor,
-    antialias = true,
-    -- additive = true,
-    blursize = ( iSmallFontSize * PRP.UI.ScaleFactor ) / 4,
-    shadow = true,
-} )
-
 function ENT:Draw()
-    local realTime = RealTime()
+    -- local realTime = RealTime()
 
-	self:FrameAdvance(realTime - (self.lastTick or realTime))
-	self.lastTick = realTime
+	-- self:FrameAdvance(realTime - (self.lastTick or realTime))
+	-- self.lastTick = realTime
 
     self:DrawModel()
 end
