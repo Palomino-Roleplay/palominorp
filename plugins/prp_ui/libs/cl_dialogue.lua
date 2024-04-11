@@ -47,7 +47,7 @@ local iTempSelectedOption = -1 -- @TODO: Don't do it like this please.
 function PUI.Dialogue.Select()
     
     Print( "PUI Dialogue selected: ", iTempSelectedOption )
-    if PUI.Dialogue.Active.tOptions[ iTempSelectedOption ] then
+    if PUI.Dialogue.Active.tOptions[ iTempSelectedOption ] and PUI.Dialogue.Active.tOptions[ iTempSelectedOption ].OnSelect then
         PUI.Dialogue.Active.tOptions[ iTempSelectedOption ].OnSelect()
     end
     
@@ -70,6 +70,7 @@ local function fnDrawDialogue( bDrawingDepth, bDrawingSkybox )
     end
 
     if PUI.Dialogue.Active.fnAbortCondition() then
+        Print( "Met abort condition." )
         PUI.Dialogue.Close()
         return
     end
@@ -134,11 +135,19 @@ local function fnDrawDialogue( bDrawingDepth, bDrawingSkybox )
     render.SetStencilCompareFunction( STENCIL_GREATER )
 
     local vPos = PUI.Dialogue.Active.eEntity:GetPos() + PUI.Dialogue.Active.eEntity:OBBCenter()
-    local vHeadPos = vPos + Vector( 0, 0, 32 )
+    local vHeadPos = vPos + ( PUI.Dialogue.Active.tSettings.HeadOffset or Vector( 0, 0, 0 ) )
     local iScaleFactor = 1 / PUI.Dialogue.Active.eEntity:GetPos():Distance( LocalPlayer():GetPos() )
 
-    local iInitialWidth = 40000
-    local iInitialHeight = 75000
+    local vOBBMin, vOBBMax = PUI.Dialogue.Active.eEntity:OBBMins(), PUI.Dialogue.Active.eEntity:OBBMaxs()
+
+    local iOBBWidth = math.max( vOBBMax.x - vOBBMin.x, vOBBMax.y - vOBBMin.y )
+    local iOBBHeight = vOBBMax.z - vOBBMin.z
+
+    Print( "OBB Width: ", iOBBWidth )
+    Print( "OBB Height: ", iOBBHeight )
+
+    local iInitialWidth = PUI.Dialogue.Active.tSettings.GlowWidth or ( iOBBWidth * 2000 )
+    local iInitialHeight = PUI.Dialogue.Active.tSettings.GlowHeight or ( iOBBHeight * 2000 )
 
     local tScreenPos = vPos:ToScreen()
     local iX = tScreenPos.x - ( iInitialWidth / 2 * iScaleFactor )
@@ -149,8 +158,8 @@ local function fnDrawDialogue( bDrawingDepth, bDrawingSkybox )
     local iWidth = iInitialWidth * iScaleFactor
     local iHeight = iInitialHeight * iScaleFactor
 
-    local iSelectX = tScreenPos.x + ( 10000 * iScaleFactor )
-    local iSelectY = tScreenPos.y - ( 20000 * iScaleFactor * ( 0.9 + iTempFadePerc / 10 ) )
+    local iSelectX = tScreenPos.x + ( ( PUI.Dialogue.Active.tSettings.ScreenXMultiplier or 5000 ) * iScaleFactor )
+    local iSelectY = tScreenPos.y - ( ( PUI.Dialogue.Active.tSettings.ScreenYMultiplier or 5000 ) * iScaleFactor * ( 0.9 + iTempFadePerc / 10 ) )
 
     cam.Start2D()
         surface.SetDrawColor( 255, 255, 255, 64 )
@@ -253,7 +262,7 @@ local function fnDrawDialogue( bDrawingDepth, bDrawingSkybox )
     surface.SetAlphaMultiplier( 1 )
 end
 
-function PUI.Dialogue.New( eEntity, tOptions, fnAbortCondition )
+function PUI.Dialogue.New( eEntity, tOptions, tSettings, fnAbortCondition )
     Print( "PUI Dialogue opened." )
 
     fnAbortCondition = fnAbortCondition or fnDefaultAbortCondition
@@ -261,6 +270,7 @@ function PUI.Dialogue.New( eEntity, tOptions, fnAbortCondition )
     PUI.Dialogue.Active = {
         eEntity = eEntity,
         tOptions = tOptions,
+        tSettings = tSettings or {},
         fnAbortCondition = fnAbortCondition
     }
 
