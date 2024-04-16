@@ -15,6 +15,9 @@ local oGradientGlow = Material( "prp/ui/temp/gradient_v2_plymenu_v2.png", "" )
 local oGlowMat = Material( "prp/ui/temp/ply_glow.png", "" )
 local oBoltMat = Material( "prp/ui/temp/bolt.png" )
 
+local bIsGradientError = oGradient:IsError()
+local bIsGradientGlowError = oGradient:IsError()
+
 local function fnStaminaPercentSmoothed()
     return 1 - ( CurTime() % 30 / 30 )
 end
@@ -428,16 +431,20 @@ function PANEL:Init()
 
 
         PUI.StartOverlay()
-            surface.SetDrawColor( 255, 255, 255 )
-            surface.SetMaterial( oGradientGlow )
-            surface.DrawTexturedRect( 0, 0, iW, iH )
-
-            surface.DrawRect( 0, 0, iW, iH )
+            if not bIsGradientError then
+                surface.SetDrawColor( color_white )
+                surface.SetMaterial( oGradientGlow )
+                surface.DrawTexturedRect( 0, 0, iW, iH )
+                surface.DrawRect( 0, 0, iW, iH )
+            end
         PUI.EndOverlay()
 
-        surface.SetDrawColor( 255, 255, 255, 255 * 0.2 * self.easedFraction )
-        surface.SetMaterial( oGradientGlow )
-        surface.DrawTexturedRect( 0, 0, iW, iH )
+        if not bIsGradientGlowError then
+            surface.SetDrawColor( 255, 255, 255, 255 * 0.2 * self.easedFraction )
+            surface.SetMaterial( oGradientGlow )
+            surface.DrawTexturedRect( 0, 0, iW, iH )         
+        end
+
 
         -- @TODO: This should be a function or panel or something.
 

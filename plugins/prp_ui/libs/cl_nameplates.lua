@@ -69,9 +69,12 @@ local iNameplateFadeDistanceSqr = math.pow( iNameplateDrawDistance - iNameplateF
 -- See: https://wiki.facepunch.com/gmod/Entity:GetBonePosition
 local function GetNametagPos( pPlayer )
     local iEyesIndex = pPlayer:LookupAttachment( "eyes" )
-    if not iEyesIndex then return pPlayer:GetPos() + Vector( 0, 0, 64 + 10 ), pPlayer:GetPos() end
+    if not iEyesIndex or iEyesIndex == -1 then return pPlayer:GetPos() + Vector( 0, 0, 64 + 10 ), pPlayer:GetPos() end
 
     local tAttachment = pPlayer:GetAttachment( iEyesIndex )
+    if not tAttachment then
+        return pPlayer:GetPos() + Vector( 0, 0, 64 + 10 ), pPlayer:GetPos()
+    end
 
     return tAttachment.Pos + ( pPlayer:GetUp() * 6 ), tAttachment.Pos
 end

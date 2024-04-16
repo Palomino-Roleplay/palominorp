@@ -38,3 +38,9 @@ gitGraph
 ```
 
 When we get closer to launch, we'll be introducing additional branches and changes to the workflow. Namely a QA branch, a staging branch, a hot fix branch, and update tagging.
+
+
+# Required Modules
+### gwSockets: https://github.com/FredyH/GWSockets
+
+### cHTTP: https://github.com/timschumi/gmod-chttp
