@@ -31,6 +31,16 @@ local function ePhoneUse( ePhone, pPlayer )
     ePayphone:Use( pPlayer )
 end
 
+local function eCableOnRemove( self )
+    Print("cable on remove")
+    if not IsValid( self.ePhone ) then return end
+    if not IsValid( self.ePhone:GetUser() ) then return end
+
+    Print("222")
+
+    self.ePhone:BreakCable()
+end
+
 function ENT:Initialize()
     self:SetModel( "models/props_trainstation/payphone001a.mdl" )
 
@@ -47,6 +57,28 @@ function ENT:Initialize()
     if SERVER then
         self:SpawnPhone()
     end
+end
+
+function ENT:BreakCable()
+    Print("break cable")
+
+    -- SafeRemoveEntity( self.ePhone.eCable )
+    self:EmitSound( "ambient/energy/zap2.wav" )
+
+    -- emit sparks
+    local oEffectData = EffectData()
+    oEffectData:SetOrigin( self.ePhone:GetPos() )
+    util.Effect( "cball_explode", oEffectData )
+
+    self:UnattachPhone()
+    self:SetUser( nil )
+    self.ePhone:Remove()
+
+    timer.Simple( 5, function()
+        if not IsValid( self ) then return end
+
+        self:SpawnPhone()
+    end )
 end
 
 function ENT:SpawnPhone()
@@ -89,8 +121,8 @@ function ENT:AttachPhone( pPlayer )
     if not tAttachment then return end
 
     -- set the position and angle with offsets
-    local vNewPos = tAttachment.Pos + tAttachment.Ang:Forward() * vPhoneOnPlayerOffset.x + tAttachment.Ang:Right() * vPhoneOnPlayerOffset.y + tAttachment.Ang:Up() * vPhoneOnPlayerOffset.z
-    local aNewAng = tAttachment.Ang + aPhoneOnPlayerOffset
+    -- local vNewPos = tAttachment.Pos + tAttachment.Ang:Forward() * vPhoneOnPlayerOffset.x + tAttachment.Ang:Right() * vPhoneOnPlayerOffset.y + tAttachment.Ang:Up() * vPhoneOnPlayerOffset.z
+    -- local aNewAng = tAttachment.Ang + aPhoneOnPlayerOffset
 
     self.ePhone:SetParent( pPlayer, 1 )
 
@@ -101,15 +133,21 @@ function ENT:AttachPhone( pPlayer )
     self.ePhone:SetLocalPos( Vector( 11, -2, -12 ))
     self.ePhone:SetLocalAngles( Angle( 0, 90, -50 ))
 
-    self.ePhone.eCable = constraint.Rope(
+    local vPhoneCableOffset = Vector( 7, 0, 10 )
+    local vPayphoneCableOffset = Vector( 5, 5, 15 )
+
+    -- @TODO: Would it be more efficient to replace this with a keyframe rope and do a periodic distance check?
+    self.ePhone.eCableConstraint, self.ePhone.eCableRope = constraint.Rope(
         self.ePhone,
         self,
         0, 0,
-        Vector( 7, 0, 10 ),
-        Vector( 5, 5, 15 ),
-        0, 170, 0, 0.4,
+        vPhoneCableOffset,
+        vPayphoneCableOffset,
+        100, 50, 1500, 0.4,
         "cable/cable2", false
     )
+    self.ePhone.eCableConstraint:CallOnRemove( "PRP.Payphone.CableRemove", eCableOnRemove )
+    self.ePhone.eCableConstraint.ePhone = self
 
         -- self.ePhone:SetMoveParent(pPlayer, "eyes")
         -- parent the entity to the player
@@ -137,10 +175,15 @@ function ENT:UnattachPhone()
     self.ePhone:SetPos( vPhoneOnBoothOffset )
     self.ePhone:SetAngles( self:GetAngles() )
 
-    SafeRemoveEntity( self.ePhone.eCable )
+    SafeRemoveEntity( self.ePhone.eCableConstraint )
 end
 
 function ENT:Use( pPlayer )
+    if not IsValid( self.ePhone ) then
+        pPlayer:Notify( "This payphone has no phone." )
+        return
+    end
+
     local pUser = self:GetUser()
 
     if pUser == pPlayer then
