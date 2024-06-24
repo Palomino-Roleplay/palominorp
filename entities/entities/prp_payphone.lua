@@ -17,16 +17,25 @@ if SERVER then
     util.AddNetworkString( "PRP.Payphone.Call" )
 end
 
+ix.config.Add("PayphoneRespawnTime", 5, "How many seconds before payphone phones respawn.", nil, {
+    data = {min = 1, max = 900, decimals = 0},
+    category = "Palomino"
+})
+
 local vPhoneOnBoothOffset = Vector( 0, 0, 0 )
 
 local vPhoneOnPlayerOffset = Vector( 0, 0, 0 )
 local aPhoneOnPlayerOffset = Angle( 3.505, 70.489, -34.445 )
 
 local function ePhoneUse( ePhone, pPlayer )
+    Print("PHONE")
     if not IsValid( ePhone ) then return end
 
+    Print("USE")
     local ePayphone = ePhone:GetParent()
     if not IsValid( ePayphone ) then return end
+
+    Print("UGHHHH")
 
     ePayphone:Use( pPlayer )
 end
@@ -85,20 +94,29 @@ function ENT:SpawnPhone()
     self.ePhone = ents.Create( "prop_physics" )
     self.ePhone:SetModel( "models/props_trainstation/payphone_reciever001a.mdl" )
 
-    -- No physics
     self.ePhone:SetMoveType( MOVETYPE_NONE )
     self.ePhone:SetSolid( SOLID_NONE )
+    -- self.ePhone:PhysicsInit( SOLID_VPHYSICS )
+    -- self.ePhone:PhysWake()
 
     -- No collisions
-    self.ePhone:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
+    self.ePhone:SetCollisionGroup( COLLISION_GROUP_IN_VEHICLE )
 
     self.ePhone:SetParent( self )
     self.ePhone:SetPos( self:LocalToWorld( vPhoneOnBoothOffset ) )
     self.ePhone:SetAngles( self:GetAngles() )
 
-    self.ePhone.Use = ePhoneUse
+    self.ePhone:SetUseType( SIMPLE_USE )
+
+
 
     self.ePhone:Spawn()
+
+    timer.Simple( 1, function()
+        self.ePhone.Use = function()
+            print("HELLOOOOOOOO")
+        end
+    end )
 end
 
 function ENT:OnRemove()
@@ -137,13 +155,14 @@ function ENT:AttachPhone( pPlayer )
     local vPayphoneCableOffset = Vector( 5, 5, 15 )
 
     -- @TODO: Would it be more efficient to replace this with a keyframe rope and do a periodic distance check?
+    -- Also probably a good idea to not depend on physics as much as possible.
     self.ePhone.eCableConstraint, self.ePhone.eCableRope = constraint.Rope(
         self.ePhone,
         self,
         0, 0,
         vPhoneCableOffset,
         vPayphoneCableOffset,
-        100, 50, 1500, 0.4,
+        100, 50, 3500, 0.4,
         "cable/cable2", false
     )
     self.ePhone.eCableConstraint:CallOnRemove( "PRP.Payphone.CableRemove", eCableOnRemove )
@@ -154,6 +173,8 @@ function ENT:AttachPhone( pPlayer )
     -- end )
 
     Print("hey?????")
+
+    self.ePhone:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
 
     debugoverlay.EntityTextAtPosition( self.ePhone:GetPos(), 0, "Phone", 0, Color( 0, 255, 0 ), 1 )
 end
@@ -172,8 +193,10 @@ end)
 -- serverside
 function ENT:UnattachPhone()
     self.ePhone:SetParent( self )
-    self.ePhone:SetPos( vPhoneOnBoothOffset )
+    self.ePhone:SetLocalPos( vPhoneOnBoothOffset )
     self.ePhone:SetAngles( self:GetAngles() )
+
+    self.ePhone:SetCollisionGroup( COLLISION_GROUP_NONE )
 
     SafeRemoveEntity( self.ePhone.eCableConstraint )
 end
