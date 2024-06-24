@@ -22,6 +22,15 @@ local vPhoneOnBoothOffset = Vector( 0, 0, 0 )
 local vPhoneOnPlayerOffset = Vector( 0, 0, 0 )
 local aPhoneOnPlayerOffset = Angle( 3.505, 70.489, -34.445 )
 
+local function ePhoneUse( ePhone, pPlayer )
+    if not IsValid( ePhone ) then return end
+
+    local ePayphone = ePhone:GetParent()
+    if not IsValid( ePayphone ) then return end
+
+    ePayphone:Use( pPlayer )
+end
+
 function ENT:Initialize()
     self:SetModel( "models/props_trainstation/payphone001a.mdl" )
 
@@ -36,38 +45,32 @@ function ENT:Initialize()
     self:PhysWake()
 
     if SERVER then
-        -- @TODO: Is there a better way to do this?
-        self.ePhone = ents.Create( "prop_physics" )
-        self.ePhone:SetModel( "models/props_trainstation/payphone_reciever001a.mdl" )
-
-        -- No physics
-        self.ePhone:SetMoveType( MOVETYPE_NONE )
-        self.ePhone:SetSolid( SOLID_NONE )
-
-        -- No collisions
-        self.ePhone:SetCollisionGroup( COLLISION_GROUP_NONE )
-
-        self.ePhone:SetParent( self )
-        self.ePhone:SetPos( self:LocalToWorld( vPhoneOnBoothOffset ) )
-        self.ePhone:SetAngles( self:GetAngles() )
-
-        self.ePhone:Spawn()
-
-        -- -- Fix this hack. I couldn't figure out how to make it work with Draw.
-        -- self.ePhone.RenderGroup = RENDERGROUP_BOTH
-        -- self.ePhone.Think = function( ePhone )
-        --     Print("huh?")
-        --     if not IsValid( self ) then return false end
-        --     if IsValid( self:GetUser() ) then return false end
-
-        --     Print("yay")
-
-        --     ePhone:DrawModel()
-        -- end
+        self:SpawnPhone()
     end
 end
 
+function ENT:SpawnPhone()
+    self.ePhone = ents.Create( "prop_physics" )
+    self.ePhone:SetModel( "models/props_trainstation/payphone_reciever001a.mdl" )
+
+    -- No physics
+    self.ePhone:SetMoveType( MOVETYPE_NONE )
+    self.ePhone:SetSolid( SOLID_NONE )
+
+    -- No collisions
+    self.ePhone:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
+
+    self.ePhone:SetParent( self )
+    self.ePhone:SetPos( self:LocalToWorld( vPhoneOnBoothOffset ) )
+    self.ePhone:SetAngles( self:GetAngles() )
+
+    self.ePhone.Use = ePhoneUse
+
+    self.ePhone:Spawn()
+end
+
 function ENT:OnRemove()
+    SafeRemoveEntity( self.ePhone.eCable )
     SafeRemoveEntity( self.ePhone )
 end
 
@@ -91,14 +94,26 @@ function ENT:AttachPhone( pPlayer )
 
     self.ePhone:SetParent( pPlayer, 1 )
 
-    timer.Simple( 0, function()
+    self.ePhone:SetModelScale( 0.8 )
+
+    -- timer.Simple( 0, function()
         -- set entity position and angle
-        self.ePhone:SetLocalPos( Vector( 0, 0, 0 ))
-        self.ePhone:SetLocalAngles( Angles( 90, 90, 90 ))
+    self.ePhone:SetLocalPos( Vector( 11, -2, -12 ))
+    self.ePhone:SetLocalAngles( Angle( 0, 90, -50 ))
+
+    self.ePhone.eCable = constraint.Rope(
+        self.ePhone,
+        self,
+        0, 0,
+        Vector( 7, 0, 10 ),
+        Vector( 5, 5, 15 ),
+        0, 170, 0, 0.4,
+        "cable/cable2", false
+    )
 
         -- self.ePhone:SetMoveParent(pPlayer, "eyes")
         -- parent the entity to the player
-    end )
+    -- end )
 
     Print("hey?????")
 
@@ -121,6 +136,8 @@ function ENT:UnattachPhone()
     self.ePhone:SetParent( self )
     self.ePhone:SetPos( vPhoneOnBoothOffset )
     self.ePhone:SetAngles( self:GetAngles() )
+
+    SafeRemoveEntity( self.ePhone.eCable )
 end
 
 function ENT:Use( pPlayer )
