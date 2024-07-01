@@ -1,3 +1,57 @@
+local tKeycardScanners = {
+    -- 1st floor Security thing
+    {
+        pos = Vector( 8587, 7652, 256 ),
+        ang = Angle( 0, 0, 0 ),
+        doors = { 2797, 2796 }
+    },
+
+    {
+        pos = Vector( 8735, 7628, 256 ),
+        ang = Angle( 0, 180, 0 ),
+        doors = { 2797, 2796 }
+    },
+
+    -- Jail
+    {
+        pos = Vector( 8804, 8162, 256 ),
+        ang = Angle( 0, -90, 0 ),
+        doors = { 2819 }
+    },
+
+    {
+        pos = Vector( 8803, 8210, 256 ),
+        ang = Angle( 0, -90, 0 ),
+        doors = { 2819 }
+    },
+
+    -- 1st floor Stairs
+    {
+        pos = Vector( 9017, 8124, 256 ),
+        ang = Angle( 0, 180, 0 ),
+        doors = { 2812 }
+    },
+
+    {
+        pos = Vector( 9106, 8148, 256 ),
+        ang = Angle( 0, 0, 0 ),
+        doors = { 2812 }
+    },
+
+    -- Garage
+    {
+        pos = Vector( 8476, 7604, -64 ),
+        ang = Angle( 0, 0, 0 ),
+        doors = { 2802, 2803 }
+    },
+
+    {
+        pos = Vector( 8396, 7792, -64 ),
+        ang = Angle( 0, 90, 0 ),
+        doors = { 2802, 2803 }
+    },
+}
+
 function PLUGIN:InitializedPlugins()
     PRP.Vehicle.Parking.RegisterSinglePos( "prison", {
         Spots = {
@@ -63,6 +117,26 @@ if SERVER then
             end
 
             return false
+        end
+    end
+
+    function PLUGIN:InitPostEntity()
+        -- Keycard Scanners
+        for _, tScanner in ipairs( tKeycardScanners ) do
+            local eScanner = ents.Create( "prp_keycard_scanner" )
+            eScanner:SetPos( tScanner.pos )
+            eScanner:Spawn()
+            eScanner:SetAngles( tScanner.ang )
+
+            local tDoorEnts = {}
+            for _, eDoor in ipairs( tScanner.doors ) do
+                local eDoor = ents.GetMapCreatedEntity( eDoor )
+                if IsValid( eDoor ) then
+                    table.insert( tDoorEnts, eDoor )
+                end
+            end
+
+            eScanner:SetDoors( tDoorEnts )
         end
     end
 end

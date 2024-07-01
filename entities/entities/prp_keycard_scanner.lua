@@ -17,7 +17,7 @@ function ENT:Initialize()
 	self:SetModel( self.Model or "models/alyxintprops/keycard_reader_001_0.mdl" )
 
 	-- Physics stuff
-	self:SetMoveType( MOVETYPE_VPHYSICS )
+	self:SetMoveType( MOVETYPE_NONE )
 	self:SetSolid( SOLID_VPHYSICS )
 
 	-- Init physics only on server, so it doesn't mess up physgun beam
@@ -28,6 +28,8 @@ function ENT:Initialize()
 
 	-- Make prop to fall on spawn
 	self:PhysWake()
+
+    self:GetPhysicsObject():EnableMotion( false )
 
     self:SetUseType( SIMPLE_USE )
 end
