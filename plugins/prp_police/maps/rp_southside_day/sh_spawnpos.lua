@@ -35,5 +35,34 @@ function PLUGIN:InitializedPlugins()
                 ang = Angle( 0, 90, 0 )
             },
         },
-    } )    
+    } )
+end
+
+-- Restrict access to elevator to police
+
+local tElevatorButtons = {
+    [2889] = true, -- Lobby call button
+    [2895] = true, -- Garage call button
+    [2896] = true, -- Armory call button
+    [2948] = true, -- Elevator 1st floor button
+    [2898] = true, -- Elevator 2nd floor button
+    [2899] = true, -- Elevator 3rd floor button
+}
+
+local tSoundCooldown = {}
+
+if SERVER then
+    function PLUGIN:PlayerUse( pPlayer, eEntity )
+        if not eEntity:CreatedByMap() then return end
+        if not pPlayer:GetCharacter() then return end
+
+        if tElevatorButtons[eEntity:MapCreationID()] and not pPlayer:GetCharacter():IsGovernment() then
+            if not tSoundCooldown[eEntity:EntIndex()] or tSoundCooldown[eEntity:EntIndex()] < CurTime() then
+                eEntity:EmitSound( "buttons/button8.wav" )
+                tSoundCooldown[eEntity:EntIndex()] = CurTime() + 2
+            end
+
+            return false
+        end
+    end
 end
