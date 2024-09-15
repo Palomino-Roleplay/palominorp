@@ -25,6 +25,26 @@ function CHAR:Arrest( pArrestor, iTime, sReason )
 
     pPlayer:SetPos( PRP.Vehicle.Parking.GetAvailable( "prison" ).pos )
 
+    PRP.API.REST.HTTP( {
+        url = "/server/police/arrest",
+        method = "POST",
+        body = util.TableToJSON({
+            suspectID = self:GetID(),
+            suspectName = self:GetName(),
+            officerID = pArrestor:GetCharacter():GetID(),
+            officerName = pArrestor:GetCharacter():GetName(),
+            time = iTime,
+            reason = sReason or "No reason provided."
+        })
+    })
+        -- function()
+        --     Print("Successfully logged arrest.")  
+        -- end,
+        -- function( sError )
+        --     Print("Failed to log arrest: " .. sError)
+        -- end
+    -- )
+
     return true
 end
 
