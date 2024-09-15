@@ -49,6 +49,7 @@ function PRP.Playtesting.CreateSampleCharacter( pPlayer, fnCallback )
         name = (bIsMale and maleNames[ math.random( #maleNames ) ] or femaleNames[ math.random( #femaleNames ) ]) .. " " .. lastNames[ math.random( #lastNames ) ],
         model = sModel,
         steamID = pPlayer:SteamID64(),
+        faction = "Citizen",
     }
 
     ix.char.Create( tCharacterInfo, function( iID )
@@ -169,6 +170,7 @@ function TrialObject:AddVar( sClass, oDistribution, fnCallback )
 end
 
 function TrialObject:AddVarManual( sClass, xValue )
+    self.vars[sClass] = self.vars[sClass] or {}
     self.vars[sClass].value = xValue
 end
 
@@ -215,10 +217,11 @@ function TrialObject:Log( sEventType, tData )
 end
 
 function TrialObject:Initialize()
-    for sClass, tVar in pairs( self.vars ) do
-        tVar.value = tVar.distribution()
-        tVar.callback( tVar.value )
-    end
+    -- for sClass, tVar in pairs( self.vars ) do
+    --     if tVar.value then continue end
+    --     tVar.value = tVar.distribution()
+    --     tVar.callback( tVar.value )
+    -- end
 
     for _, pPlayer in ipairs( player.GetAll() or {} ) do
         table.insert( self.players, pPlayer:SteamID64() )
