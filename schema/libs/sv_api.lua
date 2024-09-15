@@ -51,11 +51,14 @@ PRP.API.REST = {}
 
 function PRP.API.REST.HTTP( tHTTPRequest, fnOK, fnFailed )
     -- @TODO: Queue requests if not initialized or disconnected
+    tHTTPRequest.url = PRP.API_REST_URL .. tHTTPRequest.url
+    -- tHTTPRequest.url = tHTTPRequest.url
 
     tHTTPRequest.timeout = tHTTPRequest.timeout or 10
 
     tHTTPRequest.headers = tHTTPRequest.headers or {}
     tHTTPRequest.headers["x-session-token"] = PRP.API.SessionToken
+    tHTTPRequest.headers["Content-Type"] = "application/json"
     Print( "Session token: ", PRP.API.SessionToken )
 
     tHTTPRequest.success = tHTTPRequest.success or function( iResponseCode, sBody, tHeaders )
@@ -69,12 +72,12 @@ function PRP.API.REST.HTTP( tHTTPRequest, fnOK, fnFailed )
         end
 
         -- @TODO: Maybe re-authenticate when we implement OAuth2
-        PRP.API.REST.Log( "Request failed: " .. tHTTPRequest.url .. " (" .. iResponseCode .. ")" )
-        if fnFailed then fnFailed( iResponseCode .. ": ".. sBody ) end
+        PRP.API.REST.Log( "Request failed: " .. tHTTPRequest.url .. " (" .. iResponseCode .. ") \"" .. sBody .. "\"" )
+        if fnFailed then fnFailed( iResponseCode .. ": " .. sBody ) end
     end
 
     tHTTPRequest.failed = tHTTPRequest.failed or function( sError )
-        PRP.API.REST.Log( "Request failed: " .. tHTTPRequest.url .. " (" .. sError .. ")" )
+        PRP.API.REST.Log( "Request failed: " .. tHTTPRequest.url .. " (" .. iResponseCode .. ")" )
         if fnFailed then fnFailed( sError ) end
     end
 
@@ -128,7 +131,7 @@ local function fnInitializeREST()
 
     PRP.API.REST.HTTP(
         {
-            url = PRP.API_REST_URL .. "/server",
+            url = "/server",
             method = "GET",
         },
         -- Success
@@ -267,6 +270,7 @@ function PRP.API.Initialize()
 
         timer.Remove("PRP.API.WS.Heartbeat")
 
+        fnInitializeREST()
         -- PRP.API.bInitialized = false
 
         -- @TODO: Attempt reconnect w/ session token
