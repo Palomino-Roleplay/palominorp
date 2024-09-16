@@ -227,7 +227,7 @@ function PANEL:Init()
 
     self.m_pnlTabCharacterRight = vgui.Create( "DPanel", self.m_pnlTabCharacterContent )
     self.m_pnlTabCharacterRight:SetPos( ScrW() / 2, 20 * PRP.UI.ScaleFactor )
-    self.m_pnlTabCharacterRight:SetSize( PRP.UI.ScaleFactor * 500, ScrH() - ( 120 * PRP.UI.ScaleFactor ) )
+    self.m_pnlTabCharacterRight:SetSize( PRP.UI.ScaleFactor * 800, ScrH() - ( 120 * PRP.UI.ScaleFactor ) )
     self.m_pnlTabCharacterRight.Paint = function( pnl, w, h )
         -- surface.SetDrawColor( 255, 255, 255, 128 )
         -- surface.SetMaterial( Material( "prp/light2.png", "" ) )
@@ -241,6 +241,43 @@ function PANEL:Init()
         -- surface.SetMaterial( Material( "prp/plybg.png", "smooth" ) )
         -- surface.DrawTexturedRect( 0, h * 0.1, w, h * 0.8 )
     end
+
+
+
+    -- -- Equipment Slots
+    -- self.m_pnlTabCharacterRightEquipment = vgui.Create("ixInventory", self.m_pnlTabCharacterRight)
+    -- -- self.m_pnlTabCharacterRightEquipment:SetIconSize( 80 * PRP.UI.ScaleFactor )
+
+    -- -- local oEquipmentInventory = LocalPlayer():GetCharacter():GetEquipmentInventory()
+    -- local oEquipmentInventory = ix.inventory.Get( 39 )
+
+    -- if (oEquipmentInventory) then
+    --     Print( "----------------------------------------------------------------" )
+    --     Print( oEquipmentInventory )
+    --     Print( "===========================" )
+    --     Print( inventory )
+    --     self.m_pnlTabCharacterRightEquipment:SetInventory( oEquipmentInventory )
+    -- end
+
+    -- self.m_pnlTabCharacterRightEquipment:SetPaintedManually( false )
+    -- -- self.m_pnlTabCharacterRightEquipment:MakePopup()
+
+    -- -- self.m_pnlTabCharacterRightEquipment:SetSize( 800, 800 )
+    -- self.m_pnlTabCharacterRightEquipment:SetPos(500 * PRP.UI.ScaleFactor, 0)
+    -- -- self.m_pnlTabCharacterRightEquipment:SetDraggable(true)
+    -- -- self.m_pnlTabCharacterRightEquipment:SetSizable(true)
+    -- -- self.m_pnlTabCharacterRightEquipment:ShowCloseButton(true)
+    -- self.m_pnlTabCharacterRightEquipment:SetTitle( "EQUIPMENT INVENTORY" )
+    -- -- self.m_pnlTabCharacterRightEquipment.bNoBackgroundBlur = true
+    -- -- self.m_pnlTabCharacterRightEquipment.childPanels = {}
+    -- self.m_pnlTabCharacterRightEquipment.Paint = function( this, iW, iH )
+    --     -- surface.SetDrawColor( 255, 255, 255, 128 )
+    --     -- surface.SetMaterial( Material( "prp/InventoryL.png", "" ) )
+    --     -- surface.DrawRect( 0, 0, iW, iH )
+    -- end
+
+
+
 
     self.m_pnlTabCharacterContent.Paint = function( this, iW, iH )
         local iLeftX = self.m_pnlTabCharacterLeft:GetX() + self.m_pnlTabCharacterLeft:GetWide()
@@ -258,9 +295,9 @@ function PANEL:Init()
 
 
     local wow = vgui.Create( "DModelPanel", self.m_pnlTabCharacterRight )
-    wow:Dock( FILL )
+    wow:SetSize( 400 * PRP.UI.ScaleFactor, self.m_pnlTabCharacterRight:GetTall() )
     wow:SetModel( LocalPlayer():GetModel() )
-    wow:SetFOV( 7.5 )
+    wow:SetFOV( 6 )
     wow:SetAmbientLight( Color( 0, 0, 0 ) )
     wow:SetZPos( 100 )
 
@@ -414,7 +451,7 @@ function PANEL:Init()
         wow.Entity:ResetSequence( wow.Entity:LookupSequence( "idle_all_01" ) )
     end )
 
-    self.m_pnlTabSettings = self.m_pnlTabPanel:AddTab( "COMMUNITY" )
+    self.m_pnlTabSettings = self.m_pnlTabPanel:AddTab( "SKILLS" )
     
     -- Help Tab
     self.m_pnlTabHelp = self.m_pnlTabPanel:AddTab( "HELP" )
@@ -497,6 +534,42 @@ function PANEL:Init()
         -- surface.SetDrawColor( 0, 0, 0, 255 * 0.3 * self.easedFraction )
         -- surface.DrawRect( 0, 0, iW, iH )
     end
+
+    wow:MoveToBack()
+
+    local tTempInventoryIDs = {
+        ["slots_idcard"] = {
+            id = 44,
+            pos = {0, 700}
+        },
+        ["slots_equipment"] = {
+            id = 45,
+            pos = {100, 300}
+        },
+        ["slots_outfit"] = {
+            id = 46,
+            pos = {0, 0}
+        },
+        ["slots_primary"] = {
+            id = 47,
+            pos = {100, 0}
+        },
+    }
+
+    self.m_pnlTabCharacterRightEquippables = {}
+    for sEquipmentSlotsID, _ in pairs( PRP.EquipSlots.Inventories ) do
+        self.m_pnlTabCharacterRightEquippables[sEquipmentSlotsID] = vgui.Create( "ixInventory", self.m_pnlTabCharacterRight )
+        self.m_pnlTabCharacterRightEquippables[sEquipmentSlotsID]:SetIconSize( 80 * PRP.UI.ScaleFactor )
+        self.m_pnlTabCharacterRightEquippables[sEquipmentSlotsID]:SetPos( 400 * PRP.UI.ScaleFactor + tTempInventoryIDs[sEquipmentSlotsID].pos[1], tTempInventoryIDs[sEquipmentSlotsID].pos[2] )
+        self.m_pnlTabCharacterRightEquippables[sEquipmentSlotsID]:SetTitle( string.upper( string.sub( sEquipmentSlotsID, 7 ) ) )
+        self.m_pnlTabCharacterRightEquippables[sEquipmentSlotsID]:SetDraggable( true )
+        self.m_pnlTabCharacterRightEquippables[sEquipmentSlotsID]:SetInventory( ix.inventory.Get( tTempInventoryIDs[sEquipmentSlotsID].id ) )
+        self.m_pnlTabCharacterRightEquippables[sEquipmentSlotsID]:SetPaintedManually( false )
+    end
+
+    for sEquipmentSlotID, _ in pairs( PRP.EquipSlots.Inventories ) do
+        self.m_pnlTabCharacterRightEquippables[sEquipmentSlotID]:MoveToFront()
+    end
 end
 
 function PANEL:OnRemove()
@@ -505,6 +578,11 @@ function PANEL:OnRemove()
     hook.Remove( "ix.pac.OnPartRemoved", "PRP.UI.PlyMenu.OnPartRemoved" )
 
     ix.gui["inv"..LocalPlayer():GetCharacter():GetInventory():GetID()] = nil
+
+    if IsValid( self.m_pnlTabCharacterRightEquipment ) then
+        self.m_pnlTabCharacterRightEquipment:Remove()
+        self.m_pnlTabCharacterRightEquipment = nil
+    end
 end
 
 function PANEL:Paint()

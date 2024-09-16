@@ -1,34 +1,37 @@
 local PLUGIN = PLUGIN
 
-print("sv_equipslots.lua")
-
 PRP.EquipSlots = PRP.EquipSlots or {}
 
-ix.inventory.Register("equipment", 3, 5, false)
+do
+    for sInventoryID, tInventory in pairs( PRP.EquipSlots.Inventories ) do
+        ix.inventory.Register( sInventoryID, tInventory.w, tInventory.h, false )
+    end
+end
 
 function PRP.EquipSlots.CreateInventory( iCharacterID )
-    ix.inventory.New(iCharacterID, "equipment", function( oInventory)
-        -- oInventory:SetOwner( iCharacterID, true )
-        -- oInventory.vars.isBag = nil
-        oInventory:Add( "palopal" )
-        oInventory:AddReceiver( oInventory:GetOwner() )
-        Print( oInventory )
-        Print( oInventory:GetID() )
-    end )
+    for sInventoryID, tInventory in pairs( PRP.EquipSlots.Inventories ) do
+        ix.inventory.New(iCharacterID, sInventoryID, function( oInventory)
+            oInventory:AddReceiver( oInventory:GetOwner() )
+            oInventory:Add( "palopal" )
+            oInventory:Sync( oInventory:GetOwner() )
+
+            Print( sInventoryID .. ": " .. oInventory:GetID() )
+        end )
+    end
 end
 
 function PLUGIN:InventoryItemAdded( oFromInventory, oToInventory, oItem )
-    -- Print( "TRANSFER: " )
-    -- oFromInventory:PrintAll()
-    -- oToInventory:PrintAll()
+    if oToInventory and PRP.EquipSlots.Inventories[oToInventory.vars.isBag] then
+        Print( "NEW EQUIPPED: " .. oToInventory.vars.isBag )
 
-    if oToInventory and oToInventory.vars.isBag == "equipment" then
-        Print( "NEW EQUIPPED" )
+        if oItem.Equip then
+            oItem:Equip( oToInventory:GetOwner() )
+        end
+    elseif oFromInventory and PRP.EquipSlots.Inventories[oToInventory.vars.isBag] then
+        Print( "NEW UNEQUIPPED: " .. oToInventory.vars.isBag )
 
-        oItem:Equip( oToInventory:GetOwner() )
-    elseif oFromInventory and oFromInventory.vars.isBag == "equipment" then
-        Print( "NEW UNEQUIPPED" )
-
-        oItem:Unequip( oFromInventory:GetOwner(), true )
+        if oItem.Unequip then
+            oItem:Unequip( oFromInventory:GetOwner(), true )
+        end
     end
 end
