@@ -24,7 +24,11 @@ function PLUGIN:InventoryItemAdded( oFromInventory, oToInventory, oItem )
 
     if oToInventory and oToInventory.vars.isBag == "equipment" then
         Print( "NEW EQUIPPED" )
+
+        oItem:Equip( oToInventory:GetOwner() )
     elseif oFromInventory and oFromInventory.vars.isBag == "equipment" then
         Print( "NEW UNEQUIPPED" )
+
+        oItem:Unequip( oFromInventory:GetOwner(), true )
     end
 end
