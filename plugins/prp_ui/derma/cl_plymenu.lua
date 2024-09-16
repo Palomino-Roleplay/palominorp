@@ -170,7 +170,7 @@ function PANEL:Init()
     if (inventory) then
         self.m_pnlTabCharacterLeftInventory:SetInventory(inventory)
     end
-    ix.gui.inv1 = self.m_pnlTabCharacterLeftInventory
+    -- ix.gui.inv1 = self.m_pnlTabCharacterLeftInventory
 
     local iInventoryX = self.m_pnlTabCharacterLeft:GetWide() / 2 - (self.m_pnlTabCharacterLeftInventory:GetWide() / 2)
     local iInventoryY = (self.m_pnlTabCharacterLeft:GetTall() - self.m_pnlTabCharacterLeftInventory:GetTall()) / 2
@@ -559,12 +559,15 @@ function PANEL:Init()
     self.m_pnlTabCharacterRightEquippables = {}
     for sEquipmentSlotsID, _ in pairs( PRP.EquipSlots.Inventories ) do
         self.m_pnlTabCharacterRightEquippables[sEquipmentSlotsID] = vgui.Create( "ixInventory", self.m_pnlTabCharacterRight )
-        self.m_pnlTabCharacterRightEquippables[sEquipmentSlotsID]:SetIconSize( 80 * PRP.UI.ScaleFactor )
+        -- self.m_pnlTabCharacterRightEquippables[sEquipmentSlotsID]:SetIconSize( 80 * PRP.UI.ScaleFactor )
         self.m_pnlTabCharacterRightEquippables[sEquipmentSlotsID]:SetPos( 400 * PRP.UI.ScaleFactor + tTempInventoryIDs[sEquipmentSlotsID].pos[1], tTempInventoryIDs[sEquipmentSlotsID].pos[2] )
         self.m_pnlTabCharacterRightEquippables[sEquipmentSlotsID]:SetTitle( string.upper( string.sub( sEquipmentSlotsID, 7 ) ) )
-        self.m_pnlTabCharacterRightEquippables[sEquipmentSlotsID]:SetDraggable( true )
+        self.m_pnlTabCharacterRightEquippables[sEquipmentSlotsID]:SetIconSize( 80 * PRP.UI.ScaleFactor )
+        -- self.m_pnlTabCharacterRightEquippables[sEquipmentSlotsID]:SetDraggable( true )
         self.m_pnlTabCharacterRightEquippables[sEquipmentSlotsID]:SetInventory( ix.inventory.Get( tTempInventoryIDs[sEquipmentSlotsID].id ) )
         self.m_pnlTabCharacterRightEquippables[sEquipmentSlotsID]:SetPaintedManually( false )
+        self.m_pnlTabCharacterRightEquippables[sEquipmentSlotsID].bNoBackgroundBlur = true
+        self.m_pnlTabCharacterRightEquippables[sEquipmentSlotsID].childPanels = {}
     end
 
     for sEquipmentSlotID, _ in pairs( PRP.EquipSlots.Inventories ) do
