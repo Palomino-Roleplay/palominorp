@@ -27,8 +27,8 @@ function PLUGIN:InventoryItemAdded( oFromInventory, oToInventory, oItem )
         if oItem.Equip then
             oItem:Equip( oToInventory:GetOwner() )
         end
-    elseif oFromInventory and PRP.EquipSlots.Inventories[oToInventory.vars.isBag] then
-        Print( "NEW UNEQUIPPED: " .. oToInventory.vars.isBag )
+    elseif oFromInventory and PRP.EquipSlots.Inventories[oFromInventory.vars.isBag] then
+        Print( "NEW UNEQUIPPED: " .. oFromInventory.vars.isBag )
 
         if oItem.Unequip then
             oItem:Unequip( oFromInventory:GetOwner(), true )
