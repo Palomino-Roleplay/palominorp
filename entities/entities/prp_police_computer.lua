@@ -36,6 +36,8 @@ end
 
 if CLIENT then
     local function fnCalcView( pPlayer, vOrigin, aAngles, nFOV )
+        if not IsValid( LocalPlayer().m_eComputer ) then return end
+
         local view = {}
         view.origin = LocalPlayer().m_eComputer:LocalToWorld( Vector( 64, 0, 8 ) )
         view.angles = LocalPlayer().m_eComputer:LocalToWorldAngles( Angle( 5.5, 180, 0 ) )
@@ -55,7 +57,7 @@ if CLIENT then
         local tToScreen = vPos:ToScreen()
 
         PRP_POLICECOMPUTER_MENU = vgui.Create( "DHTML" )
-        PRP_POLICECOMPUTER_MENU:OpenURL( "http://loopback.gmod:52317/")
+        PRP_POLICECOMPUTER_MENU:OpenURL( "http://loopback.gmod:51739")
         PRP_POLICECOMPUTER_MENU:SetSize( 392 * 2, 322 * 2 )
         PRP_POLICECOMPUTER_MENU:SetPos( tToScreen.x, tToScreen.y )
         PRP_POLICECOMPUTER_MENU:SetMouseInputEnabled( true )
@@ -112,6 +114,12 @@ if CLIENT then
                 PRP_POLICECOMPUTER_MENU:Remove()
             end
         end )
+    end
+
+    function ENT:OnRemove()
+        if LocalPlayer().m_eComputer == self then
+            self:Close()
+        end
     end
 
     -- @TODO: Holy mother of god.
