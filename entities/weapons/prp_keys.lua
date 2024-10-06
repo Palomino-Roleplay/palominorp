@@ -197,6 +197,7 @@ function SWEP:PrimaryAttack()
 
 	local playback_rate = CH_Keys.Config.AnimationSpeed
 
+	-- @TODO: Fix the animations
 	self:SendWeaponAnim( self.EquippedKey.Animations.Lock or ACT_VM_PRIMARYATTACK )
 	self:GetOwner():GetViewModel():SetPlaybackRate( playback_rate )
 	self:SetNextIdle( CurTime() + ( self:SequenceDuration() / playback_rate ) )
