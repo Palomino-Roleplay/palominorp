@@ -1,10 +1,6 @@
 -- @TODO: Update
 local tHostnames = {
-    "A beautiful place is under construction: Palomino",
-    "Off in the distance, a new world is being built: Palomino",
-    "Somehow, this is still a work in progress: Palomino",
-    "A new world is being built: Palomino",
-    "All visa applications are being denied: Palomino",
+    "Palomino: Under Construction",
 }
 
 timer.Create( "Palomino.Hostname", 300, 0, function()
