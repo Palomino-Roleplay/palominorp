@@ -2,6 +2,8 @@ PRP = PRP or {}
 
 require( "gwsockets" )
 
+util.AddNetworkString( "PRP.API.Challenge" )
+
 PRP.API = PRP.API or {}
 PRP.API.bInitialized = PRP.API.bInitialized or true
 
@@ -31,7 +33,8 @@ PRP.UI.AllowedResolutions = {
 PRP._WebSocket = PRP._WebSocket or nil
 
 PRP.API.WS = PRP.API.WS or {}
-PRP.API.WS._tCallbacks = PRP.API.WS._tCallbacks or {}
+-- PRP.API.WS._tCallbacks = PRP.API.WS._tCallbacks or {}
+PRP.API.WS._tCallbacks = {}
 
 function PRP.API.WS.Log( sMessage )
     MsgC(
@@ -77,7 +80,7 @@ function PRP.API.REST.HTTP( tHTTPRequest, fnOK, fnFailed )
     end
 
     tHTTPRequest.failed = tHTTPRequest.failed or function( sError )
-        PRP.API.REST.Log( "Request failed: " .. tHTTPRequest.url .. " (" .. iResponseCode .. ")" )
+        PRP.API.REST.Log( "Request failed: " .. tHTTPRequest.url .. " (" .. iResponseCode or 0 .. ")" )
         if fnFailed then fnFailed( sError ) end
     end
 
@@ -216,7 +219,8 @@ function PRP.API.Initialize()
     PRP._WebSocket:setHeader( "x-api-key", tPalominoEnvironment.api.key )
 
     function PRP._WebSocket:onMessage( sMessage )
-        -- PRP.API.WS.Log( "Received: ", sMessage )
+        Print("Received message")
+        PRP.API.WS.Log( sMessage )
 
         -- Convert message from JSON to table
         local tMessage = util.JSONToTable( sMessage )
@@ -284,6 +288,46 @@ hook.Add( "InitPostEntity", "PRP.API.InitPostEntity", PRP.API.Initialize )
 
 -- @TODO: Remove
 -- PRP.API.Initialize()
+
+hook.Add( "PlayerLoadedCharacter", "PRP.API.PlayerLoadedCharacter", function( pPlayer, cCharacter )
+    if not PRP.API.bInitialized then return end
+
+    PRP.API.WS.Send( "authCreateChallenge", {
+        steamID = pPlayer:SteamID64(),
+        character = cCharacter:GetID()
+    } )
+end )
+
+PRP.API.WS.OnMessage( "auth/challengeCreated", function( tData )
+    Print( "Received player challenge code from authentication server." )
+
+    Print( tData )
+
+    local sSteamID = tData.steamId
+    local pPlayer = player.GetBySteamID64( sSteamID )
+    local iCharacterID = tData.characterId
+
+    if not IsValid( pPlayer ) then return end
+    if not pPlayer:GetCharacter() then return end
+    if pPlayer:GetCharacter():GetID() ~= iCharacterID then return end
+
+    local sChallenge = tData.challenge
+
+    net.Start( "PRP.API.Challenge" )
+        net.WriteString( sChallenge )
+    net.Send( pPlayer )
+end )
+
+concommand.Add( "prp_reauth", function( pPlayer, sCommand, tArgs, sArgs )
+    Print( "Reauthenticating player: " .. pPlayer:Name() )
+
+    if not pPlayer:IsDeveloper() then return end
+
+    PRP.API.WS.Send( "auth/createChallenge", {
+        steamId = pPlayer:SteamID64(),
+        characterId = pPlayer:GetCharacter():GetID()
+    } )
+end )
 
 concommand.Add( "prp_api_init", function()
     PRP.API.Initialize()

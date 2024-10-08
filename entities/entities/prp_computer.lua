@@ -3,10 +3,10 @@ AddCSLuaFile()
 ENT.Type            = "anim"
 ENT.Base            = "base_anim"
 
-ENT.PrintName		= "Police Computer"
+ENT.PrintName		= "Computer"
 ENT.Author			= "sil"
-ENT.Category        = "Palomino: Police"
-ENT.Purpose			= "Police Computer"
+ENT.Category        = "Palomino"
+ENT.Purpose			= "Computer"
 ENT.Instructions	= "Use with care. Always handle with gloves."
 
 ENT.Spawnable		= true
@@ -49,19 +49,22 @@ if CLIENT then
 
     function ENT:Open()
         LocalPlayer().m_eComputer = self
-        hook.Add( "CalcView", "PRP.PoliceComputer.CalcView", fnCalcView )
+        hook.Add( "CalcView", "PRP.Computer.CalcView", fnCalcView )
 
         -- ui3d2d.startDraw(pos, angles, scale, ignoredEntity)
 
         local vPos = self:LocalToWorld( Vector( 11.75, -9.8, 11.8 ) )
         local tToScreen = vPos:ToScreen()
 
-        PRP_POLICECOMPUTER_MENU = vgui.Create( "DHTML" )
-        PRP_POLICECOMPUTER_MENU:OpenURL( "http://loopback.gmod:51739")
-        PRP_POLICECOMPUTER_MENU:SetSize( 392 * 2, 322 * 2 )
-        PRP_POLICECOMPUTER_MENU:SetPos( tToScreen.x, tToScreen.y )
-        PRP_POLICECOMPUTER_MENU:SetMouseInputEnabled( true )
-        PRP_POLICECOMPUTER_MENU:SetKeyboardInputEnabled( true )
+        PRP_COMPUTER_MENU = vgui.Create( "DHTML" )
+        PRP_COMPUTER_MENU:OpenURL( "http://loopback.gmod:8080")
+        PRP_COMPUTER_MENU:SetSize( 392 * 2, 322 * 2 )
+        PRP_COMPUTER_MENU:SetPos( tToScreen.x, tToScreen.y )
+        PRP_COMPUTER_MENU:SetMouseInputEnabled( true )
+        PRP_COMPUTER_MENU:SetKeyboardInputEnabled( true )
+        PRP_COMPUTER_MENU.OnFinishLoadingDocument = function()
+            PRP_COMPUTER_MENU:RunJavascript( "setGlobalAuthToken('" .. PRP.API.Token .. "');")
+        end
         gui.EnableScreenClicker( true )
     end
 
@@ -85,33 +88,33 @@ if CLIENT then
         --     draw.RoundedBox( 0, 0, 0, 1000, 10, Color( 255, 0, 255, 255 ) )
         -- ui3d2d.endDraw()
 
-        if IsValid( PRP_POLICECOMPUTER_MENU ) then
+        if IsValid( PRP_COMPUTER_MENU ) then
             if LocalPlayer().m_eComputer != self then
-                PRP_POLICECOMPUTER_MENU:SetPos( 0, 0 )
-                ui3d2d.drawVgui( PRP_POLICECOMPUTER_MENU, vStartPos, aAng, iScale, self )
+                PRP_COMPUTER_MENU:SetPos( 0, 0 )
+                ui3d2d.drawVgui( PRP_COMPUTER_MENU, vStartPos, aAng, iScale, self )
             else
                 local tStartToScreen = vStartPos:ToScreen()
-                PRP_POLICECOMPUTER_MENU:SetPos( tStartToScreen.x, tStartToScreen.y )
+                PRP_COMPUTER_MENU:SetPos( tStartToScreen.x, tStartToScreen.y )
 
                 local tEndToScreen = vEndPos:ToScreen()
-                PRP_POLICECOMPUTER_MENU:SetSize( tEndToScreen.x - tStartToScreen.x, tEndToScreen.y - tStartToScreen.y)
+                PRP_COMPUTER_MENU:SetSize( tEndToScreen.x - tStartToScreen.x, tEndToScreen.y - tStartToScreen.y)
             end
         end
     end
 
     function ENT:Close()
-        hook.Remove( "CalcView", "PRP.PoliceComputer.CalcView" )
+        hook.Remove( "CalcView", "PRP.Computer.CalcView" )
         LocalPlayer().m_eComputer = nil
-        PRP_POLICECOMPUTER_MENU:Remove()
-        PRP_POLICECOMPUTER_MENU:SetMouseInputEnabled( false )
-        PRP_POLICECOMPUTER_MENU:SetKeyboardInputEnabled( false )
+        PRP_COMPUTER_MENU:Remove()
+        PRP_COMPUTER_MENU:SetMouseInputEnabled( false )
+        PRP_COMPUTER_MENU:SetKeyboardInputEnabled( false )
         gui.EnableScreenClicker( false )
 
-        PRP_POLICECOMPUTER_MENU:SetSize( 392 * 2, 322 * 2 )
+        PRP_COMPUTER_MENU:SetSize( 392 * 2, 322 * 2 )
 
         timer.Simple( 60, function()
-            if IsValid( PRP_POLICECOMPUTER_MENU ) and LocalPlayer().m_eComputer != self then
-                PRP_POLICECOMPUTER_MENU:Remove()
+            if IsValid( PRP_COMPUTER_MENU ) and LocalPlayer().m_eComputer != self then
+                PRP_COMPUTER_MENU:Remove()
             end
         end )
     end
@@ -123,7 +126,7 @@ if CLIENT then
     end
 
     -- @TODO: Holy mother of god.
-    hook.Add( "Think", "PRP.PoliceComputer.Think", function()
+    hook.Add( "Think", "PRP.Computer.Think", function()
         -- button cooldown
         if input.IsKeyDown( KEY_SPACE ) then
             LocalPlayer().m_iButtonCooldown = LocalPlayer().m_iButtonCooldown or 0
@@ -137,7 +140,7 @@ if CLIENT then
                 LocalPlayer().m_eComputer:Close()
             else
                 local eComputer = LocalPlayer():GetEyeTrace().Entity
-                if IsValid( eComputer ) and eComputer:GetClass() == "prp_police_computer" then
+                if IsValid( eComputer ) and eComputer:GetClass() == "prp_computer" then
                     // distance check
                     if LocalPlayer():GetPos():DistToSqr( eComputer:GetPos() ) < 10000 then
                         eComputer:Open()
