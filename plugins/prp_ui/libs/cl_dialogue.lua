@@ -284,8 +284,20 @@ concommand.Add( "prp_dev_selectionmenu", function()
     if eEntity:EntIndex() == 0 then return end
 
     PUI.Dialogue.New( eEntity, {
-        "kiss",
-        "smooch",
-        "hug",
+        ["kiss"] = {
+            OnSelect = function()
+                Print( "Kissed the entity." )
+            end
+        },
+        ["smooch"] = {
+            OnSelect = function()
+                Print( "Smooched the entity." )
+            end
+        },
+        ["hug"] = {
+            OnSelect = function()
+                Print( "Hugged the entity." )
+            end
+        },
     } )
 end )
