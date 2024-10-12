@@ -1,9 +1,9 @@
 AddCSLuaFile()
 
-SWEP.PrintName              = "Dev Weapon"
+SWEP.PrintName              = "Crowbar"
 SWEP.Author                 = "sil"
 SWEP.Instructions           = "Left click to find out"
-SWEP.Category               = "Palomino: Development"
+SWEP.Category               = "Palomino: Heists"
 
 SWEP.Spawnable              = true
 SWEP.AdminOnly              = true
@@ -29,7 +29,10 @@ function SWEP:Initialize()
 end
 
 function SWEP:PrimaryAttack()
+    if not IsFirstTimePredicted() then return end
     self:SetNextPrimaryFire(CurTime() + 0.5)
+
+    if CLIENT then return end
 
     local eEntity = self:GetOwner():GetEyeTrace().Entity
 
