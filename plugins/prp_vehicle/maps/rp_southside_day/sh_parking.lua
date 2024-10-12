@@ -1,5 +1,30 @@
 -- @TODO: Unify the map config into a single plugin
 
+PRP.Vehicle.Parking.Register( "main_square", {
+    Spots = {
+        {
+            min = Vector(3843.3081054688,4157.8862304688,-63.968757629395),
+			max = Vector(4200.8916015625,4346.1044921875,14.057464599609),
+            ang = Angle( 0, 90, 0 ),
+        },
+        {
+            min = Vector(4222.6821289063,4159.4033203125,-63.96875),
+            max = Vector(4564.0537109375,4346.0864257813,23.095703125),
+            ang = Angle( 0, 90, 0 ),
+        },
+        {
+            min = Vector(4574.8232421875,4154.5297851563,-63.968757629395),
+            max = Vector(4923.9560546875,4348.1821289063,36.785797119141),
+            ang = Angle( 0, 90, 0 ),
+        },
+        {
+            min = Vector(4933.1142578125,4158.2490234375,-63.968727111816),
+            max = Vector(5277.923828125,4347.876953125,134.20498657227),
+            ang = Angle( 0, 90, 0 ),
+        }
+    }
+} )
+
 PRP.Vehicle.Parking.Register( "police_garage", {
     Spots = {
         -- Left side (vehicle entrance view side), from back
