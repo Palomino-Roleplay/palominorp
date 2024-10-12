@@ -54,6 +54,12 @@ function TOOL:LeftClick( tTrace )
         return true
     elseif self:GetStage() == 2 then
         if self:GetOwner():KeyDown( IN_USE ) then
+            local vMin = Vector( math.min( self.Area[1].x, self.Area[2].x ), math.min( self.Area[1].y, self.Area[2].y ), math.min( self.Area[1].z, self.Area[2].z ) )
+            local vMax = Vector( math.max( self.Area[1].x, self.Area[2].x ), math.max( self.Area[1].y, self.Area[2].y ), math.max( self.Area[1].z, self.Area[2].z ) )
+
+            self.Area[1] = vMin
+            self.Area[2] = vMax
+
             table.insert( self.SavedAreas, self.Area )
             self.Area = {}
             self:SetStage( 0 )
