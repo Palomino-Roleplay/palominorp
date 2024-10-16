@@ -1,7 +1,7 @@
 "darkrp"
 {
 	"base" 			"phelix"
-	"title" 		"DarkRP"
+	"title" 		"Palomino"
 	"author" 		"sil"
 	"menusystem"	"1"
 }
