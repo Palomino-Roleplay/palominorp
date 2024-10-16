@@ -539,19 +539,19 @@ function PANEL:Init()
 
     local tTempInventoryIDs = {
         ["slots_idcard"] = {
-            id = 44,
+            id = LocalPlayer():GetCharacter():GetData( "slots_idcard", 0 ),
             pos = {0, 700}
         },
         ["slots_equipment"] = {
-            id = 45,
+            id = LocalPlayer():GetCharacter():GetData( "slots_equipment", 0 ),
             pos = {100, 300}
         },
         ["slots_outfit"] = {
-            id = 46,
+            id = LocalPlayer():GetCharacter():GetData( "slots_outfit", 0 ),
             pos = {0, 0}
         },
         ["slots_primary"] = {
-            id = 47,
+            id = LocalPlayer():GetCharacter():GetData( "slots_primary", 0 ),
             pos = {100, 0}
         },
     }
