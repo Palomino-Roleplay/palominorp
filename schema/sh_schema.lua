@@ -8,8 +8,10 @@ PRP = PRP or {}
 -- @TODO: Change after playtest
 PRP.API_URL = "https://papi.palominorp.com"
 PRP.API_KEY = "aFp2bC5P3bhVHWqNTdI7SXljJOtIu2gb"
+PRP.AUTH_URL = "https://auth.palominorp.com"
 
 ix.util.Include("cl_schema.lua")
+ix.util.Include("sv_schema.lua")
 
 ix.util.IncludeDir("meta")
 ix.util.IncludeDir("hooks")

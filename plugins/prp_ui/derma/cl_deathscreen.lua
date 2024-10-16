@@ -136,3 +136,56 @@ gameevent.Listen( "player_spawn" )
 hook.Add( "player_spawn", "player_spawn_example", function( data ) 
     -- ix.gui.deathScreen.m_iFadeOutTimestamp = SysTime()
 end )
+
+-- Kinda like a better version of the death screen.
+-- @TODO: Replace the original death screen with a completed version (instance) of the below
+
+
+PANEL = {}
+
+surface.CreateFont( "PRP.Fullscreen.Overlay", {
+    font = "Inter Bold",
+    size = 200,
+    antialias = true
+})
+
+surface.CreateFont( "PRP.Fullscreen.Overlay_Shadow", {
+    font = "Inter Bold",
+    size = 200,
+    antialias = true,
+    blursize = 32
+})
+
+function PANEL:Init()
+    self:SetSize( ScrW(), ScrH() )
+    self:SetPos( 0, 0 )
+    self:SetZPos( 1000 )
+
+    timer.Simple( 10, function()
+        if IsValid( self ) then
+            self:Remove()
+        end
+    end )
+end
+
+AccessorFunc( PANEL, "m_sText", "Text", FORCE_STRING )
+
+function PANEL:Paint()
+    surface.SetFont( "PRP.Fullscreen.Overlay_Shadow" )
+    local iTextShadowW, iTextShadowH = surface.GetTextSize( self:GetText() )
+
+    surface.SetTextColor( 255, 255, 255, 16 )
+    surface.SetTextPos( ScrW() / 2 - iTextShadowW / 2, ScrH() / 2 - iTextShadowH / 2 )
+    surface.DrawText( self:GetText() )
+
+    surface.SetFont( "PRP.Fullscreen.Overlay" )
+    local iTextW, iTextH = surface.GetTextSize( self:GetText() )
+
+    surface.SetTextColor( 255, 255, 255, 255 )
+
+    surface.SetTextPos( ScrW() / 2 - iTextW / 2, ScrH() / 2 - iTextH / 2 )
+
+    surface.DrawText( self:GetText() )
+end
+
+vgui.Register( "PRP.Fullscreen.Overlay", PANEL, "DFrame" )

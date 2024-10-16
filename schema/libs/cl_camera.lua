@@ -1176,6 +1176,13 @@ end )
 
 local matBG = Material( "prp/InventoryBG.png" )
 
+surface.CreateFont( "PRP.Temp.Billboard", {
+    font = "Inter",
+    size = 64,
+    weight = 500,
+    antialias = true,
+} )
+
 -- @TODO: Redo, but holy shit this is cool
 hook.Add( "PostDrawOpaqueRenderables", "AAAAAHOLYSHIT", function()
     -- if PRP.Scene.Active then
@@ -1188,14 +1195,14 @@ hook.Add( "PostDrawOpaqueRenderables", "AAAAAHOLYSHIT", function()
             surface.SetMaterial( matBG )
             surface.DrawTexturedRect( 0, 0, 450, 240 )
 
-            surface.SetTextColor( 255, 255, 255 )
-            surface.SetFont( "ixMenuButtonHugeFont" )
+            surface.SetTextColor( 202, 225, 243)
+            surface.SetFont( "PRP.Temp.Billboard" )
 
             local sTitle = "Palomino"
             local iW, iH = surface.GetTextSize( sTitle )
 
             surface.SetTextPos( 225 - iW / 2, 120 - iH / 2 )
-            surface.DrawText( "Palomino" )
+            surface.DrawText( sTitle )
 
             -- surface.SetFont( "ixMenuButtonLabelFont" )
             -- surface.SetTextPos( 50, 60 )

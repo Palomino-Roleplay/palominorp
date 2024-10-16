@@ -2,6 +2,8 @@ PRP = PRP or {}
 
 require( "gwsockets" )
 
+util.AddNetworkString( "PRP.API.Challenge" )
+
 PRP.API = PRP.API or {}
 PRP.API.bInitialized = PRP.API.bInitialized or true
 
@@ -31,7 +33,8 @@ PRP.UI.AllowedResolutions = {
 PRP._WebSocket = PRP._WebSocket or nil
 
 PRP.API.WS = PRP.API.WS or {}
-PRP.API.WS._tCallbacks = PRP.API.WS._tCallbacks or {}
+-- PRP.API.WS._tCallbacks = PRP.API.WS._tCallbacks or {}
+PRP.API.WS._tCallbacks = {}
 
 function PRP.API.WS.Log( sMessage )
     MsgC(
@@ -51,11 +54,14 @@ PRP.API.REST = {}
 
 function PRP.API.REST.HTTP( tHTTPRequest, fnOK, fnFailed )
     -- @TODO: Queue requests if not initialized or disconnected
+    tHTTPRequest.url = PRP.API_REST_URL .. tHTTPRequest.url
+    -- tHTTPRequest.url = tHTTPRequest.url
 
     tHTTPRequest.timeout = tHTTPRequest.timeout or 10
 
     tHTTPRequest.headers = tHTTPRequest.headers or {}
     tHTTPRequest.headers["x-session-token"] = PRP.API.SessionToken
+    tHTTPRequest.headers["Content-Type"] = "application/json"
     Print( "Session token: ", PRP.API.SessionToken )
 
     tHTTPRequest.success = tHTTPRequest.success or function( iResponseCode, sBody, tHeaders )
@@ -69,12 +75,12 @@ function PRP.API.REST.HTTP( tHTTPRequest, fnOK, fnFailed )
         end
 
         -- @TODO: Maybe re-authenticate when we implement OAuth2
-        PRP.API.REST.Log( "Request failed: " .. tHTTPRequest.url .. " (" .. iResponseCode .. ")" )
-        if fnFailed then fnFailed( iResponseCode .. ": ".. sBody ) end
+        PRP.API.REST.Log( "Request failed: " .. tHTTPRequest.url .. " (" .. iResponseCode .. ") \"" .. sBody .. "\"" )
+        if fnFailed then fnFailed( iResponseCode .. ": " .. sBody ) end
     end
 
     tHTTPRequest.failed = tHTTPRequest.failed or function( sError )
-        PRP.API.REST.Log( "Request failed: " .. tHTTPRequest.url .. " (" .. sError .. ")" )
+        PRP.API.REST.Log( "Request failed: " .. tHTTPRequest.url .. " (" .. iResponseCode or 0 .. ")" )
         if fnFailed then fnFailed( sError ) end
     end
 
@@ -128,7 +134,7 @@ local function fnInitializeREST()
 
     PRP.API.REST.HTTP(
         {
-            url = PRP.API_REST_URL .. "/server",
+            url = "/server",
             method = "GET",
         },
         -- Success
@@ -213,7 +219,8 @@ function PRP.API.Initialize()
     PRP._WebSocket:setHeader( "x-api-key", tPalominoEnvironment.api.key )
 
     function PRP._WebSocket:onMessage( sMessage )
-        -- PRP.API.WS.Log( "Received: ", sMessage )
+        Print("Received message")
+        PRP.API.WS.Log( sMessage )
 
         -- Convert message from JSON to table
         local tMessage = util.JSONToTable( sMessage )
@@ -267,6 +274,7 @@ function PRP.API.Initialize()
 
         timer.Remove("PRP.API.WS.Heartbeat")
 
+        fnInitializeREST()
         -- PRP.API.bInitialized = false
 
         -- @TODO: Attempt reconnect w/ session token
@@ -280,6 +288,46 @@ hook.Add( "InitPostEntity", "PRP.API.InitPostEntity", PRP.API.Initialize )
 
 -- @TODO: Remove
 -- PRP.API.Initialize()
+
+hook.Add( "PlayerLoadedCharacter", "PRP.API.PlayerLoadedCharacter", function( pPlayer, cCharacter )
+    if not PRP.API.bInitialized then return end
+
+    PRP.API.WS.Send( "authCreateChallenge", {
+        steamID = pPlayer:SteamID64(),
+        character = cCharacter:GetID()
+    } )
+end )
+
+PRP.API.WS.OnMessage( "auth/challengeCreated", function( tData )
+    Print( "Received player challenge code from authentication server." )
+
+    Print( tData )
+
+    local sSteamID = tData.steamId
+    local pPlayer = player.GetBySteamID64( sSteamID )
+    local iCharacterID = tData.characterId
+
+    if not IsValid( pPlayer ) then return end
+    if not pPlayer:GetCharacter() then return end
+    if pPlayer:GetCharacter():GetID() ~= iCharacterID then return end
+
+    local sChallenge = tData.challenge
+
+    net.Start( "PRP.API.Challenge" )
+        net.WriteString( sChallenge )
+    net.Send( pPlayer )
+end )
+
+concommand.Add( "prp_reauth", function( pPlayer, sCommand, tArgs, sArgs )
+    Print( "Reauthenticating player: " .. pPlayer:Name() )
+
+    if not pPlayer:IsDeveloper() then return end
+
+    PRP.API.WS.Send( "auth/createChallenge", {
+        steamId = pPlayer:SteamID64(),
+        characterId = pPlayer:GetCharacter():GetID()
+    } )
+end )
 
 concommand.Add( "prp_api_init", function()
     PRP.API.Initialize()

@@ -2,6 +2,6 @@
 {
 	"base" 			"phelix"
 	"title" 		"DarkRP"
-	"author" 		"Palomino Roleplay"
+	"author" 		"sil"
 	"menusystem"	"1"
 }

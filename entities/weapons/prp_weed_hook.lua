@@ -16,7 +16,7 @@ SWEP.Secondary.DefaultClip	= -1
 SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		    = "none"
 
-SWEP.ViewModel			    = ""
+SWEP.ViewModel			    = "models/weapons/v_crowbar.mdl"
 SWEP.WorldModel			    = "models/zerochain/props_growop2/zgo2_dryline.mdl"
 SWEP.UseHands               = true
 

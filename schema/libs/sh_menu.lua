@@ -102,17 +102,39 @@ if CLIENT then
 
         if not tOptions or table.IsEmpty(tOptions) then return false end
 
-        ix.menu.panelV2 = DermaMenu( false )
-        for k, v in pairs( tOptions ) do
-            ix.menu.panelV2:AddOption( k, function()
-                ix.menu.NetworkChoice( eEntity, k, bStatus )
-                ix.menu.panelV2:Remove()
-                ix.menu.panelV2 = nil
-            end )
+        Print( "options!!!" )
+        Print( tOptions )
+
+        local tDialogueOptions = {}
+
+        for sOptionID, fnOnSelect in pairs( tOptions ) do
+            tDialogueOptions[sOptionID] = {
+                OnSelect = function()
+                    Print("OnSelect: ", sOptionID)
+                    if IsValid( eEntity ) then
+                        net.Start("ixEntityMenuSelect")
+                        net.WriteEntity( eEntity )
+                        net.WriteString( sOptionID )
+                        net.WriteType( true ) -- idk what this is
+                        net.SendToServer()
+                    end
+                end
+            }
         end
 
-        ix.menu.panelV2:Open( ScrW() / 2, ScrH() / 2 )
-        input.SetCursorPos( ScrW() / 2, ScrH() / 2 )
+        PUI.Dialogue.New( eEntity, tDialogueOptions )
+
+        -- ix.menu.panelV2 = DermaMenu( false )
+        -- for k, v in pairs( tOptions ) do
+            -- ix.menu.panelV2:AddOption( k, function()
+            --     ix.menu.NetworkChoice( eEntity, k, bStatus )
+            --     ix.menu.panelV2:Remove()
+            --     ix.menu.panelV2 = nil
+            -- end )
+        -- end
+
+        -- ix.menu.panelV2:Open( ScrW() / 2, ScrH() / 2 )
+        -- input.SetCursorPos( ScrW() / 2, ScrH() / 2 )
 
         return true
     end

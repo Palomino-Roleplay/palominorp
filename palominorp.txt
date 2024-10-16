@@ -1,0 +1,7 @@
+"darkrp"
+{
+	"base" 			"phelix"
+	"title" 		"Palomino"
+	"author" 		"sil"
+	"menusystem"	"1"
+}

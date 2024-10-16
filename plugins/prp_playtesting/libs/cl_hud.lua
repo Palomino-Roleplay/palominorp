@@ -1,7 +1,11 @@
 local PLUGIN = PLUGIN
 
+CreateClientConVar( "prp_dev_hideinfo", "0", true, false, "Show playtesting information on the HUD." )
+
 function PLUGIN:HUDPaint()
     if not PRP.Playtesting.Enabled then return end
+    if not LocalPlayer():IsDeveloper() then return true end
+    if GetConVar( "prp_dev_hideinfo" ):GetBool() then return end
 
     surface.SetFont( "DebugOverlay" )
 

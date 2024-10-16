@@ -203,7 +203,7 @@ surface.CreateFont( "PRP.UI.Interaction.Option", {
 --     end
 
 
---     -- for _, ent in ipairs( ents.FindByClass( "player" ) ) do
+--     -- for _, ent in ipairs( ents.FindByClass( "prp_npc" ) ) do
 --         -- PUI.StartOverlay()
 --         --     -- @TODO: Something
 --         --     surface.SetMaterial( Material( "effects/flashlight/soft" ) )

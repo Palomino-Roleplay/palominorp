@@ -32,6 +32,30 @@ function PLUGIN:OnCharacterMenuCreated( panel )
     end
 end
 
+function PLUGIN:PlayerButtonDown( pPlayer, iButton )
+    if (not IsFirstTimePredicted()) then return end
+
+    if iButton == KEY_E then
+        if (not ix.menu.IsOpen()) then
+			local data = {}
+			data.start = pPlayer:GetShootPos()
+			data.endpos = data.start + pPlayer:GetAimVector() * 128
+			data.filter = pPlayer
+
+			local entity = util.TraceLine(data).Entity
+
+			if (IsValid(entity) and isfunction(entity.GetEntityMenu)) then
+				hook.Run("ShowEntityMenu", entity)
+			end
+		end
+
+		timer.Remove("ixItemUse")
+
+		pPlayer.ixInteractionTarget = nil
+		pPlayer.ixInteractionStartTime = nil
+    end
+end
+
 concommand.Add( "prp_splash", function()
     local dSplash = vgui.Create( "PRP.Splash" )
 end )
