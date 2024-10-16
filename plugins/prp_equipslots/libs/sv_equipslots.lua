@@ -8,15 +8,43 @@ do
     end
 end
 
-function PRP.EquipSlots.CreateInventory( iCharacterID )
+function PRP.EquipSlots.CreateInventory( pPlayer, cCharacter )
+    Print( "Creating equipment inventories for " .. cCharacter:GetName() .. "(" .. cCharacter:GetID() .. ")" )
+
     for sInventoryID, tInventory in pairs( PRP.EquipSlots.Inventories ) do
-        ix.inventory.New(iCharacterID, sInventoryID, function( oInventory)
-            oInventory:AddReceiver( oInventory:GetOwner() )
+        ix.inventory.New(cCharacter:GetID(), sInventoryID, function( oInventory )
+            oInventory:AddReceiver( pPlayer )
             oInventory:Add( "palopal" )
-            oInventory:Sync( oInventory:GetOwner() )
+            oInventory:Sync( pPlayer )
 
             Print( sInventoryID .. ": " .. oInventory:GetID() )
+            cCharacter:SetData( sInventoryID, oInventory:GetID() )
         end )
+    end
+end
+
+function PLUGIN:OnCharacterCreated( pPlayer, cCharacter )
+    PRP.EquipSlots.CreateInventory( pPlayer, cCharacter )
+end
+
+function PLUGIN:CharacterLoaded( cCharacter )
+    local pPlayer = cCharacter:GetPlayer()
+
+    if not pPlayer then return end
+
+    for sInventoryID, tInventory in pairs( PRP.EquipSlots.Inventories ) do
+        local iInventoryID = cCharacter:GetData( sInventoryID )
+
+        if iInventoryID then
+            ix.inventory.Restore( iInventoryID, PRP.EquipSlots.Inventories[sInventoryID].w, PRP.EquipSlots.Inventories[sInventoryID].h, function( oInventory )
+                oInventory:AddReceiver( pPlayer )
+                oInventory:Sync( pPlayer )
+
+                Print( sInventoryID .. ": " .. oInventory:GetID() )
+            end )
+        else
+            PRP.EquipSlots.CreateInventory( pPlayer, cCharacter )
+        end
     end
 end
 
