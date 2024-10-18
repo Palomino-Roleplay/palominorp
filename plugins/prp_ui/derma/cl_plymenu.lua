@@ -141,6 +141,27 @@ function PANEL:Init()
     self.m_pnlTabCharacterLeft:SetSize( PRP.UI.ScaleFactor * 500, ScrH() - ( 100 * PRP.UI.ScaleFactor ) )
     self.m_pnlTabCharacterLeft:SetSpaceY( 30 )
 
+    local tPrimaryBags = ix.inventory.Get( LocalPlayer():GetCharacter():GetData( "slots_primary", 0 ) ):GetItemsByBase("base_bags")
+
+    if #tPrimaryBags >= 1 then
+        local iBagInventoryID = tPrimaryBags[1]:GetData( "id", 0 )
+
+        if iBagInventoryID and iBagInventoryID ~= 0 then
+            local oBagInventory = ix.inventory.Get( iBagInventoryID )
+
+            self.m_pnlTabCharacterLeftBackpack = vgui.Create( "ixInventory", self.m_pnlTabCharacterContent )
+            -- self.m_pnlTabCharacterRightEquippables[sEquipmentSlotsID]:SetIconSize( 80 * PRP.UI.ScaleFactor )
+            self.m_pnlTabCharacterLeftBackpack:SetPos( PRP.UI.ScaleFactor * 50, PRP.UI.ScaleFactor * 50 )
+            self.m_pnlTabCharacterLeftBackpack:SetTitle( "BACKPACK" )
+            self.m_pnlTabCharacterLeftBackpack:SetIconSize( 80 * PRP.UI.ScaleFactor )
+            -- self.m_pnlTabCharacterRightEquippables[sEquipmentSlotsID]:SetDraggable( true )
+            self.m_pnlTabCharacterLeftBackpack:SetInventory( oBagInventory )
+            self.m_pnlTabCharacterLeftBackpack:SetPaintedManually( false )
+            self.m_pnlTabCharacterLeftBackpack.bNoBackgroundBlur = true
+            self.m_pnlTabCharacterLeftBackpack.childPanels = {}
+        end
+    end
+
     self.m_pnlTabCharacterLeftHeader = vgui.Create( "DPanel", self.m_pnlTabCharacterLeft )
     self.m_pnlTabCharacterLeftHeader:SetPos( 0, 0 )
     self.m_pnlTabCharacterLeftHeader:SetSize( PRP.UI.ScaleFactor * 500, 68 * PRP.UI.ScaleFactor )
