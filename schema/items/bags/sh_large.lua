@@ -1,4 +1,6 @@
-ITEM.name = "Big Bag"
+ITEM.name = "Backpack"
 ITEM.description = "A big bag."
-ITEM.invWidth = 6
-ITEM.invHeight = 4
+ITEM.width = 3
+ITEM.height = 2
+ITEM.invWidth = 4
+ITEM.invHeight = 5
