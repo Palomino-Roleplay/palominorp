@@ -15,8 +15,11 @@ local oGradientGlow = Material( "prp/ui/temp/gradient_v2_plymenu_v2.png", "" )
 local oGlowMat = Material( "prp/ui/temp/ply_glow.png", "" )
 local oBoltMat = Material( "prp/ui/temp/bolt.png" )
 
+local iStaminaSmoothed = 100
 local function fnStaminaPercentSmoothed()
-    return 1 - ( CurTime() % 30 / 30 )
+    iStaminaSmoothed = Lerp( FrameTime() * 10, iStaminaSmoothed, LocalPlayer():GetLocalVar("stm") )
+
+    return iStaminaSmoothed / 100
 end
 
 -- local function DownloadAPIFiles()
