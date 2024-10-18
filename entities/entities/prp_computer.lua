@@ -57,7 +57,7 @@ if CLIENT then
         local tToScreen = vPos:ToScreen()
 
         PRP_COMPUTER_MENU = vgui.Create( "DHTML" )
-        PRP_COMPUTER_MENU:OpenURL( "https://pal-os.palomino.gg")
+        PRP_COMPUTER_MENU:OpenURL( "https://pal-os.palominorp.com")
         PRP_COMPUTER_MENU:SetSize( 392 * 2, 322 * 2 )
         PRP_COMPUTER_MENU:SetPos( tToScreen.x, tToScreen.y )
         PRP_COMPUTER_MENU:SetMouseInputEnabled( true )
