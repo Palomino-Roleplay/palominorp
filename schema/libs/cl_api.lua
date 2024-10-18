@@ -5,7 +5,7 @@ PRP.API._bInitComplete = PRP.API._bInitComplete or false
 PRP.API._bDownloadComplete = false
 PRP.API._tMaterials = PRP.API._tMaterials or {}
 PRP.API._tMaterialsDownloadQueue = PRP.API._tMaterialsDownloadQueue or {}
-PRP.API.Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoicGxheWVyIiwic3RlYW1JZCI6Ijc2NTYxMTk4MDcyNTUxMDI3IiwiY2hhcmFjdGVySWQiOjEsImNoYXJhY3Rlck5hbWUiOiJUZXN0IENoYXJhY3RlciIsInBlcm1pc3Npb25zIjpbImNvbm5lY3Rfc2VydmVyIiwidXNlX2NoYXQiXSwiaWF0IjoxNzI4NDIzOTgyLCJleHAiOjE3Mjg0NjcxODJ9.8tGx5ePX7sDgjB5X-7BGSIozOQpm6X6ZaC3t1rZMSPI"
+PRP.API.Token = ""
 
 net.Receive( "PRP.API.Challenge", function()
     Print( "Received challenge from server." )
@@ -15,34 +15,38 @@ net.Receive( "PRP.API.Challenge", function()
     sChallengeURL = string.Replace( sChallengeURL, "localhost", "loopback.gmod" )
     Print( sChallengeURL )
 
-    -- local bMadeRequest = HTTP( {
-    --     url = sChallengeURL,
-    --     method = "POST",
-    --     success = function( sBody, iLen, tHeaders, iCode )
-    --         local tData = util.JSONToTable( sBody )
-    --         if not tData then return end
+    local bMadeRequest = HTTP( {
+        url = sChallengeURL,
+        method = "POST",
+        success = function( iCode, sBody, tHeaders )
+            Print("Received response from challenge: " .. iCode)
+            Print(sBody)
 
-    --         if tData.success then
-    --             Print( tData )
-    --         end
-    --     end,
-    --     failed = function( sError )
-    --         print( "Failed to authenticate challenge: " .. sError )
-    --     end
-    -- } )
+            local tData = util.JSONToTable( sBody )
+            if not tData then return end
 
-    http.Post(
-        sChallengeURL,
-        {},
-        function()
-            print("success")
+            if iCode == 200 then
+                Print( tData )
+                PRP.API.Token = tData.token
+            end
         end,
-        function( sError )
-            print("failed:" .. sError)
+        failed = function( sError )
+            print( "Failed to authenticate challenge: " .. sError )
         end
-    )
+    } )
 
-    -- Print( bMadeRequest )
+    -- http.Post(
+    --     sChallengeURL,
+    --     {},
+    --     function()
+    --         print("success")
+    --     end,
+    --     function( sError )
+    --         print("failed:" .. sError)
+    --     end
+    -- )
+
+    Print( bMadeRequest )
 end )
 
 -- @TODO: Consider moving this to a hook
