@@ -1,7 +1,13 @@
 local PLY = FindMetaTable( "Player" )
 
 function PLY:HasRadioFaction()
-    return self:GetCharacter() and ix.faction.Get( self:GetCharacter():GetFaction() ).hasRadio
+    if not self:GetCharacter() then return false end
+    if not self:GetCharacter():GetFaction() then return false end
+
+    local tFaction = ix.faction.Get( self:GetCharacter():GetFaction() )
+    if not tFaction then return false end
+
+    return tFaction.hasRadio or false
 end
 
 function PLY:HasRadio()
