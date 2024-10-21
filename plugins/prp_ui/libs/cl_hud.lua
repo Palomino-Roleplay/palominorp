@@ -184,6 +184,17 @@ hook.Add( "HUDPaint", "PRP.UI.HUDPaint", function()
         PRP.UI.DrawTimer( iX, iY, "RECOVERING", iRecoveryTimeRemaining )
     end
 
+    -- Prison Timer
+    if LocalPlayer():GetCharacter():IsArrested() then
+        local iUnarrestTimestamp = LocalPlayer():GetCharacter():GetData( "arrest_start", 0 ) + LocalPlayer():GetCharacter():GetData( "arrest_time", 0 )
+        if iUnarrestTimestamp then
+            local iArrestTimeRemaining = math.max( iUnarrestTimestamp - CurTime(), 0 )
+
+            iY = iY - ( oMaterialHeart:Height() + 10 )
+            PRP.UI.DrawTimer( iX, iY, "ARRESTED", iArrestTimeRemaining )
+        end
+    end
+
 
     -- Palomino Watermark
     surface.SetFont( "PRP.UI.Watermark.Header" )

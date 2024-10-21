@@ -14,10 +14,11 @@ function CHAR:Arrest( pArrestor, iTime, sReason )
 
     pPlayer:StripWeapons()
 
-    self:SetData( "arrest_time", iTime )
-
     self._arrestStart = CurTime()
     self._arrestTime = iTime
+
+    self:SetData( "arrest_start", self._arrestStart)
+    self:SetData( "arrest_time", iTime )
 
     timer.Create( "PRP.Arrest." .. self:GetID(), iTime, 1, function()
         self:Unarrest()
@@ -59,6 +60,7 @@ function CHAR:Unarrest()
         pPrisoner:Spawn()
     end
 
+    self:SetData( "arrest_start", 0 )
     self:SetData( "arrest_time", 0 )
 
     self._arrestStart = nil
