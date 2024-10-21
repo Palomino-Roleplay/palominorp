@@ -22,14 +22,14 @@ function PLUGIN:OnCharacterMenuCreated( panel )
     bIntroRun = true
 
     -- RunConsoleCommand( "prp_devpreview" )
-    local dSplash = vgui.Create( "PRP.Splash" )
+    -- local dSplash = vgui.Create( "PRP.Splash" )
 
-    panel:Hide()
+    -- panel:Hide()
 
     -- @TODO: Do better. (This overrides the splash screen's OnRemove function.)
-    dSplash.OnRemove = function()
-        if IsValid( panel ) then panel:Show() end
-    end
+    -- dSplash.OnRemove = function()
+    --     if IsValid( panel ) then panel:Show() end
+    -- end
 end
 
 function PLUGIN:PlayerButtonDown( pPlayer, iButton )
