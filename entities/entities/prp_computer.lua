@@ -137,7 +137,9 @@ if CLIENT then
             end
 
             if LocalPlayer().m_eComputer then
-                LocalPlayer().m_eComputer:Close()
+                -- if LocalPlayer().m_eComputer ~= NULL then
+                    -- LocalPlayer().m_eComputer:Remove()
+                -- end
             else
                 local eComputer = LocalPlayer():GetEyeTrace().Entity
                 if IsValid( eComputer ) and eComputer:GetClass() == "prp_computer" then
