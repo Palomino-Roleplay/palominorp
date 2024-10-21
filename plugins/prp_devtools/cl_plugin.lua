@@ -358,9 +358,9 @@ local function DrawEntityInfo( eEntity, iX, iY, oColor )
 
     iY = iY + 15
 
-    if eEntity:GetProperty() then
+    if eEntity:GetRealty() then
         draw.SimpleText(
-            "Property: " .. eEntity:GetProperty():GetID(),
+            "Property: " .. eEntity:GetRealty():GetID(),
             "DebugFixed",
             iX,
             iY,
@@ -412,7 +412,7 @@ local function DrawPropertyInfo( oProperty )
 
     for _, eEntity in pairs( oProperty:GetEntities() or {} ) do
         if not IsValid( eEntity ) then continue end
-        if not eEntity:GetProperty() then continue end
+        if not eEntity:GetRealty() then continue end
 
         local tScreenPos = eEntity:GetPos():ToScreen()
 
@@ -422,7 +422,7 @@ local function DrawPropertyInfo( oProperty )
             iY = iY + 15
             draw.SimpleText( "Map ID: " .. ( eEntity:MapCreationID() > 0 and eEntity:MapCreationID() or "N/A" ), "DefaultFixed", tScreenPos.x, iY, Color( 150, 255, 200, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
             iY = iY + 15
-            draw.SimpleText( "Property: " .. ( eEntity:GetProperty():GetID() ), "DefaultFixed", tScreenPos.x, iY, Color( 150, 255, 200, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
+            draw.SimpleText( "Property: " .. ( eEntity:GetRealty():GetID() ), "DefaultFixed", tScreenPos.x, iY, Color( 150, 255, 200, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
         cam.End2D()
     end
 end

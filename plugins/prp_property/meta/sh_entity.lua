@@ -4,7 +4,7 @@ local ENTITY = FindMetaTable( "Entity" )
 
 AccessorFunc( ENTITY, "m_pSpawner", "Spawner" )
 
-function ENTITY:GetProperty()
+function ENTITY:GetRealty()
     if self.m_sPropertyID then return PRP.Property.Get( self.m_sPropertyID ) end
 
     local sPropertyID = self:GetNWString( "PRP.Property", nil )
@@ -16,7 +16,8 @@ function ENTITY:GetProperty()
     return
 end
 
-function ENTITY:SetProperty( oProperty )
+-- Fuck you Photon 2 for using :SetProperty. You motherfuckers. Why would you think you own that as a lighting mod.
+function ENTITY:SetRealty( oProperty )
     if not oProperty then return end
 
     if CLIENT then return end
@@ -27,9 +28,9 @@ end
 
 function ENTITY:HasAccess( cCharacter )
     if not cCharacter then return false end
-    if not self:GetProperty() then return false end
+    if not self:GetRealty() then return false end
 
-    return self:GetProperty():HasAccess( cCharacter )
+    return self:GetRealty():HasAccess( cCharacter )
 end
 
 -- @TODO: Perhaps this should only exist for prop_physics?
@@ -81,7 +82,7 @@ function ENTITY:CalcSnappingPoints(bReturnUnsnapped)
     local tSnapPoints = self:GetSnapPoints()
     if not tSnapPoints then return false end
 
-    local oProperty = self:GetProperty()
+    local oProperty = self:GetRealty()
     local tSnappedPoints = false
     local tUnsnappedPoints = {}
     local indicesToRemove = {}
@@ -208,8 +209,8 @@ function ENTITY:CalcZones( vTargetPos, aTargetAng )
     end
 
 
-    if not self:GetProperty() then return end
-    local oProperty = self:GetProperty()
+    if not self:GetRealty() then return end
+    local oProperty = self:GetRealty()
 
     local vHitBoxMin, vHitBoxMax = self:GetCollisionBounds()
 
@@ -263,7 +264,7 @@ function ENTITY:IsInZoneOfType( sType, vTargetPos, aTargetAng )
 end
 
 function ENTITY:CalcIntersect(vTargetPos, aTargetAng, tFilter)
-    if not self:GetProperty() then return end
+    if not self:GetRealty() then return end
 
     vTargetPos = vTargetPos or self:GetPos()
     aTargetAng = aTargetAng or self:GetAngles()
@@ -317,8 +318,8 @@ function ENTITY:CalcIntersect(vTargetPos, aTargetAng, tFilter)
 end
 
 function ENTITY:CalcFloor(vTargetPos, aTargetAng)
-    if not self:GetProperty() then return end
-    local oProperty = self:GetProperty()
+    if not self:GetRealty() then return end
+    local oProperty = self:GetRealty()
     if not self:GetCategory() then return end
     local oCategory = self:GetCategory()
 

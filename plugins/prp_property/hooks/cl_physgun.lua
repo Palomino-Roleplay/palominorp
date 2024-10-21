@@ -67,10 +67,10 @@ end
 
 function PLUGIN:PostDrawTranslucentRenderables()
     if not IsValid( PRP.Prop.PhysgunnedEntity ) then return end
-    if not PRP.Prop.PhysgunnedEntity:GetProperty() then return end
+    if not PRP.Prop.PhysgunnedEntity:GetRealty() then return end
     if not PRP.Prop.PhysgunnedEntity:GetCategory() then return end
 
-    local oProperty = PRP.Prop.PhysgunnedEntity:GetProperty()
+    local oProperty = PRP.Prop.PhysgunnedEntity:GetRealty()
 
     local vHitBoxMin, vHitBoxMax = PRP.Prop.PhysgunnedEntity:OBBMins(), PRP.Prop.PhysgunnedEntity:OBBMaxs()
 

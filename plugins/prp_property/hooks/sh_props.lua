@@ -16,8 +16,8 @@ PRP.Prop = PRP.Prop or {}
 
     --     for _, eEntity in pairs( ents.GetAll() ) do
     --         if not IsValid( eEntity ) then continue end
-    --         if not eEntity:GetProperty() then continue end
-    --         if eEntity:GetProperty() ~= oProperty then continue end
+    --         if not eEntity:GetRealty() then continue end
+    --         if eEntity:GetRealty() ~= oProperty then continue end
 
     --         local sCategory = eEntity:GetNW2String( "PRP.Prop.Category", nil )
     --         if not sCategory then continue end
@@ -34,9 +34,9 @@ PRP.Prop = PRP.Prop or {}
     --     -- Print( "PhysgunnedEntity:", PRP.Prop.PhysgunnedEntity )
     --     if not IsValid( PRP.Prop.PhysgunnedEntity ) then return end
 
-    --     if not PRP.Prop.PhysgunnedEntity:GetProperty() then return end
+    --     if not PRP.Prop.PhysgunnedEntity:GetRealty() then return end
 
-    --     local oProperty = PRP.Prop.PhysgunnedEntity:GetProperty()
+    --     local oProperty = PRP.Prop.PhysgunnedEntity:GetRealty()
     --     local bIsDefensiveProp = string.StartsWith( PRP.Prop.PhysgunnedEntity:GetNW2String( "PRP.Prop.Category", "" ), "defensive_props" )
     --     -- local vPos = PRP.Prop.PhysgunnedEntity:GetPos()
     --     local vTargetPos = PRP.Prop.PhysgunnedEntity:GetPos()
@@ -222,8 +222,8 @@ PRP.Prop = PRP.Prop or {}
 --     -- if pPlayer:IsAdmin() then return end
 --     if not IsValid( eEntity ) then return end
 
---     if not eEntity:GetProperty() then return end
---     local oProperty = eEntity:GetProperty()
+--     if not eEntity:GetRealty() then return end
+--     local oProperty = eEntity:GetRealty()
 
 --     -- When we force drop the entity to the floor, we might go a little bit out of bounds.
 --     -- This is to prevent deletion of the entity after the last movement was a force drop.
