@@ -21,6 +21,9 @@ function PLUGIN:OnCharacterMenuCreated( panel )
 
     bIntroRun = true
 
+    panel:Remove()
+    PRP.UI.MainMenu = vgui.Create( "PRP.MainMenu" )
+
     -- RunConsoleCommand( "prp_devpreview" )
     -- local dSplash = vgui.Create( "PRP.Splash" )
 

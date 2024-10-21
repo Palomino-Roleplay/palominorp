@@ -12,31 +12,42 @@ function PANEL:Init()
     gui.EnableScreenClicker( true )
 
     local pSelect = vgui.Create( "PRP.Select", self )
-    pSelect:SetSize( 300, 400 )
-    pSelect:SetPos( 275, 2 * ScrH() / 3 )
+    pSelect:SetSize( 300 * PRP.UI.ScaleFactor, 2 * ScrH() / 3 )
+    pSelect:SetPos( 275 * PRP.UI.ScaleFactor, 2 * ScrH() / 3 )
 
-    pSelect:AddButton( "CONTINUE", function( pButton )
-        pButton:OpenSubMenu( function( pSubMenu )
-            pSubMenu:AddButton( "SYDNEY HUGHES", function()
-                print("test")
-            end )
-
-            pSubMenu:AddButton( "GEORGE P. BURDELL", function()
-                print("test")
-            end )
-
-            pSubMenu:AddButton( "AIDEN LANDINI", function()
-                print("test")
-            end )
-        end )
-        print("test")
+    pSelect:AddButton( "DISCORD", function()
+        gui.OpenURL( "https://discord.gg/ETNem7McnD" )
     end )
 
     pSelect:AddButton( "NEW CHARACTER", function()
-        print("test")
+        if #ix.characters > 3 then
+            Derma_Message( "You have reached the maximum amount of characters.", "Error", "OK" )
+            return
+        end
+
+        net.Start("PRP.Playtesting.NewCharacter")
+        net.SendToServer()
+
+        self:Remove()
     end )
 
-    pSelect:AddButton( "DISCORD", function()
+    pSelect:AddButton( "CONTINUE", function( pButton )
+        pButton:OpenSubMenu( function( pSubMenu )
+            for i = 1, #ix.characters do
+                local iID = ix.characters[i]
+                local cCharacter = ix.char.loaded[i]
+
+                if not cCharacter then continue end
+
+                pSubMenu:AddButton( string.upper( cCharacter:GetName() ), function()
+                    net.Start("ixCharacterChoose")
+                        net.WriteUInt(cCharacter:GetID(), 32)
+                    net.SendToServer()
+
+                    self:Remove()
+                end )
+            end
+        end )
         print("test")
     end )
 end

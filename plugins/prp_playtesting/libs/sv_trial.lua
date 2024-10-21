@@ -1,5 +1,7 @@
 PRP.Playtesting = PRP.Playtesting or {}
 
+util.AddNetworkString( "PRP.Playtesting.NewCharacter" )
+
 -- Names
 
 local maleNames = {
@@ -34,6 +36,7 @@ local lastNames = {
     "Rivera", "Cooper", "Richardson", "Cox", "Howard", "Ward", "Torres", "Peterson", "Gray", "Ramirez",
     "James", "Watson", "Brooks", "Kelly", "Sanders", "Price", "Bennett", "Wood", "Barnes", "Ross"
 }
+
 
 function PRP.Playtesting.CreateSampleCharacter( pPlayer, fnCallback )
     local bIsMale = math.random( 1, 2 ) == 1
@@ -84,6 +87,10 @@ function PRP.Playtesting.CreateSampleCharacter( pPlayer, fnCallback )
         end
     end )
 end
+
+net.Receive( "PRP.Playtesting.NewCharacter", function( _, pPlayer )
+    PRP.Playtesting.CreateSampleCharacter( pPlayer )
+end )
 
 -- DistributionObject
 
