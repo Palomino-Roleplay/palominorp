@@ -24,14 +24,14 @@ function ENT:Initialize()
 	if SERVER then
 		self:PhysicsInit( SOLID_VPHYSICS )
 		self:SetUseType( SIMPLE_USE )
-	end
 
-	-- Make prop to fall on spawn
-	self:PhysWake()
+        self:PhysWake()
 
-    self:GetPhysicsObject():EnableMotion( false )
+        self:GetPhysicsObject():EnableMotion( false )
 
-    self:SetUseType( SIMPLE_USE )
+        self:SetUseType( SIMPLE_USE )
+    end
+
 end
 
 AccessorFunc( ENT, "m_tDoors", "Doors" )
