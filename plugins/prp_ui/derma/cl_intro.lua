@@ -57,6 +57,11 @@ function PANEL:OnRemove()
 end
 
 function PANEL:Paint()
+    -- @TODO: Find out why screenclicker isn't enabled on first open, even if we put it on initialize.
+    if not vgui.CursorVisible() then
+        gui.EnableScreenClicker( true )
+    end
+
     ix.util.DrawBlur( self, 8 )
 
     PUI.StartOverlay()
