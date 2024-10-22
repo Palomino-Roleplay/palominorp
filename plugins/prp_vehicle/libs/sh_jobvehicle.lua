@@ -60,7 +60,7 @@ end
 -- 
 
 -- @TODO: Move to a config or something
-PRP.Vehicle.Job.Register( "19tahoe_sgm", {
+PRP.Vehicle.Job.Register( "photon2:prp_prius_pd", {
     Factions = {
         [FACTION_POLICE] = true
     },
@@ -68,27 +68,40 @@ PRP.Vehicle.Job.Register( "19tahoe_sgm", {
         [CLASS_POLICE_CHIEF] = true, 
         [CLASS_POLICE_LIEUTENANT] = true,
         [CLASS_POLICE_SERGEANT] = true,
-        [CLASS_POLICE_OFFICER] = true
+        [CLASS_POLICE_OFFICER] = true,
+        [CLASS_POLICE_CADET] = true,
     }
 } )
 
-
-PRP.Vehicle.Job.Register( "chargersrt8poltdm", {
+PRP.Vehicle.Job.Register( "photon2:prp_crownvic_pd", {
     Factions = {
         [FACTION_POLICE] = true
     },
     Classes = {
         [CLASS_POLICE_CHIEF] = true, 
         [CLASS_POLICE_LIEUTENANT] = true,
-        [CLASS_POLICE_SERGEANT] = true
+        [CLASS_POLICE_SERGEANT] = true,
+        [CLASS_POLICE_OFFICER] = true,
     }
 } )
 
-PRP.Vehicle.Job.Register( "17raptor_cop_sgm", {
+PRP.Vehicle.Job.Register( "photon2:prp_durango_pd", {
     Factions = {
         [FACTION_POLICE] = true
     },
     Classes = {
-        [CLASS_POLICE_CHIEF] = true
+        [CLASS_POLICE_CHIEF] = true, 
+        [CLASS_POLICE_LIEUTENANT] = true,
+        [CLASS_POLICE_SERGEANT] = true,
+    }
+} )
+
+PRP.Vehicle.Job.Register( "photon2:prp_tahoe_pd", {
+    Factions = {
+        [FACTION_POLICE] = true
+    },
+    Classes = {
+        [CLASS_POLICE_CHIEF] = true, 
+        [CLASS_POLICE_LIEUTENANT] = true,
     }
 } )
