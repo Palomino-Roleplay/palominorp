@@ -3,6 +3,7 @@ PLUGIN.author = "sil"
 PLUGIN.description = "Recovery in hospital after death"
 
 -- Some backup spawns
+-- @TODO: Gross.
 PLUGIN.spawns = {
     Vector( 7073, 5300, 224 ),
     Vector( 7147, 5298, 224 ),
