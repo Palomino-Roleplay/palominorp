@@ -11,6 +11,9 @@ function PRP.Vehicle.Spawn( sVehicleID, vPos, aAng )
     local eVehicle = ents.Create( tVehicleData.Class )
     if not IsValid( eVehicle ) then return end
 
+    eVehicle.VehicleTable = tVehicleData
+    eVehicle.VehicleName = sVehicleID
+
     duplicator.DoGeneric( eVehicle, tVehicleData )
 
     if ( tVehicleData and tVehicleData.KeyValues ) then
@@ -30,6 +33,10 @@ function PRP.Vehicle.Spawn( sVehicleID, vPos, aAng )
 		end
 	end
 
+    if tVehicleData.Offset then
+        vPos = vPos + aAng:Forward() * tVehicleData.Offset.x + aAng:Right() * tVehicleData.Offset.y + aAng:Up() * tVehicleData.Offset.z
+    end
+
     eVehicle:SetPos( vPos )
     eVehicle:SetAngles( aAng )
 
@@ -38,9 +45,10 @@ function PRP.Vehicle.Spawn( sVehicleID, vPos, aAng )
 
     eVehicle:DropToFloor()
 
-    if ( tVehicleData && tVehicleData.ColGroup ) then Ent:SetCollisionGroup( tVehicleData.ColGroup ) end
+    if ( tVehicleData and tVehicleData.ColGroup ) then Ent:SetCollisionGroup( tVehicleData.ColGroup ) end
 
-    eVehicle.VehicleTable = tVehicleData
+    -- eVehicle.VehicleTable = tVehicleData
+    -- eVehicle.VehicleName = sVehicleID
 
     return eVehicle
 end
