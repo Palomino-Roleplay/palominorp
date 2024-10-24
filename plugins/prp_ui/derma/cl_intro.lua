@@ -3,12 +3,14 @@ PRP.UI = PRP.UI or {}
 local PANEL = {}
 
 local MAT_STATIC = Material("prp/ui/textures/static.png", "noclamp")
-local MAT_LOGO = Material("prp/ui/mainmenu/logo.png")
+local MAT_LOGO = Material("prp/ui/mainmenu/logo-pre-alpha.png")
 local MAT_BG = Material("prp/ui/mainmenu/bg.png")
 
 function PANEL:Init()
     self:SetSize( ScrW(), ScrH() )
 
+    self:SetTitle( "" )
+    self:SetDraggable( false )
     gui.EnableScreenClicker( true )
 
     local pSelect = vgui.Create( "PRP.Select", self )
@@ -50,10 +52,33 @@ function PANEL:Init()
         end )
         print("test")
     end )
+
+    local function fnBackgroundEffects()
+        if not self then
+            hook.Remove( "RenderScreenspaceEffects", "PRP.UI.MainMenu.RenderScreenspaceEffects" )
+            return
+        end
+
+        local tTable = {
+            ["$pp_colour_addr"] = 0,
+            ["$pp_colour_addg"] = 0,
+            ["$pp_colour_addb"] = 0,
+            ["$pp_colour_brightness"] = 1.4,
+            ["$pp_colour_contrast"] = 0.35,
+            ["$pp_colour_colour"] = 0,
+            ["$pp_colour_mulr"] = 0,
+            ["$pp_colour_mulg"] = 0,
+            ["$pp_colour_mulb"] = 0
+        }
+
+        DrawColorModify( tTable )
+    end
+    hook.Add( "RenderScreenspaceEffects", "PRP.UI.MainMenu.RenderScreenspaceEffects", fnBackgroundEffects )
 end
 
 function PANEL:OnRemove()
     gui.EnableScreenClicker( false )
+    hook.Remove( "RenderScreenspaceEffects", "PRP.UI.MainMenu.RenderScreenspaceEffects" )
 end
 
 function PANEL:Paint()
@@ -77,7 +102,7 @@ function PANEL:Paint()
 
     surface.SetDrawColor( 255, 255, 255 )
     surface.SetMaterial( MAT_LOGO )
-    surface.DrawTexturedRect( 275, ( ScrH() - 82 ) / 2, 291, 82 )
+    surface.DrawTexturedRect( 275, ( ScrH() - 82 ) / 2, MAT_LOGO:Width() * PRP.UI.ScaleFactor, MAT_LOGO:Height() * PRP.UI.ScaleFactor )
 end
 
 concommand.Add( "prp_mainmenu", function()
