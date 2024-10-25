@@ -66,6 +66,22 @@ if CLIENT then
             PRP_COMPUTER_MENU:RunJavascript( "setGlobalAuthToken('" .. PRP.API.Token .. "');")
         end
         gui.EnableScreenClicker( true )
+
+        PRP_COMPUTER_MENU.CloseButton = vgui.Create( "DButton", PRP_COMPUTER_MENU )
+        PRP_COMPUTER_MENU.CloseButton:SetSize( 50, 50 )
+        PRP_COMPUTER_MENU.CloseButton:SetPos( PRP_COMPUTER_MENU:GetWide() - 50, 0 )
+        PRP_COMPUTER_MENU.CloseButton:SetText( "X" )
+        PRP_COMPUTER_MENU.CloseButton:SetFont( "DermaLarge" )
+        PRP_COMPUTER_MENU.CloseButton.DoClick = function()
+            if IsValid( self ) then
+                self:Close()
+            else
+                PRP_COMPUTER_MENU:Remove()
+                hook.Remove( "CalcView", "PRP.Computer.CalcView" )
+            end
+
+            gui.EnableScreenClicker( false )
+        end
     end
 
     function ENT:Draw()
