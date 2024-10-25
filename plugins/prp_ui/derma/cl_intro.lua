@@ -6,7 +6,15 @@ local MAT_STATIC = Material("prp/ui/textures/static.png", "noclamp")
 local MAT_LOGO = Material("prp/ui/mainmenu/logo-pre-alpha.png")
 local MAT_BG = Material("prp/ui/mainmenu/bg.png")
 
+PRP.UI.MainMenuIntroSound = PRP.UI.MainMenuIntroSound or nil
 function PANEL:Init()
+    if not PRP.UI.MainMenuIntroSound then
+        PRP.UI.MainMenuIntroSound = CreateSound( game.GetWorld(), "palomino/intro-home-5.mp3" )
+        PRP.UI.MainMenuIntroSound:SetSoundLevel( 0 )
+    end
+
+    PRP.UI.MainMenuIntroSound:Play()
+
     self:SetSize( ScrW(), ScrH() )
 
     self:SetTitle( "" )
@@ -79,6 +87,7 @@ end
 function PANEL:OnRemove()
     gui.EnableScreenClicker( false )
     hook.Remove( "RenderScreenspaceEffects", "PRP.UI.MainMenu.RenderScreenspaceEffects" )
+    PRP.UI.MainMenuIntroSound:FadeOut( 5 )
 end
 
 function PANEL:Paint()
@@ -97,7 +106,8 @@ function PANEL:Paint()
 
     surface.SetDrawColor( 255, 255, 255, 1 )
     surface.SetMaterial( MAT_STATIC )
-    // Repeat original 512x512 texture over the screen
+    -- Repeat original 512x512 texture over the screen
+    -- @TODO: Maybe make it 1024x1024?
     surface.DrawTexturedRectUV( 0, 0, ScrW(), ScrH(), 0, 0, ScrW() / 512, ScrH() / 512 )
 
     surface.SetDrawColor( 255, 255, 255 )

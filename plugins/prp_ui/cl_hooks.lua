@@ -22,7 +22,6 @@ function PLUGIN:OnCharacterMenuCreated( panel )
     bIntroRun = true
 
     panel:Remove()
-    PRP.UI.MainMenu = vgui.Create( "PRP.MainMenu" )
 
     -- RunConsoleCommand( "prp_devpreview" )
     -- local dSplash = vgui.Create( "PRP.Splash" )
@@ -33,6 +32,13 @@ function PLUGIN:OnCharacterMenuCreated( panel )
     -- dSplash.OnRemove = function()
     --     if IsValid( panel ) then panel:Show() end
     -- end
+end
+
+function PLUGIN:InitPostEntity()
+    -- OnCharacterMenuCreated is called before the game world entity exists.
+    -- Because the main menu uses the game world entity for the intro sound,
+    -- we're gonna open the main manu after InitPostEntity.
+    PRP.UI.MainMenu = vgui.Create( "PRP.MainMenu" )
 end
 
 function PLUGIN:PlayerButtonDown( pPlayer, iButton )
