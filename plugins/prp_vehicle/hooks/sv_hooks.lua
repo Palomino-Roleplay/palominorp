@@ -16,3 +16,11 @@ function PLUGIN:PlayerSpawnedVehicle( pPlayer, vVehicle )
         vVehicle:SetNetVar( "policeVehicle", true )
     end
 end
+
+function PLUGIN:CanOpenLicenseMenu()
+    return false
+end
+
+function PLUGIN:CanUpdateLicensePlate()
+    return false
+end
