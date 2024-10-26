@@ -52,7 +52,7 @@ function PRP.Playtesting.CreateSampleCharacter( pPlayer, fnCallback )
         name = (bIsMale and maleNames[ math.random( #maleNames ) ] or femaleNames[ math.random( #femaleNames ) ]) .. " " .. lastNames[ math.random( #lastNames ) ],
         model = sModel,
         steamID = pPlayer:SteamID64(),
-        faction = "Citizen",
+        faction = "citizen",
     }
 
     ix.char.Create( tCharacterInfo, function( iID )
