@@ -321,7 +321,7 @@ end )
 concommand.Add( "prp_reauth", function( pPlayer, sCommand, tArgs, sArgs )
     Print( "Reauthenticating player: " .. pPlayer:Name() )
 
-    if not pPlayer:IsDeveloper() then return end
+    -- if not pPlayer:IsDeveloper() then return end
 
     Print("Sending reauthentication request to server...")
 
