@@ -11,9 +11,14 @@ function PANEL:Init()
     self:SetSize( ScrW(), ScrH() )
     self:SetTitle( "" )
     self:SetDraggable( false )
+    self:ShowCloseButton( LocalPlayer():IsDeveloper() )
     local pSelect = vgui.Create( "PRP.Select", self )
     pSelect:SetSize( 300 * PRP.UI.ScaleFactor, 2 * ScrH() / 3 )
     pSelect:SetPos( 275 * PRP.UI.ScaleFactor, 2 * ScrH() / 3 )
+
+    if PRP.UI.Intro then
+        PRP.UI.Intro:Remove()
+    end
 
     gui.EnableScreenClicker( true )
 
@@ -181,7 +186,10 @@ surface.CreateFont( "PRP.Intro.Present", {
 function PANEL:Init()
     self:SetSize( ScrW(), ScrH() )
 
-    self:ShowCloseButton( false )
+    RunConsoleCommand( "stopsound" )
+
+    self:SetTitle( "" )
+    self:ShowCloseButton( LocalPlayer():IsDeveloper() )
     self:SetDraggable( false )
 
     self.m_bStarted = false
@@ -213,7 +221,7 @@ function PANEL:Paint( iW, iH )
     surface.DrawRect( 0, 0, iW, iH )
 
     if not self.m_bStarted then
-        surface.SetFont( "PRP.Intro.Title" )
+        surface.SetFont( "PRP.Intro.Default" )
         local iTextW, iTextH = surface.GetTextSize( "Press any key to continue..." )
 
         surface.SetTextColor( 255, 255, 255 )
@@ -315,22 +323,36 @@ function PANEL:Think()
             self.m_bStarted = true
             self.m_iStartTime = CurTime()
 
-            if not PRP.UI.IntroSound then
-                PRP.UI.IntroSound = CreateSound( game.GetWorld(), "palomino/palomino-intro.mp3" )
-                PRP.UI.IntroSound:SetSoundLevel( 0 )
-            end
+            RunConsoleCommand( "stopsound" )
 
-            PRP.UI.IntroSound:Play()
+            timer.Simple( 0, function() 
+                if not PRP.UI.IntroSound then
+                    PRP.UI.IntroSound = CreateSound( game.GetWorld(), "palomino/palomino-intro.mp3" )
+                    PRP.UI.IntroSound:SetSoundLevel( 0 )
+                end
+    
+                PRP.UI.IntroSound:Play()
+            end )
         else
             return
         end
     end
 
     -- Check if it's time to remove the panel and run the command
-    if self.m_bStarted and (CurTime() - self.m_iStartTime) >= 23.25 then
-        RunConsoleCommand("prp_mainmenu")
-        self:Remove()
+    if self.m_bStarted then
+        if input.IsButtonDown( KEY_H ) and input.IsButtonDown( KEY_A ) and input.IsButtonDown( KEY_T ) then
+            RunConsoleCommand("prp_mainmenu")
+        end
+
+        if (CurTime() - self.m_iStartTime) >= 23.25 then
+            RunConsoleCommand("prp_mainmenu")
+        end
     end
+end
+
+function PANEL:OnRemove()
+    -- PRP.UI.Intro:Remove()
+    PRP.UI.Intro = nil
 end
 
 concommand.Add( "prp_intro", function()
