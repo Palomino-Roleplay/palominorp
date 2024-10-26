@@ -29,10 +29,10 @@ function PANEL:Init()
     end )
 
     pSelect:AddButton( "NEW CHARACTER", function()
-        if #ix.characters > 3 then
-            Derma_Message( "You have reached the maximum amount of characters.", "Error", "OK" )
-            return
-        end
+        -- if #ix.characters > 3 then
+        --     Derma_Message( "You have reached the maximum amount of characters.", "Error", "OK" )
+        --     return
+        -- end
 
         net.Start("PRP.Playtesting.NewCharacter")
         net.SendToServer()
