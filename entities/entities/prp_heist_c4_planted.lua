@@ -105,9 +105,9 @@ function ENT:Explode( sPosition )
 	net.Send( oRecipientsFar )
 
 	local eVaultFloor = ents.GetMapCreatedEntity( iSouthsideVaultFloorID )
-	-- SafeRemoveEntity( eVaultFloor )
+	SafeRemoveEntity( eVaultFloor )
 
-	-- SafeRemoveEntity( self )
+	SafeRemoveEntity( self )
 
 	-- BankAlarmStart()
 
