@@ -144,7 +144,7 @@ if CLIENT then
     -- @TODO: Holy mother of god.
     hook.Add( "Think", "PRP.Computer.Think", function()
         -- button cooldown
-        if input.IsKeyDown( KEY_SPACE ) then
+        if input.IsKeyDown( KEY_E ) then
             LocalPlayer().m_iButtonCooldown = LocalPlayer().m_iButtonCooldown or 0
             if LocalPlayer().m_iButtonCooldown < CurTime() then
                 LocalPlayer().m_iButtonCooldown = CurTime() + 0.5
@@ -152,10 +152,8 @@ if CLIENT then
                 return
             end
 
-            if LocalPlayer().m_eComputer then
-                -- if LocalPlayer().m_eComputer ~= NULL then
-                    -- LocalPlayer().m_eComputer:Remove()
-                -- end
+            if IsValid( LocalPlayer().m_eComputer ) and LocalPlayer().m_eComputer:GetClass() == "prp_computer" then
+                LocalPlayer().m_eComputer:Close()
             else
                 local eComputer = LocalPlayer():GetEyeTrace().Entity
                 if IsValid( eComputer ) and eComputer:GetClass() == "prp_computer" then
