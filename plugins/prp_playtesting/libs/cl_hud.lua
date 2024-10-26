@@ -21,12 +21,15 @@ function PLUGIN:HUDPaint()
     surface.SetTextPos( 10, 140 )
     surface.DrawText( "Player: " .. LocalPlayer():SteamName() .. " (" .. LocalPlayer():SteamID() .. ")" )
 
+    surface.SetTextPos( 10, 160 )
+    surface.DrawText( "Position: " .. tostring(LocalPlayer():GetPos()))
+
     surface.SetTextColor( 220, 220, 240, 255 )
 
-    surface.SetTextPos( 10, 170 )
-    surface.DrawText( "Scene: " .. "Freeroam" )
     surface.SetTextPos( 10, 190 )
-    surface.DrawText( "Role: " .. LocalPlayer():GetLocalVar( "PRP.Playtesting.Role", "UNASSIGNED" ) )
+    surface.DrawText( "Scene: " .. "Freeroam" )
     surface.SetTextPos( 10, 210 )
+    surface.DrawText( "Role: " .. LocalPlayer():GetLocalVar( "PRP.Playtesting.Role", "UNASSIGNED" ) )
+    surface.SetTextPos( 10, 230 )
     surface.DrawText( "Objective: " .. LocalPlayer():GetLocalVar( "PRP.Playtesting.Objective", "N/A" ) )
 end

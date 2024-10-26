@@ -143,7 +143,7 @@ function PRP.API.Initialize()
 
         PRP.API._bInitComplete = true
 
-        -- Print( "PAPI initialized!" )
+        Print( "PAPI initialized!" )
     end )
 end
 

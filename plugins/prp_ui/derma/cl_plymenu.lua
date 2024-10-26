@@ -16,6 +16,7 @@ local oGlowMat = Material( "prp/ui/temp/ply_glow.png", "" )
 local oBoltMat = Material( "prp/ui/temp/bolt.png" )
 
 local iStaminaSmoothed = 100
+
 local function fnStaminaPercentSmoothed()
     iStaminaSmoothed = Lerp( FrameTime() * 10, iStaminaSmoothed, LocalPlayer():GetLocalVar("stm") )
 
@@ -489,16 +490,20 @@ function PANEL:Init()
 
 
         PUI.StartOverlay()
-            surface.SetDrawColor( 255, 255, 255 )
-            surface.SetMaterial( oGradientGlow )
-            surface.DrawTexturedRect( 0, 0, iW, iH )
-
-            surface.DrawRect( 0, 0, iW, iH )
+            if not bIsGradientError then
+                surface.SetDrawColor( color_white )
+                surface.SetMaterial( oGradientGlow )
+                surface.DrawTexturedRect( 0, 0, iW, iH )
+                surface.DrawRect( 0, 0, iW, iH )
+            end
         PUI.EndOverlay()
 
-        surface.SetDrawColor( 255, 255, 255, 255 * 0.2 * self.easedFraction )
-        surface.SetMaterial( oGradientGlow )
-        surface.DrawTexturedRect( 0, 0, iW, iH )
+        if not bIsGradientGlowError then
+            surface.SetDrawColor( 255, 255, 255, 255 * 0.2 * self.easedFraction )
+            surface.SetMaterial( oGradientGlow )
+            surface.DrawTexturedRect( 0, 0, iW, iH )         
+        end
+
 
         -- @TODO: This should be a function or panel or something.
 
