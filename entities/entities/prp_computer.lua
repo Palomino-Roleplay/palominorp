@@ -57,7 +57,7 @@ if CLIENT then
         local tToScreen = vPos:ToScreen()
 
         PRP_COMPUTER_MENU = vgui.Create( "DHTML" )
-        PRP_COMPUTER_MENU:OpenURL( "https://pal-os.palomino.gg")
+        PRP_COMPUTER_MENU:OpenURL( "https://pal-os.palominorp.com")
         PRP_COMPUTER_MENU:SetSize( 392 * 2, 322 * 2 )
         PRP_COMPUTER_MENU:SetPos( tToScreen.x, tToScreen.y )
         PRP_COMPUTER_MENU:SetMouseInputEnabled( true )
@@ -66,6 +66,22 @@ if CLIENT then
             PRP_COMPUTER_MENU:RunJavascript( "setGlobalAuthToken('" .. PRP.API.Token .. "');")
         end
         gui.EnableScreenClicker( true )
+
+        PRP_COMPUTER_MENU.CloseButton = vgui.Create( "DButton", PRP_COMPUTER_MENU )
+        PRP_COMPUTER_MENU.CloseButton:SetSize( 50, 50 )
+        PRP_COMPUTER_MENU.CloseButton:SetPos( PRP_COMPUTER_MENU:GetWide() - 50, 0 )
+        PRP_COMPUTER_MENU.CloseButton:SetText( "X" )
+        PRP_COMPUTER_MENU.CloseButton:SetFont( "DermaLarge" )
+        PRP_COMPUTER_MENU.CloseButton.DoClick = function()
+            if IsValid( self ) then
+                self:Close()
+            else
+                PRP_COMPUTER_MENU:Remove()
+                hook.Remove( "CalcView", "PRP.Computer.CalcView" )
+            end
+
+            gui.EnableScreenClicker( false )
+        end
     end
 
     function ENT:Draw()
@@ -128,7 +144,7 @@ if CLIENT then
     -- @TODO: Holy mother of god.
     hook.Add( "Think", "PRP.Computer.Think", function()
         -- button cooldown
-        if input.IsKeyDown( KEY_SPACE ) then
+        if input.IsKeyDown( KEY_E ) then
             LocalPlayer().m_iButtonCooldown = LocalPlayer().m_iButtonCooldown or 0
             if LocalPlayer().m_iButtonCooldown < CurTime() then
                 LocalPlayer().m_iButtonCooldown = CurTime() + 0.5
@@ -136,7 +152,7 @@ if CLIENT then
                 return
             end
 
-            if LocalPlayer().m_eComputer then
+            if IsValid( LocalPlayer().m_eComputer ) and LocalPlayer().m_eComputer:GetClass() == "prp_computer" then
                 LocalPlayer().m_eComputer:Close()
             else
                 local eComputer = LocalPlayer():GetEyeTrace().Entity

@@ -15,11 +15,12 @@ local oGradientGlow = Material( "prp/ui/temp/gradient_v2_plymenu_v2.png", "" )
 local oGlowMat = Material( "prp/ui/temp/ply_glow.png", "" )
 local oBoltMat = Material( "prp/ui/temp/bolt.png" )
 
-local bIsGradientError = oGradient:IsError()
-local bIsGradientGlowError = oGradient:IsError()
+local iStaminaSmoothed = 100
 
 local function fnStaminaPercentSmoothed()
-    return 1 - ( CurTime() % 30 / 30 )
+    iStaminaSmoothed = Lerp( FrameTime() * 10, iStaminaSmoothed, LocalPlayer():GetLocalVar("stm") )
+
+    return iStaminaSmoothed / 100
 end
 
 -- local function DownloadAPIFiles()
@@ -140,6 +141,27 @@ function PANEL:Init()
     self.m_pnlTabCharacterLeft:SetPos( ScrW() / 2 - PRP.UI.ScaleFactor * 500, 0 )
     self.m_pnlTabCharacterLeft:SetSize( PRP.UI.ScaleFactor * 500, ScrH() - ( 100 * PRP.UI.ScaleFactor ) )
     self.m_pnlTabCharacterLeft:SetSpaceY( 30 )
+
+    local tPrimaryBags = ix.inventory.Get( LocalPlayer():GetCharacter():GetData( "slots_primary", 0 ) ):GetItemsByBase("base_bags")
+
+    if #tPrimaryBags >= 1 then
+        local iBagInventoryID = tPrimaryBags[1]:GetData( "id", 0 )
+
+        if iBagInventoryID and iBagInventoryID ~= 0 then
+            local oBagInventory = ix.inventory.Get( iBagInventoryID )
+
+            self.m_pnlTabCharacterLeftBackpack = vgui.Create( "ixInventory", self.m_pnlTabCharacterContent )
+            -- self.m_pnlTabCharacterRightEquippables[sEquipmentSlotsID]:SetIconSize( 80 * PRP.UI.ScaleFactor )
+            self.m_pnlTabCharacterLeftBackpack:SetPos( PRP.UI.ScaleFactor * 50, PRP.UI.ScaleFactor * 50 )
+            self.m_pnlTabCharacterLeftBackpack:SetTitle( "BACKPACK" )
+            self.m_pnlTabCharacterLeftBackpack:SetIconSize( 80 * PRP.UI.ScaleFactor )
+            -- self.m_pnlTabCharacterRightEquippables[sEquipmentSlotsID]:SetDraggable( true )
+            self.m_pnlTabCharacterLeftBackpack:SetInventory( oBagInventory )
+            self.m_pnlTabCharacterLeftBackpack:SetPaintedManually( false )
+            self.m_pnlTabCharacterLeftBackpack.bNoBackgroundBlur = true
+            self.m_pnlTabCharacterLeftBackpack.childPanels = {}
+        end
+    end
 
     self.m_pnlTabCharacterLeftHeader = vgui.Create( "DPanel", self.m_pnlTabCharacterLeft )
     self.m_pnlTabCharacterLeftHeader:SetPos( 0, 0 )

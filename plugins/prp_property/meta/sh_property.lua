@@ -51,7 +51,7 @@ function PROPERTY:Init()
                 if SERVER then self:SetupDoor( eEntity ) end
             end
 
-            eEntity:SetProperty( self )
+            eEntity:SetRealty( self )
         end
     end
 
@@ -175,7 +175,7 @@ function PROPERTY:AddProp( eEntity )
     table.insert( self:GetProps(), eEntity )
     table.insert( self:GetEntities(), eEntity )
 
-    eEntity:SetProperty( self )
+    eEntity:SetRealty( self )
 
     self.m_tPropsCategorized = self.m_tPropsCategorized or {}
 
@@ -334,7 +334,7 @@ if SERVER then
 
         eEntity:SetPos( vPos )
         eEntity:SetAngles( aAngles )
-        eEntity:SetProperty( self )
+        eEntity:SetRealty( self )
 
         self.m_tEntities = self.m_tEntities or {}
         table.insert( self.m_tEntities, eEntity )

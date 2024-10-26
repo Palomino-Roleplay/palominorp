@@ -57,7 +57,7 @@ DefensiveProps:AddHook( "PhysgunDrop", function( eProp, pPlayer )
     -- Freeze
     eProp:GetPhysicsObject():EnableMotion( false )
 
-    local oProperty = eProp:GetProperty()
+    local oProperty = eProp:GetRealty()
     if not oProperty then return end
 
     eProp:SetAngles( Angle( 0, eProp:GetAngles().y, 0 ) )

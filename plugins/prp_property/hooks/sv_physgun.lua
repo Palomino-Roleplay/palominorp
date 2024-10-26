@@ -17,8 +17,8 @@ function PLUGIN:OnPhysgunPickup( pPlayer, eEntity )
     if CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.BypassPhysgunLimits" ) then return end
     if not IsValid( eEntity ) then return end
 
-    if not eEntity:GetProperty() then return end
-    local oProperty = eEntity:GetProperty()
+    if not eEntity:GetRealty() then return end
+    local oProperty = eEntity:GetRealty()
 
     -- When we force drop the entity to the floor, we might go a little bit out of bounds.
     -- This is to prevent deletion of the entity after the last movement was a force drop.
@@ -53,8 +53,8 @@ function PLUGIN:PhysgunDrop( pPlayer, eEntity )
     if CAMI.PlayerHasAccess( pPlayer, "Palomino.Property.BypassPhysgunLimits" ) then return end
     if not IsValid( eEntity ) then return end
 
-    if not eEntity:GetProperty() then return end
-    local oProperty = eEntity:GetProperty()
+    if not eEntity:GetRealty() then return end
+    local oProperty = eEntity:GetRealty()
 
     -- Prop-snapping, floor-snapping, zone-blocking, collision blocking, and whatever else.
     local bValid, vTargetPos, aTargetAng = eEntity:CalcTarget()

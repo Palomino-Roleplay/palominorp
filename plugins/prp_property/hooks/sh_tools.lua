@@ -42,9 +42,9 @@ function PLUGIN:CanTool( pPlayer, tTrace, sToolName, tTool, iButton )
     local oProperty = false
     if eEntity then
         if eEntity:CreatedByMap() then Print("map") return false end
-        if not eEntity:GetProperty() then Print("no property 1") return false end
+        if not eEntity:GetRealty() then Print("no property 1") return false end
 
-        oProperty = eEntity:GetProperty()
+        oProperty = eEntity:GetRealty()
 
         if oProperty:GetOccupant() ~= pPlayer:GetCharacter() then Print("not ply occ") return false end
     else

@@ -80,7 +80,7 @@ function PRP.API.REST.HTTP( tHTTPRequest, fnOK, fnFailed )
     end
 
     tHTTPRequest.failed = tHTTPRequest.failed or function( sError )
-        PRP.API.REST.Log( "Request failed: " .. tHTTPRequest.url .. " (" .. iResponseCode or 0 .. ")" )
+        PRP.API.REST.Log( "Request failed: " .. tHTTPRequest.url .. " (" .. sError .. ")" )
         if fnFailed then fnFailed( sError ) end
     end
 
@@ -321,7 +321,9 @@ end )
 concommand.Add( "prp_reauth", function( pPlayer, sCommand, tArgs, sArgs )
     Print( "Reauthenticating player: " .. pPlayer:Name() )
 
-    if not pPlayer:IsDeveloper() then return end
+    -- if not pPlayer:IsDeveloper() then return end
+
+    Print("Sending reauthentication request to server...")
 
     PRP.API.WS.Send( "auth/createChallenge", {
         steamId = pPlayer:SteamID64(),

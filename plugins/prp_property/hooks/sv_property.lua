@@ -112,7 +112,7 @@ function PLUGIN:ShowTeam( pPlayer )
     local eEntity = tTrace.Entity
     if not IsValid( eEntity ) or not eEntity:IsDoor() then return end
 
-    local oProperty = eEntity:GetProperty()
+    local oProperty = eEntity:GetRealty()
     if not oProperty then return end
 
     if oProperty:GetRenter() then

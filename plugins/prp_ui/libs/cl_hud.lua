@@ -3,6 +3,7 @@ PRP.UI = PRP.UI or {}
 local oHeartNoAlphatest = Material( "prp/icons/hud/heart.png" )
 
 local oMaterialHeart = Material( "prp/icons/hud/heart_shadow.png" )
+local oMaterialBolt = Material( "prp/ui/temp/bolt.png" )
 
 local oGradientLeft = Material( "prp/icons/hud/gradient_left.png" )
 
@@ -158,8 +159,18 @@ function PRP.UI.DrawBar( oMaterial, iX, iY, fnPercent, oColor, bDrawValue )
     end
 end
 
+-- @TODO: Repeated from cl_plymenu.lua. Consolidate.
+local iStaminaSmoothed = 100
+local function fnStaminaPercentSmoothed()
+    iStaminaSmoothed = Lerp( FrameTime() * 10, iStaminaSmoothed, LocalPlayer():GetLocalVar("stm") or 100 )
+
+    return iStaminaSmoothed / 100
+end
+
 hook.Add( "HUDPaint", "PRP.UI.HUDPaint", function()
     if PRP.Scene.Active then return end
+    if not LocalPlayer():Alive() then return end
+    if not LocalPlayer():GetCharacter() then return end
     -- Drawn bottom to top
 
     -- PUI.Box( 0, 0, ScrW(), ScrH(), COLOR_WHITE )
@@ -175,6 +186,12 @@ hook.Add( "HUDPaint", "PRP.UI.HUDPaint", function()
         PRP.UI.DrawBar( oMaterialHeart, iX, iY, fnArmorPercentSmoothed )
     end
 
+    -- Stamina
+    if LocalPlayer():GetLocalVar( "stm", 0 ) < 100 then
+        iY = iY - ( oMaterialHeart:Height() + 10 )
+        PRP.UI.DrawBar( oMaterialBolt, iX, iY, fnStaminaPercentSmoothed, Color( 255, 255, 255, 16 ) )
+    end
+
     -- Recovery Timer
     local iRecoveryTime = LocalPlayer():GetLocalVar( "recoveryTimeEnd", false )
     if iRecoveryTime then
@@ -182,6 +199,17 @@ hook.Add( "HUDPaint", "PRP.UI.HUDPaint", function()
 
         iY = iY - ( oMaterialHeart:Height() + 10 )
         PRP.UI.DrawTimer( iX, iY, "RECOVERING", iRecoveryTimeRemaining )
+    end
+
+    -- Prison Timer
+    if LocalPlayer():GetCharacter():IsArrested() then
+        local iUnarrestTimestamp = LocalPlayer():GetCharacter():GetData( "arrest_start", 0 ) + LocalPlayer():GetCharacter():GetData( "arrest_time", 0 )
+        if iUnarrestTimestamp then
+            local iArrestTimeRemaining = math.max( iUnarrestTimestamp - CurTime(), 0 )
+
+            iY = iY - ( oMaterialHeart:Height() + 10 )
+            PRP.UI.DrawTimer( iX, iY, "ARRESTED", iArrestTimeRemaining )
+        end
     end
 
 

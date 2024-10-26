@@ -1,6 +1,6 @@
 TOOL.AddToMenu = true
 
-TOOL.Category = "palomino.life"
+TOOL.Category = "Palomino"
 TOOL.Name = "#tool.prp_areatool.name"
 
 TOOL.Information = {

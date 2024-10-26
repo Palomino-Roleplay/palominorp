@@ -10,7 +10,7 @@ end
 function PLUGIN:CanPlayerAccessDoor( pPlayer, eDoor, iAccess )
     if not IsValid( eDoor ) then return end
 
-    local oProperty = eDoor:GetProperty()
+    local oProperty = eDoor:GetRealty()
     if not oProperty then return end
 
     local cCharacter = pPlayer:GetCharacter()

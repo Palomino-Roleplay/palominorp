@@ -235,7 +235,7 @@ function PLUGIN:PopulateMenuBar( dMenuBar )
 
 		surface.SetDrawColor( 255, 255, 255, 255 )
 
-		draw.SimpleText( "Palomino.life", "DermaDefault", 5, iHeight / 2, Color( 255, 255, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
+		draw.SimpleText( "Palomino.gg", "DermaDefault", 5, iHeight / 2, Color( 255, 255, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
 	end
 
 	return false

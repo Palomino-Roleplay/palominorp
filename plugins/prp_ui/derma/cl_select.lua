@@ -2,7 +2,8 @@ PRP.UI = PRP.UI or {}
 
 local PANEL = {}
 
-local MAT_GRADIENT = Material( "prp/ui/temp/gradient_overlay2_left.png" )
+-- @TODO: Gross. Replace with our own.
+local MAT_GRADIENT = Material( "gui/gradient" )
 
 surface.CreateFont( "PRP.Select.Button", {
     font = "Inter",
@@ -16,6 +17,8 @@ AccessorFunc( PANEL, "m_sLabel", "Label" )
 function PANEL:Init()
     self:SetSize( 400, 65 )
     self:SetText( "" )
+
+    self.m_bHoverSoundPlayed = false
 end
 
 function PANEL:OpenSubMenu( fnCallback )
@@ -50,8 +53,12 @@ function PANEL:Paint( iWidth, iHeight )
         surface.SetDrawColor( 255, 255, 255, 76 )
         surface.SetTextColor( 255, 255, 255, 76 )
     elseif self:HasSubMenu() then
+        surface.SetDrawColor( ColorAlpha( PUI.GREEN, 32 ) )
+        surface.SetMaterial( MAT_GRADIENT )
+        surface.DrawTexturedRect( 2, 0, iWidth - 2, iHeight )
+
+        surface.SetTextColor( 255, 255, 255, 255 )
         surface.SetDrawColor( PUI.GREEN:Unpack() )
-        surface.SetTextColor( PUI.GREEN:Unpack() )
     elseif self:IsHovered() then
         surface.SetDrawColor( 255, 255, 255, 255 )
         surface.SetTextColor( 255, 255, 255, 255 )
@@ -65,6 +72,15 @@ function PANEL:Paint( iWidth, iHeight )
     surface.SetTextPos( 20, iHeight / 2 - 10 )
 
     surface.DrawText( self:GetLabel() )
+end
+
+function PANEL:Think()
+    if self:IsHovered() and not self.m_bHoverSoundPlayed then
+        surface.PlaySound( "prp/ui/hover.wav" )
+        self.m_bHoverSoundPlayed = true
+    elseif not self:IsHovered() then
+        self.m_bHoverSoundPlayed = false
+    end
 end
 
 vgui.Register( "PRP.Select.Button", PANEL, "DButton" )
@@ -81,9 +97,12 @@ function PANEL:AddButton( sLabel, fnCallback, bDisabled )
     local pButton = vgui.Create( "PRP.Select.Button", self )
     pButton:SetLabel( sLabel )
     pButton:SetDisabled( bDisabled or false )
-    pButton:Dock( TOP )
+    pButton:Dock( BOTTOM )
     pButton:DockMargin( 0, 0, 0, 0 )
     pButton.DoClick = function()
+        -- @TODO: This should be under the button itself probably.
+        surface.PlaySound( "prp/ui/click.wav" )
+
         fnCallback( pButton )
     end
 

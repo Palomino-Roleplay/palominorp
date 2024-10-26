@@ -99,7 +99,7 @@ PLUGIN.config = {
                 -- Freeze
                 eProp:GetPhysicsObject():EnableMotion( false )
 
-                local oProperty = eProp:GetProperty()
+                local oProperty = eProp:GetRealty()
                 if not oProperty then return end
 
                 local iFloorZ = oProperty:GetFloorZ()

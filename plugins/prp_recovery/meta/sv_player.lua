@@ -74,7 +74,7 @@ function PLY:StopRecovery()
     end
 end
 
-local iTimerDelta = 5
+local iTimerDelta = 2
 function PLUGIN:InitializedPlugins()
     if timer.Exists( "PRP.Recovery.Timer" ) then
         timer.Remove( "PRP.Recovery.Timer" )

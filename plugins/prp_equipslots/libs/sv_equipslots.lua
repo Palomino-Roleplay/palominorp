@@ -49,13 +49,13 @@ function PLUGIN:CharacterLoaded( cCharacter )
 end
 
 function PLUGIN:InventoryItemAdded( oFromInventory, oToInventory, oItem )
-    if oToInventory and PRP.EquipSlots.Inventories[oToInventory.vars.isBag] then
+    if oToInventory and oToInventory.vars and oToInventory.vars.isBag and PRP.EquipSlots.Inventories[oToInventory.vars.isBag] then
         Print( "NEW EQUIPPED: " .. oToInventory.vars.isBag )
 
         if oItem.Equip then
             oItem:Equip( oToInventory:GetOwner() )
         end
-    elseif oFromInventory and PRP.EquipSlots.Inventories[oFromInventory.vars.isBag] then
+    elseif oFromInventory and oFromInventory.vars and oFromInventory.vars.isBar and PRP.EquipSlots.Inventories[oFromInventory.vars.isBag] then
         Print( "NEW UNEQUIPPED: " .. oFromInventory.vars.isBag )
 
         if oItem.Unequip then

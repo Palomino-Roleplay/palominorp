@@ -22,6 +22,10 @@ function CHAR:SpawnJobVehicle( sVehicleID )
     end )
     vVehicle:CPPISetOwner( self:GetPlayer() )
 
+    -- do we really need to do this or are we doing something wrong?
+    LL_PLATES_SYSTEM:PrepareVehicle(self:GetPlayer(), vVehicle)
+    vVehicle:SetNWString("ll_plate", "PMPD-" .. math.random(100, 999))
+
     return vVehicle, "Your job vehicle has been spawned!"
 end
 

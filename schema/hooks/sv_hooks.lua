@@ -2,7 +2,7 @@ function Schema:InitializedPlugins()
     -- Disable some plugins
     local tDisabledPlugins = {
         ["recognition"] = true,
-        ["stamina"] = true,
+        -- ["stamina"] = true,
         ["strength"] = true
     }
 
