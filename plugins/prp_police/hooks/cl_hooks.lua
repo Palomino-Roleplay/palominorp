@@ -79,6 +79,8 @@ function PLUGIN:EntityNetworkedVarChanged( eEntity, sKey, sOldValue, sNewValue )
             timer.Simple( iAnimationTime * 0.7, function()
                 Print( tScreenPos )
 
+                if PRP_COMPUTER_MENU and IsValid( PRP_COMPUTER_MENU ) then return end
+
                 PRP_COMPUTER_MENU = vgui.Create( "DHTML" )
                 PRP_COMPUTER_MENU:OpenURL( "https://pal-os.palominorp.com")
                 PRP_COMPUTER_MENU:SetSize( 1130 * PRP.UI.ScaleFactor, 850 * PRP.UI.ScaleFactor )
