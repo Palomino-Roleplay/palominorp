@@ -162,7 +162,7 @@ end
 -- @TODO: Repeated from cl_plymenu.lua. Consolidate.
 local iStaminaSmoothed = 100
 local function fnStaminaPercentSmoothed()
-    iStaminaSmoothed = Lerp( FrameTime() * 10, iStaminaSmoothed, LocalPlayer():GetLocalVar("stm") )
+    iStaminaSmoothed = Lerp( FrameTime() * 10, iStaminaSmoothed, LocalPlayer():GetLocalVar("stm") or 100 )
 
     return iStaminaSmoothed / 100
 end
