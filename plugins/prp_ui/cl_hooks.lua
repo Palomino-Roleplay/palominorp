@@ -38,7 +38,7 @@ function PLUGIN:InitPostEntity()
     -- OnCharacterMenuCreated is called before the game world entity exists.
     -- Because the main menu uses the game world entity for the intro sound,
     -- we're gonna open the main manu after InitPostEntity.
-    PRP.UI.MainMenu = vgui.Create( "PRP.MainMenu" )
+    PRP.UI.Intro = vgui.Create( "PRP.Intro" )
 end
 
 function PLUGIN:PlayerButtonDown( pPlayer, iButton )
