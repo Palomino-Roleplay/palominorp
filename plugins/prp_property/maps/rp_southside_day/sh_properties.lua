@@ -56,6 +56,9 @@ function PRP.Property.RegisterProperties()
     PROPERTY:SetRentable( true )
     PROPERTY:SetLockOnStart( false )
     PROPERTY:SetRent( 10 )
+    PROPERTY:SetAvailableDeeds({
+        ["commercial"] = true,
+    })
 
     PROPERTY:SetBounds(
         {
@@ -80,6 +83,10 @@ function PRP.Property.RegisterProperties()
     PROPERTY:SetLockOnStart( true )
     PROPERTY:SetRent( 10 )
     PROPERTY:SetFloorZ( -96 )
+    PROPERTY:SetAvailableDeeds({
+        ["commercial"] = true,
+        ["industrial"] = true,
+    })
 
     PROPERTY:SetBounds(
         {
@@ -142,6 +149,10 @@ function PRP.Property.RegisterProperties()
     PROPERTY:SetLockOnStart( true )
     PROPERTY:SetRent( 10 )
     PROPERTY:SetFloorZ( -104 )
+    PROPERTY:SetAvailableDeeds({
+        ["commercial"] = true,
+        ["industrial"] = true,
+    })
 
     PROPERTY:SetBounds(
         {
@@ -173,6 +184,10 @@ function PRP.Property.RegisterProperties()
     PROPERTY:SetLockOnStart( true )
     PROPERTY:SetRent( 10 )
     PROPERTY:SetFloorZ( -32 )
+    PROPERTY:SetAvailableDeeds({
+        ["commercial"] = true,
+        ["industrial"] = true,
+    })
 
     PROPERTY:SetBounds(
         {

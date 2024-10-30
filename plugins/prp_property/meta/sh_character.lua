@@ -33,15 +33,15 @@ function CHAR:ClearRentedProperties()
 end
 
 -- @TODO: EWWWW DISGUSTING NAME
-function CHAR:GetRentedPropertiesByCategory( sCategory )
-    local tProperties = {}
+-- function CHAR:GetRentedPropertiesByCategory( sCategory )
+--     local tProperties = {}
 
-    -- Not worth caching since we're working with very small tables. (But we can properly do it in AddRentedProperty)
-    for _, oProperty in pairs( self:GetRentedProperties() or {} ) do
-        if oProperty:GetCategory() == sCategory then
-            table.insert( tProperties, oProperty )
-        end
-    end
+--     -- Not worth caching since we're working with very small tables. (But we can properly do it in AddRentedProperty)
+--     for _, oProperty in pairs( self:GetRentedProperties() or {} ) do
+--         if oProperty:GetCategory() == sCategory then
+--             table.insert( tProperties, oProperty )
+--         end
+--     end
 
-    return tProperties
-end
+--     return tProperties
+-- end

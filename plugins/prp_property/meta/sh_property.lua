@@ -7,6 +7,9 @@ AccessorFunc( PROPERTY, "m_sName", "Name", FORCE_STRING )
 AccessorFunc( PROPERTY, "m_sCategory", "Category", FORCE_STRING )
 AccessorFunc( PROPERTY, "m_sDescription", "Description", FORCE_STRING )
 
+AccessorFunc( PROPERTY, "m_tAvailableDeeds", "AvailableDeeds" )
+AccessorFunc( PROPERTY, "m_sActiveDeed", "ActiveDeed", FORCE_STRING )
+
 AccessorFunc( PROPERTY, "m_bLeasable", "Leasable", FORCE_BOOL )
 AccessorFunc( PROPERTY, "m_cLessee", "Lessee" )
 AccessorFunc( PROPERTY, "m_iLesseeCharID", "LesseeCharID" )
@@ -103,9 +106,9 @@ function PROPERTY:CanRent( cCharacter )
         return false, "You have reached the maximum amount of properties you can rent."
     end
 
-    if self:GetCategory() and table.Count( cCharacter:GetRentedPropertiesByCategory( self:GetCategory() ) ) >= PLUGIN.config.limits.category[ self:GetCategory() ] then
-        return false, "You have reached the maximum amount of properties you can rent of this category."
-    end
+    -- if self:GetCategory() and table.Count( cCharacter:GetRentedPropertiesByCategory( self:GetCategory() ) ) >= PLUGIN.config.limits.category[ self:GetCategory() ] then
+    --     return false, "You have reached the maximum amount of properties you can rent of this category."
+    -- end
 
     if cCharacter:GetMoney() < self:GetRent() then
         return false, "You do not have enough money to rent this property."
@@ -256,13 +259,22 @@ if SERVER then
         end
     end
 
-    function PROPERTY:Rent( cCharacter )
+    function PROPERTY:Rent( cCharacter, sDeedType )
         -- @TODO: Make sure players aren't renting/unrenting super fast (add a cooldown)
         local bCanRent, sReason = self:CanRent( cCharacter )
         if not bCanRent then
             cCharacter:GetPlayer():Notify( sReason )
             return
         end
+
+        if not self:GetAvailableDeeds() or not self:GetAvailableDeeds()[ sDeedType ] then
+            cCharacter:GetPlayer():Notify( "This property does not have the deed type you are trying to use." )
+            return
+        end
+
+        self:SetActiveDeed( sDeedType )
+
+        cCharacter:TakeMoney( self:GetRent() )
 
         self:SetRenter( cCharacter )
         cCharacter:AddRentedProperty( self )
@@ -285,6 +297,7 @@ if SERVER then
         end
 
         self:SetRenter( nil )
+        self:SetActiveDeed( nil )
 
         -- Don't leave them stuck!
         for _, eEntity in ipairs( self:GetDoors() or {} ) do
